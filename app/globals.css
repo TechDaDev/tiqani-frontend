@@ -1,0 +1,90 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: #f7fafa;
+    --surface: #ffffff;
+    --surface-subtle: #f1faf9;
+    --primary: #0f8b8d;
+    --primary-hover: #0b7476;
+    --primary-active: #095f61;
+    --primary-soft: #ddf5f3;
+    --brand-dark: #063f40;
+    --foreground: #172b2d;
+    --foreground-muted: #5f7476;
+    --border: #d7e4e4;
+    --input: #ffffff;
+    --ring: #0f8b8d;
+    --success: #16a36a;
+    --success-soft: #e7f8f0;
+    --warning: #d99a19;
+    --warning-soft: #fff7e3;
+    --danger: #d64545;
+    --danger-soft: #fdecec;
+    --info: #2b7cd3;
+    --info-soft: #eaf3fc;
+  }
+
+  .dark {
+    --background: #071c1d;
+    --surface: #0d292a;
+    --surface-raised: #123536;
+    --surface-subtle: #0b2425;
+    --primary: #2dd4bf;
+    --primary-hover: #5eead4;
+    --primary-active: #14b8a6;
+    --primary-soft: #113b3a;
+    --brand-dark: #d5fffa;
+    --foreground: #f4fafa;
+    --foreground-muted: #a9c0c0;
+    --border: #21494a;
+    --input: #102f30;
+    --ring: #2dd4bf;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  html.dark {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+/* Skip to content link */
+.skip-to-content {
+  @apply sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:bg-primary focus:text-white focus:rounded-md focus:outline-none;
+}
+
+/* Focus visible styles */
+*:focus-visible {
+  @apply outline-2 outline-offset-2 outline-ring;
+}

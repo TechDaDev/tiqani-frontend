@@ -1,0 +1,101 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
+import { useParams } from "next/navigation";
+import { Menu } from "lucide-react";
+import { Link } from "@/lib/i18n/navigation";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Logo } from "@/components/shared/logo";
+import { ResponsiveContainer } from "@/components/shared/responsive-container";
+import { ThemeSwitcher } from "@/components/controls/theme-switcher";
+import { LanguageSwitcher } from "@/components/controls/language-switcher";
+import { MobileNavigation } from "@/components/layout/mobile-navigation";
+import { type Locale } from "@/lib/i18n/routing";
+
+export function PublicHeader() {
+  const t = useTranslations("navigation");
+  const common = useTranslations("common");
+  const params = useParams();
+  const locale = (params.locale as Locale) || "en";
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const navItems = [
+    { label: t("home"), href: `/${locale}` },
+    { label: t("howItWorks"), href: `/${locale}#how-it-works` },
+    { label: t("services"), href: `/${locale}#services` },
+    { label: t("whyTiqani"), href: `/${locale}#why-tiqani` },
+    { label: t("technicians"), href: `/${locale}#technicians` },
+  ];
+
+  return (
+    <header
+      className={cn(
+        "fixed inset-x-0 top-0 z-30 transition-all duration-300",
+        isScrolled
+          ? "border-b border-border bg-surface/80 backdrop-blur-md"
+          : "bg-transparent"
+      )}
+    >
+      <ResponsiveContainer>
+        <div className="flex h-16 items-center justify-between">
+          <Logo locale={locale} />
+
+          <nav className="hidden md:flex items-center gap-1" aria-label={t("home")}>
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="rounded-lg px-3 py-2 text-sm font-medium text-foreground-muted transition-colors hover:bg-surface-subtle hover:text-foreground"
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="flex items-center gap-1">
+            <ThemeSwitcher />
+            <LanguageSwitcher />
+
+            <div className="hidden md:flex items-center gap-2 ms-2">
+              <Link href={`/${locale}/login`}>
+                <Button variant="ghost" size="sm">
+                  {t("login")}
+                </Button>
+              </Link>
+              <Link href={`/${locale}/register`}>
+                <Button variant="primary" size="sm">
+                  {t("createAccount")}
+                </Button>
+              </Link>
+            </div>
+
+            <button
+              className="md:hidden rounded-md p-2 text-foreground-muted hover:bg-surface-subtle"
+              onClick={() => setIsMenuOpen(true)}
+              aria-label={common("openMenu")}
+            >
+              <Menu className="h-5 w-5" />
+            </button>
+          </div>
+        </div>
+      </ResponsiveContainer>
+
+      <MobileNavigation
+        isOpen={isMenuOpen}
+        onClose={() => setIsMenuOpen(false)}
+        navItems={navItems}
+      />
+    </header>
+  );
+}
