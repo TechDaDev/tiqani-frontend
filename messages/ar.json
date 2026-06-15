@@ -31,7 +31,9 @@
     "whyTiqani": "لماذا تقني",
     "technicians": "الفنيون",
     "login": "تسجيل الدخول",
-    "createAccount": "إنشاء حساب"
+    "createAccount": "إنشاء حساب",
+    "myRequests": "طلباتي",
+    "incomingRequests": "الطلبات الواردة"
   },
   "hero": {
     "badge": "منصة خدمات تقنية آمنة",
@@ -407,6 +409,105 @@
     "portfolioImage": "صورة عمل",
     "links": "روابط خارجية",
     "yearsOfExpertise": "{years} سنوات خبرة",
-    "lastActive": "آخر نشاط: {date}"
+    "lastActive": "آخر نشاط: {date}",
+    "requestService": "طلب خدمة",
+    "loginToRequest": "تسجيل الدخول لطلب الخدمة",
+    "technicianCannotRequest": "لا يمكن للفنيين إنشاء طلبات خدمة"
+  },
+  "requestStatus": {
+    "pending": "قيد الانتظار",
+    "accepted": "مقبول",
+    "declined": "مرفوض",
+    "cancelled": "ملغي",
+    "withdrawn": "مسحوب",
+    "unknown": "غير معروف"
+  },
+  "requestCard": {
+    "to": "إلى",
+    "from": "من",
+    "preferredDate": "التاريخ المفضل",
+    "urgent": "عاجل"
+  },
+  "clientRequests": {
+    "title": "طلباتي",
+    "newRequest": "طلب جديد",
+    "status": {
+      "all": "الكل",
+      "pending": "قيد الانتظار",
+      "accepted": "مقبول",
+      "declined": "مرفوض",
+      "cancelled": "ملغي",
+      "withdrawn": "مسحوب"
+    },
+    "empty": "لا توجد لديك طلبات خدمة بعد.",
+    "createFirst": "أنشئ طلبك الأول",
+    "technicianInfo": "الفني",
+    "requestDetails": "تفاصيل الطلب",
+    "description": "الوصف",
+    "category": "التصنيف",
+    "governorate": "المحافظة",
+    "serviceAddress": "العنوان",
+    "preferredDate": "التاريخ المفضل",
+    "preferredTime": "الوقت المفضل",
+    "createdAt": "تاريخ الإنشاء",
+    "cancelRequest": "إلغاء الطلب",
+    "withdrawRequest": "سحب الطلب",
+    "confirmCancel": "هل أنت متأكد من إلغاء هذا الطلب؟",
+    "confirmWithdraw": "هل أنت متأكد من سحب هذا الطلب؟",
+    "errors": {
+      "loadFailed": "فشل تحميل الطلبات. حاول مرة أخرى."
+    }
+  },
+  "requestForm": {
+    "title": "طلب خدمة جديد",
+    "titleLabel": "العنوان",
+    "titlePlaceholder": "مثال: إصلاح مكيف",
+    "description": "الوصف",
+    "descriptionPlaceholder": "صف الخدمة التي تحتاجها بالتفصيل...",
+    "descriptionHint": "20 حرفاً على الأقل. 5000 حرف كحد أقصى.",
+    "governorate": "المحافظة",
+    "governoratePlaceholder": "مثال: بغداد",
+    "serviceAddress": "عنوان الخدمة",
+    "addressPlaceholder": "مثال: الشارع، رقم المبنى",
+    "preferredDate": "التاريخ المفضل",
+    "preferredTime": "الوقت المفضل",
+    "isUrgent": "هذا طلب عاجل",
+    "submitting": "جاري الإرسال...",
+    "submit": "إرسال الطلب",
+    "requestingTo": "طلب خدمة من",
+    "errors": {
+      "submitFailed": "فشل إرسال الطلب. حاول مرة أخرى."
+    }
+  },
+  "requestValidation": {
+    "titleMin": "يجب أن يكون العنوان 5 أحرف على الأقل",
+    "titleMax": "يجب أن يكون العنوان 255 حرفاً كحد أقصى",
+    "descriptionMin": "يجب أن يكون الوصف 20 حرفاً على الأقل",
+    "descriptionMax": "يجب أن يكون الوصف 5000 حرف كحد أقصى"
+  },
+  "technicianRequests": {
+    "title": "الطلبات الواردة",
+    "status": {
+      "all": "الكل",
+      "pending": "قيد الانتظار",
+      "accepted": "مقبول",
+      "declined": "مرفوض"
+    },
+    "empty": "لا توجد طلبات واردة.",
+    "clientInfo": "العميل",
+    "requestDetails": "تفاصيل الطلب",
+    "description": "الوصف",
+    "category": "التصنيف",
+    "location": "الموقع",
+    "preferredDate": "التاريخ المفضل",
+    "urgent": "عاجل",
+    "receivedAt": "تاريخ الاستلام",
+    "acceptRequest": "قبول",
+    "declineRequest": "رفض",
+    "confirmAccept": "قبول هذا الطلب؟ سيكون عليك متابعة التنفيذ.",
+    "confirmDecline": "هل أنت متأكد من رفض هذا الطلب؟",
+    "errors": {
+      "loadFailed": "فشل تحميل الطلبات. حاول مرة أخرى."
+    }
   }
 }

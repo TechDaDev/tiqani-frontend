@@ -16,6 +16,8 @@ import {
   AlertCircle,
   Menu,
   X,
+  Inbox,
+  Send,
 } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/components/auth/auth-provider";
@@ -32,6 +34,7 @@ type ShellProps = {
 export function AuthShell({ children }: ShellProps) {
   const t = useTranslations("profile");
   const tAccount = useTranslations("account");
+  const tNav = useTranslations("navigation");
   const tCommon = useTranslations("common");
   const { user, logout } = useAuth();
   const params = useParams();
@@ -71,6 +74,18 @@ export function AuthShell({ children }: ShellProps) {
       label: t("onboarding"),
       href: `/${locale}/onboarding`,
       icon: <ClipboardList className="h-4 w-4" />,
+      showFor: ["technician"],
+    },
+    {
+      label: tNav("myRequests"),
+      href: `/${locale}/client/requests`,
+      icon: <Send className="h-4 w-4" />,
+      showFor: ["client"],
+    },
+    {
+      label: tNav("incomingRequests"),
+      href: `/${locale}/technician/requests`,
+      icon: <Inbox className="h-4 w-4" />,
       showFor: ["technician"],
     },
   ];

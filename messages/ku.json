@@ -31,7 +31,9 @@
     "whyTiqani": "بۆچی تیقانی",
     "technicians": "تەکنیکارەکان",
     "login": "چوونەژوورەوە",
-    "createAccount": "دروستکردنی هەژمار"
+    "createAccount": "دروستکردنی هەژمار",
+    "myRequests": "داواکارییەکانم",
+    "incomingRequests": "داواکارییە هاتووەکان"
   },
   "hero": {
     "badge": "پلاتفۆرمی ڕازیکراوەی خزمەتگوزارییە تەکنیکییەکان",
@@ -217,7 +219,7 @@
     "hasAccount": "هەژمارت هەیە؟",
     "verifyOtpTitle": "ئیمەیڵەکەت بسەلمێنە",
     "verifyOtpDescription": "کۆدی ٦ ژمارەیی بنووسە کە نێردراوە بۆ {email}",
-    "otpInputLabel":" داخڵکردنی کۆد",
+    "otpInputLabel": " داخڵکردنی کۆد",
     "otpDigitLabel": "ژمارە",
     "verifyButton": "سەلماندن",
     "verifying": "دەسەلمێنرێت...",
@@ -405,6 +407,105 @@
     "portfolioImage": "وێنەی پۆرتفۆلیۆ",
     "links": "بەستەرە دەرەکییەکان",
     "yearsOfExpertise": "{years} ساڵ ئەزموون",
-    "lastActive": "دوایین چالاکی: {date}"
+    "lastActive": "دوایین چالاکی: {date}",
+    "requestService": "داخستنی خزمەتگوزاری",
+    "loginToRequest": "چوونەژوورەوە بۆ داخستنی خزمەت",
+    "technicianCannotRequest": "تەکنیکزان ناتوانێت داواکاری خزمەت دروست بکات"
+  },
+  "requestStatus": {
+    "pending": "چاوەڕێی پەسەندکردن",
+    "accepted": "پەسەندکرا",
+    "declined": "ڕەتکرایەوە",
+    "cancelled": "هەڵوەشایەوە",
+    "withdrawn": "کشایەوە",
+    "unknown": "نەناسراو"
+  },
+  "requestCard": {
+    "to": "بۆ",
+    "from": "لە",
+    "preferredDate": "ڕێکەوتی دڵخواز",
+    "urgent": "فریاگوزاری"
+  },
+  "clientRequests": {
+    "title": "داواکارییەکانم",
+    "newRequest": "داواکاری نوێ",
+    "status": {
+      "all": "هەموو",
+      "pending": "چاوەڕێ",
+      "accepted": "پەسەندکرا",
+      "declined": "ڕەتکرایەوە",
+      "cancelled": "هەڵوەشایەوە",
+      "withdrawn": "کشایەوە"
+    },
+    "empty": "هیچ داواکارییەکی خزمەتت نییە.",
+    "createFirst": "یەکەم داواکاری دروست بکە",
+    "technicianInfo": "تەکنیکزان",
+    "requestDetails": "ووردەکانی داواکاری",
+    "description": "وەسف",
+    "category": "پۆل",
+    "governorate": "پارێزگا",
+    "serviceAddress": "ناونیشان",
+    "preferredDate": "ڕێکەوتی دڵخواز",
+    "preferredTime": "کاتی دڵخواز",
+    "createdAt": "دروستکرا لە",
+    "cancelRequest": "هەڵوەشاندنەوەی داواکاری",
+    "withdrawRequest": "کشاندنی داواکاری",
+    "confirmCancel": "دڵنیایت لە هەڵوەشاندنەوەی ئەم داواکارییە؟",
+    "confirmWithdraw": "دڵنیایت لە کشاندنی ئەم داواکارییە؟",
+    "errors": {
+      "loadFailed": "بارکردنی داواکارییەکان سەرکەوتوو نەبوو. تکایە هەوڵ بدەرەوە."
+    }
+  },
+  "requestForm": {
+    "title": "داواکاری خزمەتی نوێ",
+    "titleLabel": "ناونیشان",
+    "titlePlaceholder": "نموونە: چاککردنی کەشوهەوا",
+    "description": "وەسف",
+    "descriptionPlaceholder": "بە ووردی ئەو خزمەتەی کە پێویستت پێیەتی بنووسە...",
+    "descriptionHint": "بەلای کەمترین 20 پیت. زیاتر لە 5000 نابێت.",
+    "governorate": "پارێزگا",
+    "governoratePlaceholder": "نموونە: بەغدا",
+    "serviceAddress": "ناونیشانی خزمەت",
+    "addressPlaceholder": "نموونە: شەقام، ژمارەی بینا",
+    "preferredDate": "ڕێکەوتی دڵخواز",
+    "preferredTime": "کاتی دڵخواز",
+    "isUrgent": "ئەمە فریاگوزارییە",
+    "submitting": "دانان...",
+    "submit": "ناردنی داواکاری",
+    "requestingTo": "داواکاری خزمەت لە",
+    "errors": {
+      "submitFailed": "ناردنی داواکاری سەرکەوتوو نەبوو. تکایە هەوڵ بدەرەوە."
+    }
+  },
+  "requestValidation": {
+    "titleMin": "ناونیشان دەبێت بەلای کەمترین 5 پیت بێت",
+    "titleMax": "ناونیشان دەبێت زۆرترین 255 پیت بێت",
+    "descriptionMin": "وەسف دەبێت بەلای کەمترین 20 پیت بێت",
+    "descriptionMax": "وەسف دەبێت زۆرترین 5000 پیت بێت"
+  },
+  "technicianRequests": {
+    "title": "داواکارییە هاتووەکان",
+    "status": {
+      "all": "هەموو",
+      "pending": "چاوەڕێ",
+      "accepted": "پەسەندکرا",
+      "declined": "ڕەتکرایەوە"
+    },
+    "empty": "هیچ داواکارییەکی هاتوو نییە.",
+    "clientInfo": "کڕیار",
+    "requestDetails": "ووردەکانی داواکاری",
+    "description": "وەسف",
+    "category": "پۆل",
+    "location": "شوێن",
+    "preferredDate": "ڕێکەوتی دڵخواز",
+    "urgent": "فریاگوزاری",
+    "receivedAt": "وەرگیرا لە",
+    "acceptRequest": "قبوڵکردن",
+    "declineRequest": "ڕەتکردن",
+    "confirmAccept": "ئەم داواکارییە قبوڵ بکەیت؟ پێویستە بەدوایدا بکەویت.",
+    "confirmDecline": "دڵنیایت لە ڕەتکردنی ئەم داواکارییە؟",
+    "errors": {
+      "loadFailed": "بارکردنی داواکارییەکان سەرکەوتوو نەبوو. تکایە هەوڵ بدەرەوە."
+    }
   }
 }

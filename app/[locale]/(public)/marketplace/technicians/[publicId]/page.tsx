@@ -4,11 +4,14 @@ import { useCallback, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
+import Link from "next/link";
 import { PublicHeader } from "@/components/layout/public-header";
 import { PublicFooter } from "@/components/layout/public-footer";
 import { ResponsiveContainer } from "@/components/shared/responsive-container";
 import { Skeleton } from "@/components/shared/loading-skeleton";
 import { ErrorState } from "@/components/shared/error-state";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/components/auth/auth-provider";
 import {
   fetchTechnicianPublicProfile,
   type PublicTechnicianProfile,
@@ -51,6 +54,9 @@ export default function PublicTechnicianProfilePage() {
   useEffect(() => {
     loadProfile();
   }, [loadProfile]);
+
+  // ── Auth (must be before early returns) ─────────────────────
+  const { user } = useAuth();
 
   // ── Loading state ───────────────────────────────────────────
   if (loading) {
@@ -191,9 +197,34 @@ export default function PublicTechnicianProfilePage() {
                   </span>
                 </div>
               </div>
-            </div>
 
-            {/* About */}
+            {/* Request Service button */}
+            <div className="mt-6 flex justify-center sm:justify-start">
+              {user?.role === "client" ? (
+                <Link
+                  href={`/${params.locale}/client/requests/new?technician=${publicId}&name=${encodeURIComponent(profile.full_name)}`}
+                >
+                  <Button>
+                    {tTech("requestService")}
+                  </Button>
+                </Link>
+              ) : user?.role === "technician" ? (
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  {tTech("technicianCannotRequest")}
+                </p>
+              ) : (
+                <Link
+                  href={`/${params.locale}/login?next=${encodeURIComponent(`/${params.locale}/marketplace/technicians/${publicId}`)}`}
+                >
+                  <Button variant="outline">
+                    {tTech("loginToRequest")}
+                  </Button>
+                </Link>
+              )}
+            </div>
+          </div>
+
+          {/* About */}
             {profile.about && (
               <section className="mt-8" aria-labelledby="about-heading">
                 <h2 id="about-heading" className="text-lg font-semibold text-gray-900 dark:text-white">

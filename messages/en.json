@@ -31,7 +31,9 @@
     "whyTiqani": "Why Tiqani",
     "technicians": "Technicians",
     "login": "Login",
-    "createAccount": "Create Account"
+    "createAccount": "Create Account",
+    "myRequests": "My Requests",
+    "incomingRequests": "Incoming Requests"
   },
   "hero": {
     "badge": "Secure technical services platform",
@@ -407,6 +409,105 @@
     "portfolioImage": "Portfolio image",
     "links": "External Links",
     "yearsOfExpertise": "{years} years of experience",
-    "lastActive": "Last active: {date}"
+    "lastActive": "Last active: {date}",
+    "requestService": "Request Service",
+    "loginToRequest": "Login to Request Service",
+    "technicianCannotRequest": "Technicians cannot create service requests"
+  },
+  "requestStatus": {
+    "pending": "Pending",
+    "accepted": "Accepted",
+    "declined": "Declined",
+    "cancelled": "Cancelled",
+    "withdrawn": "Withdrawn",
+    "unknown": "Unknown"
+  },
+  "requestCard": {
+    "to": "To",
+    "from": "From",
+    "preferredDate": "Preferred Date",
+    "urgent": "Urgent"
+  },
+  "clientRequests": {
+    "title": "My Requests",
+    "newRequest": "New Request",
+    "status": {
+      "all": "All",
+      "pending": "Pending",
+      "accepted": "Accepted",
+      "declined": "Declined",
+      "cancelled": "Cancelled",
+      "withdrawn": "Withdrawn"
+    },
+    "empty": "You have no service requests yet.",
+    "createFirst": "Create your first request",
+    "technicianInfo": "Technician",
+    "requestDetails": "Request Details",
+    "description": "Description",
+    "category": "Category",
+    "governorate": "Governorate",
+    "serviceAddress": "Address",
+    "preferredDate": "Preferred Date",
+    "preferredTime": "Preferred Time",
+    "createdAt": "Created",
+    "cancelRequest": "Cancel Request",
+    "withdrawRequest": "Withdraw Request",
+    "confirmCancel": "Are you sure you want to cancel this request?",
+    "confirmWithdraw": "Are you sure you want to withdraw this request?",
+    "errors": {
+      "loadFailed": "Failed to load requests. Please try again."
+    }
+  },
+  "requestForm": {
+    "title": "New Service Request",
+    "titleLabel": "Title",
+    "titlePlaceholder": "e.g., AC repair needed",
+    "description": "Description",
+    "descriptionPlaceholder": "Describe the service you need in detail...",
+    "descriptionHint": "Minimum 20 characters. Maximum 5000.",
+    "governorate": "Governorate",
+    "governoratePlaceholder": "e.g., Baghdad",
+    "serviceAddress": "Service Address",
+    "addressPlaceholder": "e.g., Street, building number",
+    "preferredDate": "Preferred Date",
+    "preferredTime": "Preferred Time",
+    "isUrgent": "This is urgent",
+    "submitting": "Submitting...",
+    "submit": "Send Request",
+    "requestingTo": "Requesting service from",
+    "errors": {
+      "submitFailed": "Failed to submit request. Please try again."
+    }
+  },
+  "requestValidation": {
+    "titleMin": "Title must be at least 5 characters",
+    "titleMax": "Title must be at most 255 characters",
+    "descriptionMin": "Description must be at least 20 characters",
+    "descriptionMax": "Description must be at most 5000 characters"
+  },
+  "technicianRequests": {
+    "title": "Incoming Requests",
+    "status": {
+      "all": "All",
+      "pending": "Pending",
+      "accepted": "Accepted",
+      "declined": "Declined"
+    },
+    "empty": "No incoming requests.",
+    "clientInfo": "Client",
+    "requestDetails": "Request Details",
+    "description": "Description",
+    "category": "Category",
+    "location": "Location",
+    "preferredDate": "Preferred Date",
+    "urgent": "Urgent",
+    "receivedAt": "Received",
+    "acceptRequest": "Accept",
+    "declineRequest": "Decline",
+    "confirmAccept": "Accept this request? You will be expected to follow up.",
+    "confirmDecline": "Are you sure you want to decline this request?",
+    "errors": {
+      "loadFailed": "Failed to load requests. Please try again."
+    }
   }
 }
