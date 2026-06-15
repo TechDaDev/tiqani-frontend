@@ -1,0 +1,56 @@
+import { NextRequest, NextResponse } from "next/server";
+import { backendGet, backendPatch } from "@/lib/api/backend-client";
+import { COOKIE_NAMES } from "@/lib/auth/cookies";
+
+/**
+ * GET — Fetch technician skills from Django's /api/technicians/me/skills/
+ */
+export async function GET(request: NextRequest) {
+  try {
+    const accessToken = request.cookies.get(COOKIE_NAMES.ACCESS)?.value;
+    if (!accessToken) {
+      return NextResponse.json({ detail: "Not authenticated." }, { status: 401 });
+    }
+
+    const { data, status } = await backendGet<Record<string, unknown>>(
+      "/api/technicians/me/skills/",
+      { headers: { Authorization: `Bearer ${accessToken}` } }
+    );
+
+    return NextResponse.json(data, { status });
+  } catch (error: unknown) {
+    if (error instanceof Error && "status" in error) {
+      const apiError = error as { status: number; message: string };
+      return NextResponse.json({ detail: apiError.message }, { status: apiError.status });
+    }
+    return NextResponse.json({ detail: "Failed to fetch skills." }, { status: 500 });
+  }
+}
+
+/**
+ * PATCH — Update technician skills on Django's /api/technicians/me/skills/
+ */
+export async function PATCH(request: NextRequest) {
+  try {
+    const accessToken = request.cookies.get(COOKIE_NAMES.ACCESS)?.value;
+    if (!accessToken) {
+      return NextResponse.json({ detail: "Not authenticated." }, { status: 401 });
+    }
+
+    const body = await request.json();
+
+    const { data, status } = await backendPatch<Record<string, unknown>>(
+      "/api/technicians/me/skills/",
+      body,
+      { headers: { Authorization: `Bearer ${accessToken}` } }
+    );
+
+    return NextResponse.json(data, { status });
+  } catch (error: unknown) {
+    if (error instanceof Error && "status" in error) {
+      const apiError = error as { status: number; message: string };
+      return NextResponse.json({ detail: apiError.message }, { status: apiError.status });
+    }
+    return NextResponse.json({ detail: "Failed to update skills." }, { status: 500 });
+  }
+}
