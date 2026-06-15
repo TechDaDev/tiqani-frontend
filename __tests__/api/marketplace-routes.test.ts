@@ -6,6 +6,7 @@
  * - createMockGetRequest for GET handlers with query params
  */
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import type { NextRequest } from "next/server";
 import { createMockGetRequest } from "./auth-helpers";
 
 // ── Module-level mocks ────────────────────────────────────────
@@ -133,7 +134,7 @@ describe("GET /api/marketplace/technicians", () => {
 
     const { GET } = await import("@/app/api/marketplace/technicians/route");
     const url = new URL("http://localhost:3000/api/marketplace/technicians?governorate=Baghdad&is_available=true&order_by=-rate&page=1&page_size=10");
-    const request = { ...createMockGetRequest(), url: url.href, nextUrl: url } as typeof request;
+    const request = { ...createMockGetRequest(), url: url.href, nextUrl: url } as unknown as NextRequest;
     const response = await GET(request);
     const body = await response.json();
 

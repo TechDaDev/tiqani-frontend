@@ -363,7 +363,7 @@
     "previousPage": "پەڕەی پێشوو",
     "nextPage": "پەڕەی دواتر",
     "pageLabel": "پەڕەی {page}",
-    "filters": "فلتەرەکان",
+    "filterButtonLabel": "فلتەرەکان",
     "filterDrawerTitle": "ڕێکخستنی تەکنیکاران",
     "filterDrawerButton": "کردنەوەی فلتەر",
     "closeFilterDrawer": "داخستنی فلتەر",

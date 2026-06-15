@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { TechnicianCard } from "@/components/marketplace/TechnicianCard";
-import type { TechnicianListItem } from "@/lib/api/marketplace";
+import type { TechnicianListItem } from "@/lib/marketplace/types";
 
 // Mock next-intl
 vi.mock("next-intl", () => {

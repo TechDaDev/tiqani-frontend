@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { X, SlidersHorizontal } from "lucide-react";
 import { TechnicianFilters, type FilterValues } from "./TechnicianFilters";
 import type { SkillItem, CategoryItem } from "@/lib/marketplace/types";
@@ -26,6 +26,8 @@ export function MarketplaceFilterDrawer({
   onChange,
 }: MarketplaceFilterDrawerProps) {
   const t = useTranslations("marketplace");
+  const locale = useLocale();
+  const isRtl = locale === "ar";
   const [open, setOpen] = useState(false);
   const [draftValues, setDraftValues] = useState<FilterValues>(values);
   const drawerRef = useRef<HTMLDivElement>(null);
@@ -113,7 +115,7 @@ export function MarketplaceFilterDrawer({
         aria-expanded={open}
       >
         <SlidersHorizontal className="h-4 w-4" aria-hidden="true" />
-        {t("filters")}
+        {t("filterButtonLabel")}
         {activeFilterCount > 0 && (
           <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-xs font-bold text-white">
             {activeFilterCount}
@@ -138,13 +140,13 @@ export function MarketplaceFilterDrawer({
         aria-label={t("filterDrawerTitle")}
         className={`fixed inset-y-0 z-50 w-full max-w-sm bg-white shadow-xl transition-transform duration-300 dark:bg-gray-900 ${
           open ? "translate-x-0" : "translate-x-full"
-        } ${document.documentElement.dir === "rtl" ? "left-0" : "right-0"}`}
+        } ${isRtl ? "left-0" : "right-0"}`}
       >
         <div className="flex h-full flex-col">
           {/* Header */}
           <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3 dark:border-gray-700">
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
-              {t("filters")}
+              {t("filterButtonLabel")}
             </h2>
             <button
               type="button"

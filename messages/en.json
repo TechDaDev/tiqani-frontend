@@ -365,7 +365,7 @@
     "previousPage": "Previous page",
     "nextPage": "Next page",
     "pageLabel": "Page {page}",
-    "filters": "Filters",
+    "filterButtonLabel": "Filters",
     "filterDrawerTitle": "Filter technicians",
     "filterDrawerButton": "Open filter drawer",
     "closeFilterDrawer": "Close filter drawer",

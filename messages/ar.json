@@ -365,7 +365,7 @@
     "previousPage": "الصفحة السابقة",
     "nextPage": "الصفحة التالية",
     "pageLabel": "صفحة {page}",
-    "filters": "الفلاتر",
+    "filterButtonLabel": "الفلاتر",
     "filterDrawerTitle": "تصفية الفنيين",
     "filterDrawerButton": "فتح قائمة الفلاتر",
     "closeFilterDrawer": "إغلاق قائمة الفلاتر",
