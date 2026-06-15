@@ -17,18 +17,16 @@ vi.mock("next-intl", () => {
 });
 
 const mockTechnician: TechnicianListItem = {
-  user_id: "uuid-test-1",
+  userId: "uuid-test-1",
   username: "testtech",
-  full_name: "Test Technician",
+  fullName: "Test Technician",
   governorate: "Baghdad",
-  profile_image: null,
-  job_title: "Electrician",
+  profileImage: null,
+  jobTitle: "Electrician",
   about: "An experienced electrician with 8 years of work.",
-  years_of_expertise: 8,
-  is_available: true,
-  rate: "4.50",
-  is_complete: null,
-  incomplete_fields: null,
+  yearsOfExpertise: 8,
+  isAvailable: true,
+  rate: 4.5,
 };
 
 describe("TechnicianCard", () => {
@@ -49,7 +47,7 @@ describe("TechnicianCard", () => {
   });
 
   it("renders unavailable status when not available", () => {
-    const unavailable = { ...mockTechnician, is_available: false };
+    const unavailable = { ...mockTechnician, isAvailable: false };
     render(<TechnicianCard technician={unavailable} />);
     expect(screen.getByText("Unavailable")).toBeInTheDocument();
   });
@@ -60,7 +58,7 @@ describe("TechnicianCard", () => {
   });
 
   it("does not render rating when rate is 0", () => {
-    const noRate = { ...mockTechnician, rate: "0.00" };
+    const noRate = { ...mockTechnician, rate: 0 };
     render(<TechnicianCard technician={noRate} />);
     expect(screen.queryByText("0.0")).not.toBeInTheDocument();
   });

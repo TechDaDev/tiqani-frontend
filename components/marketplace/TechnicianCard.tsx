@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import Image from "next/image";
-import type { TechnicianListItem } from "@/lib/api/marketplace";
+import type { TechnicianListItem } from "@/lib/marketplace/types";
 
 interface TechnicianCardProps {
   technician: TechnicianListItem;
@@ -12,21 +12,21 @@ interface TechnicianCardProps {
 export function TechnicianCard({ technician }: TechnicianCardProps) {
   const t = useTranslations("marketplace");
 
-  const initial = technician.full_name?.charAt(0)?.toUpperCase() || "?";
+  const initial = technician.fullName?.charAt(0)?.toUpperCase() || "?";
 
   return (
     <Link
-      href={`/marketplace/technicians/${technician.user_id}`}
+      href={`/marketplace/technicians/${technician.userId}`}
       className="group block rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-all hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-750"
-      aria-label={t("viewProfile", { name: technician.full_name })}
+      aria-label={t("viewProfile", { name: technician.fullName })}
     >
       <div className="flex items-start gap-4">
         {/* Avatar */}
         <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-700">
-          {technician.profile_image ? (
+          {technician.profileImage ? (
             <Image
-              src={technician.profile_image}
-              alt={technician.full_name}
+              src={technician.profileImage}
+              alt={technician.fullName}
               fill
               className="object-cover"
               sizes="64px"
@@ -45,11 +45,11 @@ export function TechnicianCard({ technician }: TechnicianCardProps) {
         {/* Content */}
         <div className="min-w-0 flex-1">
           <h3 className="truncate text-base font-semibold text-gray-900 dark:text-white">
-            {technician.full_name}
+            {technician.fullName}
           </h3>
-          {technician.job_title && (
+          {technician.jobTitle && (
             <p className="truncate text-sm text-gray-500 dark:text-gray-400">
-              {technician.job_title}
+              {technician.jobTitle}
             </p>
           )}
           <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-500 dark:text-gray-400">
@@ -78,23 +78,23 @@ export function TechnicianCard({ technician }: TechnicianCardProps) {
                 {technician.governorate}
               </span>
             )}
-            {technician.years_of_expertise > 0 && (
-              <span>{t("yearsOfExpertise", { years: technician.years_of_expertise })}</span>
+            {technician.yearsOfExpertise > 0 && (
+              <span>{t("yearsOfExpertise", { years: technician.yearsOfExpertise })}</span>
             )}
             <span
               className={`inline-flex items-center gap-1 ${
-                technician.is_available
+                technician.isAvailable
                   ? "text-green-600 dark:text-green-400"
                   : "text-gray-400 dark:text-gray-500"
               }`}
             >
               <span
                 className={`h-2 w-2 rounded-full ${
-                  technician.is_available ? "bg-green-500" : "bg-gray-300 dark:bg-gray-600"
+                  technician.isAvailable ? "bg-green-500" : "bg-gray-300 dark:bg-gray-600"
                 }`}
                 aria-hidden="true"
               />
-              {technician.is_available ? t("available") : t("notAvailable")}
+              {technician.isAvailable ? t("available") : t("notAvailable")}
             </span>
           </div>
         </div>
