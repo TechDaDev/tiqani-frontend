@@ -40,6 +40,14 @@ vi.mock("@/lib/i18n/routing", () => ({
   },
 }));
 
+vi.mock("@/components/auth/auth-provider", () => ({
+  useAuth: () => ({
+    user: null,
+    isAuthenticated: false,
+    isLoading: false,
+  }),
+}));
+
 const navItems = [
   { label: "Home", href: "/en" },
   { label: "How It Works", href: "/en#how-it-works" },

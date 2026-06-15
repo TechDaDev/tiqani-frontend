@@ -3,22 +3,11 @@
 import { useTheme } from "next-themes";
 import { useTranslations } from "next-intl";
 import { Sun, Moon, Monitor } from "lucide-react";
-import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { useMounted } from "@/hooks/use-mounted";
 
 export function ThemeSwitcher() {
   const { theme, setTheme } = useTheme();
   const t = useTranslations("common");
-  const mounted = useMounted();
-
-  if (!mounted) {
-    return (
-      <Button variant="ghost" size="sm" aria-label={t("theme")} disabled>
-        <Sun className="h-4 w-4" />
-      </Button>
-    );
-  }
 
   const themes = [
     { value: "light", label: t("lightMode"), icon: Sun },

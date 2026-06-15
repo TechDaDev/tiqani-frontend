@@ -3,6 +3,7 @@
 import { useEffect, useRef, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { useParams, usePathname } from "next/navigation";
+import { useAuth } from "@/components/auth/auth-provider";
 import { X } from "lucide-react";
 import { Link } from "@/lib/i18n/navigation";
 import { cn } from "@/lib/utils";
@@ -32,6 +33,8 @@ export function MobileNavigation({
   const pathname = usePathname();
   const drawerRef = useRef<HTMLDivElement>(null);
   const t = useTranslations("common");
+  const tNav = useTranslations("navigation");
+  const { user, isAuthenticated, isLoading } = useAuth();
   const isRtl = locale === "ar" || locale === "ku";
 
   // Use a ref for onClose to avoid it triggering the route-change effect
@@ -143,6 +146,36 @@ export function MobileNavigation({
             </Link>
           ))}
         </nav>
+
+        {/* Auth buttons for mobile */}
+        <div className="mt-auto border-t border-border pt-4">
+          {isLoading ? null : isAuthenticated && user ? (
+            <Link
+              href="/account"
+              onClick={handleClose}
+              className="flex w-full items-center justify-center rounded-lg px-3 py-2.5 text-sm font-medium text-primary transition-colors hover:bg-primary-soft"
+            >
+              {user.fullName || user.username}
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/login"
+                onClick={handleClose}
+                className="flex w-full items-center justify-center rounded-lg px-3 py-2.5 text-sm font-medium text-primary transition-colors hover:bg-primary-soft"
+              >
+                {tNav("login")}
+              </Link>
+              <Link
+                href="/register"
+                onClick={handleClose}
+                className="mt-2 flex w-full items-center justify-center rounded-lg bg-primary px-3 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary-hover"
+              >
+                {tNav("createAccount")}
+              </Link>
+            </>
+          )}
+        </div>
       </div>
     </>
   );
