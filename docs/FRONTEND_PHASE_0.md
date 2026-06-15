@@ -47,10 +47,10 @@ messages/            Translation files (en, ar, ku)
 
 ## Route Architecture
 
+- `/ar` — Arabic (RTL) — **default**
 - `/en` — English (LTR)
-- `/ar` — Arabic (RTL)
 - `/ku` — Sorani Kurdish (RTL)
-- `/` — Detects locale and redirects
+- `/` — Reads locale cookie, redirects to Arabic by default
 
 ## Development
 

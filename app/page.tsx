@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { cookies, headers } from "next/headers";
+import { cookies } from "next/headers";
 import { defaultLocale, locales } from "@/lib/i18n/routing";
 
 export default async function RootPage() {
@@ -10,16 +10,6 @@ export default async function RootPage() {
     redirect(`/${savedLocale}`);
   }
 
-  const headersList = await headers();
-  const acceptLanguage = headersList.get("accept-language") || "";
-  const preferred = acceptLanguage
-    .split(",")
-    .map((l) => l.split(";")[0].trim().split("-")[0])
-    .find((l) => locales.includes(l as any));
-
-  if (preferred) {
-    redirect(`/${preferred}`);
-  }
-
+  // Default to Arabic for first visits without a saved locale cookie
   redirect(`/${defaultLocale}`);
 }

@@ -19,12 +19,12 @@ vi.mock("@/lib/i18n/navigation", () => ({
 
 vi.mock("@/lib/i18n/routing", () => ({
   locales: ["en", "ar", "ku"],
-  defaultLocale: "en",
+  defaultLocale: "ar",
   localeLabels: { en: "English", ar: "العربية", ku: "کوردی" },
   localeDirections: { en: "ltr", ar: "rtl", ku: "rtl" },
   routing: {
     locales: ["en", "ar", "ku"],
-    defaultLocale: "en",
+    defaultLocale: "ar",
     localePrefix: "always",
   },
 }));

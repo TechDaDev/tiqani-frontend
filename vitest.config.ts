@@ -14,6 +14,7 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname, "."),
       "next-intl": path.resolve(__dirname, "node_modules/next-intl"),
+      "next-intl/routing": path.resolve(__dirname, "node_modules/next-intl/dist/esm/routing/index.js"),
     },
   },
 });

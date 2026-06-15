@@ -28,7 +28,7 @@ Copy `.env.example` to `.env.local` and configure:
 ```env
 NEXT_PUBLIC_API_BASE_URL=http://127.0.0.1:8000
 NEXT_PUBLIC_SITE_URL=http://localhost:3000
-NEXT_PUBLIC_DEFAULT_LOCALE=en
+NEXT_PUBLIC_DEFAULT_LOCALE=ar
 NEXT_PUBLIC_APP_NAME=Tiqani
 ```
 
@@ -46,9 +46,14 @@ NEXT_PUBLIC_APP_NAME=Tiqani
 
 ## Supported Locales
 
+- `/ar` — Arabic (RTL) — **default**
 - `/en` — English (LTR)
-- `/ar` — Arabic (RTL)
 - `/ku` — Sorani Kurdish (RTL)
+
+## Locale Selection
+
+1. Saved locale cookie (NEXT_LOCALE)
+2. Arabic fallback (default)
 
 ## Project Structure
 

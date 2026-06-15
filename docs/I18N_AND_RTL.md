@@ -2,17 +2,24 @@
 
 ## Supported Locales
 
-| Locale | Language         | Direction |
-|--------|------------------|-----------|
-| en     | English          | LTR       |
-| ar     | Arabic           | RTL       |
-| ku     | Sorani Kurdish   | RTL       |
+| Locale | Language         | Direction | Default |
+|--------|------------------|-----------|---------|
+| ar     | Arabic           | RTL       | **yes** |
+| en     | English          | LTR       |         |
+| ku     | Sorani Kurdish   | RTL       |         |
+
+## Locale Selection Priority
+
+1. Saved locale cookie (`NEXT_LOCALE`)
+2. Arabic fallback (default)
+
+The root `/` does **not** inspect the browser's Accept-Language header. This ensures Arabic is always the first-visit default.
 
 ## Technology
 
 - `next-intl` for internationalization
 - Locale-prefixed routes: `/en`, `/ar`, `/ku`
-- Root `/` detects browser/saved locale and redirects
+- Root `/` reads the locale cookie and redirects
 
 ## Route Architecture
 
@@ -40,6 +47,32 @@ Organized by namespaces:
 4. Icons beside text reverse naturally in RTL
 5. Mobile drawer opens from the logical start side
 6. Process arrows and direction indicators use conditional reversal
+
+## Mobile Navigation (Drawer)
+
+The mobile side navigation uses `NEXT_LOCALE` cookie
+- User preference persists across sessions
+- Clearing the cookie returns the user to Arabic
+
+### Cookie Behavior Examples
+
+| Condition | Result |
+|-----------|--------|
+| First visit, no cookie | `/` → `/ar` |
+| Cookie set to `en` | `/` → `/en` |
+| Cookie set to `ku` | `/` → `/ku` |
+| Cookie set to invalid value | `/` → `/ar` |
+| Cookie cleared | `/` → `/ar` |
+- **LTR (English)**: `left-0`, closed with `-translate-x-full`
+- **RTL (Arabic, Kurdish)**: `right-0`, closed with `translate-x-full`
+
+The drawer:
+- Starts closed in all locales (initial state is always `false`)
+- Closes on route change and locale switch
+- Hides on desktop (`.md:hidden`)
+- Closes on viewport resize to ≥768px
+- Locks body scroll while open
+- Returns focus to the trigger on close
 
 ## Language Persistence
 

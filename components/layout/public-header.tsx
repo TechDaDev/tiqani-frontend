@@ -3,7 +3,6 @@
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
-import { Menu } from "lucide-react";
 import { Link } from "@/lib/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -16,9 +15,8 @@ import { type Locale } from "@/lib/i18n/routing";
 
 export function PublicHeader() {
   const t = useTranslations("navigation");
-  const common = useTranslations("common");
   const params = useParams();
-  const locale = (params.locale as Locale) || "en";
+  const locale = (params.locale as Locale) || "ar";
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -80,13 +78,7 @@ export function PublicHeader() {
               </Link>
             </div>
 
-            <button
-              className="md:hidden rounded-md p-2 text-foreground-muted hover:bg-surface-subtle"
-              onClick={() => setIsMenuOpen(true)}
-              aria-label={common("openMenu")}
-            >
-              <Menu className="h-5 w-5" />
-            </button>
+            {/* Mobile menu trigger is inside MobileNavigation component */}
           </div>
         </div>
       </ResponsiveContainer>
@@ -94,6 +86,7 @@ export function PublicHeader() {
       <MobileNavigation
         isOpen={isMenuOpen}
         onClose={() => setIsMenuOpen(false)}
+        onToggle={() => setIsMenuOpen((prev) => !prev)}
         navItems={navItems}
       />
     </header>
