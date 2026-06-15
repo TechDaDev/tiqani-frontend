@@ -111,3 +111,48 @@ export function getSetCookies(response: Response): string[] {
   // Split multiple Set-Cookie headers (joined by Next.js)
   return setCookieHeader.split(", ").filter(Boolean);
 }
+
+/**
+ * Create a minimal mock NextRequest for PATCH handlers.
+ */
+export function createMockPatchRequest(
+  body: unknown,
+  cookies: Record<string, string> = {}
+): NextRequest {
+  const url = new URL("http://localhost:3000/api/test");
+  const request = {
+    url: url.href,
+    method: "PATCH",
+    headers: new Headers({ "content-type": "application/json" }),
+    json: () => Promise.resolve(body),
+    cookies: {
+      get: (name: string) => {
+        const value = cookies[name];
+        return value ? { value, name } : undefined;
+      },
+      set: () => {},
+      delete: () => {},
+    },
+    nextUrl: url,
+    page: {},
+    ua: {},
+    body: JSON.stringify(body),
+    bodyUsed: false,
+    cache: "default" as RequestCache,
+    credentials: "same-origin" as RequestCredentials,
+    destination: "",
+    integrity: "",
+    keepalive: false,
+    mode: "cors" as RequestMode,
+    redirect: "follow" as RequestRedirect,
+    referrer: "",
+    referrerPolicy: "",
+    signal: new AbortController().signal,
+    clone: () => request,
+    blob: () => Promise.resolve(new Blob()),
+    formData: () => Promise.resolve(new FormData()),
+    text: () => Promise.resolve(JSON.stringify(body)),
+    arrayBuffer: () => Promise.resolve(new ArrayBuffer(0)),
+  } as unknown as NextRequest;
+  return request;
+}

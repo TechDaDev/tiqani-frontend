@@ -74,6 +74,31 @@ docs/             Documentation
 
 This is the foundational phase. See [docs/FRONTEND_PHASE_0.md](docs/FRONTEND_PHASE_0.md) for details.
 
+## Phase 2 — Role-Aware Profiles
+
+- **Branch:** `frontend/phase-2-2-completion`
+- **Backend:** `backend/phase-2-profile-integration` (commit `51d8d0c`)
+
+### Key additions
+- Role-based navigation shell (AuthShell)
+- Client profile editing (GET/PATCH /api/client/me)
+- Technician profile editing (GET/PATCH /api/technicians/me)
+- Technician skills management (GET/PATCH /api/technicians/me/skills)
+- Technician availability toggle (GET/PATCH /api/technicians/me/availability)
+- Technician ratings display (GET /api/technicians/me/ratings)
+- Technician portfolio images (GET/POST /api/technicians/me/images)
+- Profile completion tracking (GET /api/profile/incomplete-fields)
+- Technician onboarding flow based on backend completion state
+- Server-side role guards for page and API protection
+
+### Documentation
+- [docs/FRONTEND_PHASE_2.md](docs/FRONTEND_PHASE_2.md) — Complete Phase 2 documentation
+- [docs/PROFILE_API_MAPPING.md](docs/PROFILE_API_MAPPING.md) — API endpoint reference
+- [docs/ROLE_ARCHITECTURE.md](docs/ROLE_ARCHITECTURE.md) — Role-based access control
+- [docs/TECHNICIAN_ONBOARDING.md](docs/TECHNICIAN_ONBOARDING.md) — Onboarding model
+- [docs/PROTECTED_ROUTES.md](docs/PROTECTED_ROUTES.md) — Route protection architecture
+- [docs/PHASE_2_BACKEND_FINDINGS.md](docs/PHASE_2_BACKEND_FINDINGS.md) — Backend integration findings
+
 ## License
 
 Private — Tiqani

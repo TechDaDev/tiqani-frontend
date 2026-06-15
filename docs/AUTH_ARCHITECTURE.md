@@ -31,3 +31,15 @@
 - JWT-based with access + refresh tokens.
 - Endpoints at `/api/auth/` (register, login, refresh, logout, verify-email, resend-otp, password-reset, password-reset-confirm).
 - Current user at `/api/accounts/me/` (requires Bearer token).
+
+### Phase 2 — Role-Based Access Control
+
+Phase 2 adds three layers of role protection:
+
+1. **Proxy-level guards** — `lib/api/role-guard.ts` checks user role before forwarding to backend
+2. **Server-side page guards** — `lib/auth/server-guards.ts` redirects/forbids before page renders
+3. **Client-side navigation** — `AuthShell` in `components/profile/auth-shell.tsx` shows/hides nav items
+
+Roles are normalized via `lib/auth/roles.ts` with `normalizeRole()`, `isClient()`, `isTechnician()`, etc.
+
+See [docs/ROLE_ARCHITECTURE.md](ROLE_ARCHITECTURE.md) for the full role architecture reference.

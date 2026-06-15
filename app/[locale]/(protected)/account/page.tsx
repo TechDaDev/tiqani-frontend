@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
+import Image from "next/image";
 import { LogOut, User, Shield, BadgeCheck, AlertTriangle, Mail, Phone } from "lucide-react";
 import { useAuth } from "@/components/auth/auth-provider";
 import { Button } from "@/components/ui/button";
@@ -32,10 +33,13 @@ export default function AccountPage() {
           <div className="flex items-center gap-4">
             <div className="relative flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-primary-soft text-3xl font-bold text-primary">
               {user.profileImage ? (
-                <img
+                <Image
                   src={user.profileImage}
                   alt={user.fullName}
-                  className="h-full w-full object-cover"
+                  fill
+                  className="object-cover"
+                  sizes="80px"
+                  unoptimized={user.profileImage.startsWith("http") && !user.profileImage.includes("localhost")}
                 />
               ) : (
                 user.fullName.charAt(0).toUpperCase()
