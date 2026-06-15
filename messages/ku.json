@@ -340,5 +340,53 @@
       "experience": "زیادکردنی ساڵانی ئەزموون",
       "idDocs": "بارکردنی بەڵگەنامەکانی ناسنامە"
     }
+  },
+  "marketplace": {
+    "title": "تەکنیکارێک بدۆزەرەوە",
+    "description": "بگەڕێ بەدوای تەکنیکارە پەسەندکراوەکان، پڕۆفایلەکان بەراورد بکە، و پسپۆڕی گونجاو بۆ پڕۆژەکەت بدۆزەرەوە.",
+    "searchLabel": "گەڕان بەدوای تەکنیکار",
+    "searchPlaceholder": "بە ناو یان شارەزایی بگەڕێ...",
+    "searchHint": "بە ناو یان شارەزایی بگەڕێ. فلتەر و پەڕەبەندی بەسەر ئەنجامەکانی ئێستادا جێبەجێ دەکرێن.",
+    "loadError": "بارکردنی تەکنیکارەکان سەرکەوتوو نەبوو. تکایە دووبارە هەوڵ بدەرەوە.",
+    "noResults": "هیچ تەکنیکارێک نەدۆزرایەوە",
+    "noResultsDesc": "هەوڵی ڕێکخستنی فلتەرەکان بدە یان دواتر بگەڕێوە بۆ تەکنیکارە نوێیەکان.",
+    "resultsCount": "{count} تەکنیکار(ان) دۆزرایەوە",
+    "viewProfile": "بینینی پڕۆفایلی {name}",
+    "available": "بەردەستە",
+    "notAvailable": "بەردەست نییە",
+    "yearsOfExpertise": "{years} ساڵ ئەزموون",
+    "profileNotFound": "تەکنیکار نەدۆزرایەوە",
+    "profileNotFoundDesc": "ئەم پڕۆفایلە لابراوە یان بەستەرەکە نادروستە.",
+    "backToMarketplace": "گەڕانەوە بۆ بازار",
+    "paginationLabel": "پەڕەبەندی لیستی تەکنیکاران",
+    "previousPage": "پەڕەی پێشوو",
+    "nextPage": "پەڕەی دواتر",
+    "pageLabel": "پەڕەی {page}",
+    "filters": {
+      "filterGroupLabel": "فلتەر و ڕیزکردنی تەکنیکاران",
+      "governorate": "پارێزگا",
+      "allGovernorates": "هەموو پارێزگاکان",
+      "availability": "بەردەستایی",
+      "all": "هەموو",
+      "availableOnly": "بەردەستەکان",
+      "unavailableOnly": "بەردەست نیین",
+      "sortBy": "ڕیزکردن بەپێی",
+      "highestRated": "بەرزترین هەڵسەنگاندن",
+      "lowestRated": "نزمترین هەڵسەنگاندن",
+      "mostExperienced": "زۆرترین ئەزموون",
+      "leastExperienced": "کەمترین ئەزموون",
+      "nameAZ": "ناو ئ–ی",
+      "nameZA": "ناو ی–ئ"
+    }
+  },
+  "publicProfile": {
+    "about": "دەربارە",
+    "skills": "شارەزاییەکان",
+    "categories": "پۆلەکان",
+    "portfolio": "پۆرتفۆلیۆ",
+    "portfolioImage": "وێنەی پۆرتفۆلیۆ",
+    "links": "بەستەرە دەرەکییەکان",
+    "yearsOfExpertise": "{years} ساڵ ئەزموون",
+    "lastActive": "دوایین چالاکی: {date}"
   }
 }

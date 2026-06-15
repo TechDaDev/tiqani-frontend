@@ -342,5 +342,53 @@
       "experience": "Add years of experience",
       "idDocs": "Upload identification documents"
     }
+  },
+  "marketplace": {
+    "title": "Find a Technician",
+    "description": "Browse verified technicians, compare profiles, and find the right professional for your project.",
+    "searchLabel": "Search technicians",
+    "searchPlaceholder": "Search by name or skill...",
+    "searchHint": "Search by name or skill. Filters and pagination apply to the current results.",
+    "loadError": "Failed to load technicians. Please try again.",
+    "noResults": "No technicians found",
+    "noResultsDesc": "Try adjusting your filters or check back later for new technicians.",
+    "resultsCount": "{count} technician(s) found",
+    "viewProfile": "View {name}'s profile",
+    "available": "Available",
+    "notAvailable": "Unavailable",
+    "yearsOfExpertise": "{years} yrs exp.",
+    "profileNotFound": "Technician not found",
+    "profileNotFoundDesc": "This profile may have been removed or the link is invalid.",
+    "backToMarketplace": "Back to marketplace",
+    "paginationLabel": "Technician listing pagination",
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "pageLabel": "Page {page}",
+    "filters": {
+      "filterGroupLabel": "Filter and sort technicians",
+      "governorate": "Governorate",
+      "allGovernorates": "All governorates",
+      "availability": "Availability",
+      "all": "All",
+      "availableOnly": "Available only",
+      "unavailableOnly": "Unavailable only",
+      "sortBy": "Sort by",
+      "highestRated": "Highest rated",
+      "lowestRated": "Lowest rated",
+      "mostExperienced": "Most experienced",
+      "leastExperienced": "Least experienced",
+      "nameAZ": "Name A–Z",
+      "nameZA": "Name Z–A"
+    }
+  },
+  "publicProfile": {
+    "about": "About",
+    "skills": "Skills",
+    "categories": "Categories",
+    "portfolio": "Portfolio",
+    "portfolioImage": "Portfolio image",
+    "links": "External Links",
+    "yearsOfExpertise": "{years} years of experience",
+    "lastActive": "Last active: {date}"
   }
 }

@@ -342,5 +342,53 @@
       "experience": "إضافة سنوات الخبرة",
       "idDocs": "رفع وثائق الهوية"
     }
+  },
+  "marketplace": {
+    "title": "ابحث عن فني",
+    "description": "تصفح الفنيين المعتمدين، قارن الملفات الشخصية، واعثر على المحترف المناسب لمشروعك.",
+    "searchLabel": "بحث عن فنيين",
+    "searchPlaceholder": "ابحث بالاسم أو المهارة...",
+    "searchHint": "ابحث بالاسم أو المهارة. يتم تطبيق الفلاتر والترقيم على النتائج الحالية.",
+    "loadError": "فشل تحميل الفنيين. حاول مرة أخرى.",
+    "noResults": "لم يتم العثور على فنيين",
+    "noResultsDesc": "حاول تعديل الفلاتر أو عد لاحقاً للتحقق من الفنيين الجدد.",
+    "resultsCount": "تم العثور على {count} فني(ين)",
+    "viewProfile": "عرض ملف {name}",
+    "available": "متاح",
+    "notAvailable": "غير متاح",
+    "yearsOfExpertise": "{years} سنة خبرة",
+    "profileNotFound": "الفني غير موجود",
+    "profileNotFoundDesc": "قد يكون هذا الملف قد أزيل أو الرابط غير صالح.",
+    "backToMarketplace": "العودة إلى السوق",
+    "paginationLabel": "ترقيم قائمة الفنيين",
+    "previousPage": "الصفحة السابقة",
+    "nextPage": "الصفحة التالية",
+    "pageLabel": "صفحة {page}",
+    "filters": {
+      "filterGroupLabel": "تصفية وترتيب الفنيين",
+      "governorate": "المحافظة",
+      "allGovernorates": "جميع المحافظات",
+      "availability": "التوفر",
+      "all": "الكل",
+      "availableOnly": "متاح فقط",
+      "unavailableOnly": "غير متاح فقط",
+      "sortBy": "ترتيب حسب",
+      "highestRated": "الأعلى تقييماً",
+      "lowestRated": "الأقل تقييماً",
+      "mostExperienced": "الأكثر خبرة",
+      "leastExperienced": "الأقل خبرة",
+      "nameAZ": "الاسم أ–ي",
+      "nameZA": "الاسم ي–أ"
+    }
+  },
+  "publicProfile": {
+    "about": "نبذة",
+    "skills": "المهارات",
+    "categories": "التصنيفات",
+    "portfolio": "الأعمال",
+    "portfolioImage": "صورة عمل",
+    "links": "روابط خارجية",
+    "yearsOfExpertise": "{years} سنوات خبرة",
+    "lastActive": "آخر نشاط: {date}"
   }
 }
