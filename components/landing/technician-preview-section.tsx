@@ -128,7 +128,7 @@ export function TechnicianPreviewSection() {
 
               <CardFooter className="border-t border-border bg-surface-subtle/50 p-4">
                 <Link
-                  href={`/${locale}/technicians/${tech.id}`}
+                  href={`/technicians/${tech.id}`}
                   className="w-full"
                 >
                   <Button variant="outline" size="sm" className="w-full">

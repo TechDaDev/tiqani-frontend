@@ -73,7 +73,7 @@ export function ResetPasswordForm() {
         title={t("resetSuccessTitle")}
         description={t("resetSuccessDescription")}
         footer={
-          <Link href={`/${locale}/login`} className="font-medium text-primary hover:underline">
+          <Link href="/login" className="font-medium text-primary hover:underline">
             {t("loginButton")}
           </Link>
         }

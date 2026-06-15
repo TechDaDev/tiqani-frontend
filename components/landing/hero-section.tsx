@@ -45,13 +45,13 @@ export function HeroSection() {
           </p>
 
           <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Link href={`/${locale}/marketplace`}>
+            <Link href="/marketplace">
               <Button variant="primary" size="lg">
                 {t("primaryAction")}
                 <Arrow className="h-5 w-5" />
               </Button>
             </Link>
-            <Link href={`/${locale}/register?role=technician`}>
+            <Link href="/register?role=technician">
               <Button variant="outline" size="lg">
                 {t("secondaryAction")}
               </Button>

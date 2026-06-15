@@ -37,11 +37,11 @@ export function PublicHeader() {
   }, []);
 
   const navItems = [
-    { label: t("home"), href: `/${locale}` },
-    { label: t("howItWorks"), href: `/${locale}#how-it-works` },
-    { label: t("services"), href: `/${locale}#services` },
-    { label: t("whyTiqani"), href: `/${locale}#why-tiqani` },
-    { label: t("technicians"), href: `/${locale}#technicians` },
+    { label: t("home"), href: "/" },
+    { label: t("howItWorks"), href: "/#how-it-works" },
+    { label: t("services"), href: "/#services" },
+    { label: t("whyTiqani"), href: "/#why-tiqani" },
+    { label: t("technicians"), href: "/#technicians" },
   ];
 
   return (
@@ -76,7 +76,7 @@ export function PublicHeader() {
             <div className="hidden md:flex items-center gap-2 ms-2">
               {isLoading ? null : isAuthenticated && user ? (
                 <>
-                  <Link href={`/${locale}/account`}>
+                  <Link href="/account">
                     <Button variant="ghost" size="sm">
                       {user.fullName || user.username}
                     </Button>
@@ -84,12 +84,12 @@ export function PublicHeader() {
                 </>
               ) : (
                 <>
-                  <Link href={`/${locale}/login`}>
+                  <Link href="/login">
                     <Button variant="ghost" size="sm">
                       {t("login")}
                     </Button>
                   </Link>
-                  <Link href={`/${locale}/register`}>
+                  <Link href="/register">
                     <Button variant="primary" size="sm">
                       {t("createAccount")}
                     </Button>

@@ -55,7 +55,7 @@ export function ForgotPasswordForm() {
         title={t("checkEmailTitle")}
         description={t("checkEmailDescription")}
         footer={
-          <Link href={`/${locale}/reset-password?email=${encodeURIComponent(email)}`} className="font-medium text-primary hover:underline">
+          <Link href={`/reset-password?email=${encodeURIComponent(email)}`} className="font-medium text-primary hover:underline">
             {t("enterResetCode")}
           </Link>
         }
@@ -72,7 +72,7 @@ export function ForgotPasswordForm() {
       footer={
         <p>
           {t("rememberPassword")}{" "}
-          <Link href={`/${locale}/login`} className="font-medium text-primary hover:underline">
+          <Link href="/login" className="font-medium text-primary hover:underline">
             {t("loginButton")}
           </Link>
         </p>

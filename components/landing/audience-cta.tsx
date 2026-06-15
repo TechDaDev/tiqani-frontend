@@ -27,7 +27,7 @@ export function AudienceCta() {
             <h2 className="text-2xl font-bold">{t("clientTitle")}</h2>
             <p className="mt-3 text-foreground-muted">{t("clientDesc")}</p>
             <div className="mt-6">
-              <Link href={`/${locale}/marketplace`}>
+              <Link href="/marketplace">
                 <Button variant="primary" size="lg">
                   {t("clientAction")}
                   <Arrow className="h-5 w-5" />
@@ -44,7 +44,7 @@ export function AudienceCta() {
             <h2 className="text-2xl font-bold">{t("technicianTitle")}</h2>
             <p className="mt-3 text-foreground-muted">{t("technicianDesc")}</p>
             <div className="mt-6">
-              <Link href={`/${locale}/register?role=technician`}>
+              <Link href="/register?role=technician">
                 <Button variant="outline" size="lg">
                   {t("technicianAction")}
                   <Arrow className="h-5 w-5" />

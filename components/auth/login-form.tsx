@@ -74,11 +74,11 @@ export function LoginForm() {
         <>
           <p className="mb-2">
             {t("noAccount")}{" "}
-            <Link href={`/${locale}/register`} className="font-medium text-primary hover:underline">
+            <Link href="/register" className="font-medium text-primary hover:underline">
               {tNav("createAccount")}
             </Link>
           </p>
-          <Link href={`/${locale}/forgot-password`} className="text-sm text-primary hover:underline">
+          <Link href="/forgot-password" className="text-sm text-primary hover:underline">
             {t("forgotPassword")}
           </Link>
         </>

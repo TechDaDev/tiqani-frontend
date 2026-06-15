@@ -93,7 +93,7 @@ export function RegisterForm() {
       footer={
         <p>
           {t("hasAccount")}{" "}
-          <Link href={`/${locale}/login`} className="font-medium text-primary hover:underline">
+          <Link href="/login" className="font-medium text-primary hover:underline">
             {t("loginButton")}
           </Link>
         </p>

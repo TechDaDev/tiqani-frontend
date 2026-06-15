@@ -19,10 +19,10 @@ export function PublicFooter() {
   const locale = (params.locale as Locale) || "en";
 
   const platformLinks: FooterLink[] = [
-    { label: t("home"), href: `/${locale}` },
-    { label: t("howItWorks"), href: `/${locale}#how-it-works` },
-    { label: t("services"), href: `/${locale}#services` },
-    { label: t("technicians"), href: `/${locale}#technicians` },
+    { label: t("home"), href: "/" },
+    { label: t("howItWorks"), href: "/#how-it-works" },
+    { label: t("services"), href: "/#services" },
+    { label: t("technicians"), href: "/#technicians" },
   ];
 
   const supportLinks: FooterLink[] = [
@@ -39,9 +39,9 @@ export function PublicFooter() {
   ];
 
   const accountLinks: FooterLink[] = [
-    { label: t("login"), href: `/${locale}/login` },
-    { label: t("createAccount"), href: `/${locale}/register` },
-    { label: t("joinTechnician"), href: `/${locale}/register?role=technician` },
+    { label: t("login"), href: "/login" },
+    { label: t("createAccount"), href: "/register" },
+    { label: t("joinTechnician"), href: "/register?role=technician" },
   ];
 
   const renderLinks = (links: FooterLink[]) =>
