@@ -509,5 +509,46 @@
     "errors": {
       "loadFailed": "Failed to load requests. Please try again."
     }
+  },
+  "conversations": {
+    "title": "Messages",
+    "loading": "Loading conversations...",
+    "error": "Failed to load conversations.",
+    "empty": "No conversations yet. When you have an accepted service request, you can start messaging here.",
+    "retry": "Try again",
+    "noMessages": "No messages yet",
+    "conversationWith": "Conversation with",
+    "conversationList": "Conversations",
+    "backToList": "Back to conversations",
+    "status": {
+      "OPEN": "Open",
+      "PROPOSAL_CREATED": "Proposal Created",
+      "CONTRACT_LINKED": "Contract Linked",
+      "CLOSED": "Closed",
+      "BLOCKED": "Blocked"
+    }
+  },
+  "messages": {
+    "title": "Messages",
+    "loading": "Loading...",
+    "error": "Failed to load conversation.",
+    "empty": "No messages yet. Send the first message to start the conversation.",
+    "retry": "Try again",
+    "loadOlder": "Load older messages",
+    "messageList": "Messages",
+    "deleted": "This message was deleted.",
+    "priceOffer": "Price Offer",
+    "you": "You"
+  },
+  "messageComposer": {
+    "composerLabel": "Message composer",
+    "messageInput": "Type your message",
+    "placeholder": "Type a message...",
+    "send": "Send",
+    "sending": "Sending..."
+  },
+  "unreadMessages": {
+    "ariaLabel": "{count} unread {count, plural, one {message} other {messages}}",
+    "label": "Unread"
   }
 }

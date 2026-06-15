@@ -509,5 +509,46 @@
     "errors": {
       "loadFailed": "فشل تحميل الطلبات. حاول مرة أخرى."
     }
+  },
+  "conversations": {
+    "title": "الرسائل",
+    "loading": "جاري تحميل المحادثات...",
+    "error": "فشل تحميل المحادثات.",
+    "empty": "لا توجد محادثات بعد. عندما يكون لديك طلب خدمة مقبول، يمكنك بدء المراسلة هنا.",
+    "retry": "حاول مرة أخرى",
+    "noMessages": "لا توجد رسائل بعد",
+    "conversationWith": "محادثة مع",
+    "conversationList": "المحادثات",
+    "backToList": "العودة إلى المحادثات",
+    "status": {
+      "OPEN": "مفتوح",
+      "PROPOSAL_CREATED": "تم إنشاء العرض",
+      "CONTRACT_LINKED": "مرتبط بعقد",
+      "CLOSED": "مغلق",
+      "BLOCKED": "محظور"
+    }
+  },
+  "messages": {
+    "title": "الرسائل",
+    "loading": "جاري التحميل...",
+    "error": "فشل تحميل المحادثة.",
+    "empty": "لا توجد رسائل بعد. أرسل أول رسالة لبدء المحادثة.",
+    "retry": "حاول مرة أخرى",
+    "loadOlder": "تحميل الرسائل الأقدم",
+    "messageList": "الرسائل",
+    "deleted": "تم حذف هذه الرسالة.",
+    "priceOffer": "عرض سعر",
+    "you": "أنت"
+  },
+  "messageComposer": {
+    "composerLabel": "محرر الرسائل",
+    "messageInput": "اكتب رسالتك",
+    "placeholder": "اكتب رسالة...",
+    "send": "إرسال",
+    "sending": "جاري الإرسال..."
+  },
+  "unreadMessages": {
+    "ariaLabel": "{count} رسائل غير مقروءة",
+    "label": "غير مقروء"
   }
 }
