@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
+import { createRef } from "react";
 import { NextIntlClientProvider } from "next-intl";
 import enMessages from "@/messages/en.json";
 import { MobileNavigation } from "@/components/layout/mobile-navigation";
@@ -44,49 +45,43 @@ const navItems = [
   { label: "How It Works", href: "/en#how-it-works" },
 ];
 
-function renderMobileNav(isOpen: boolean) {
+function renderMobileNav(open: boolean) {
   const onClose = vi.fn();
-  const onToggle = vi.fn();
+  const triggerRef = createRef<HTMLButtonElement | null>();
 
   const result = render(
     <NextIntlClientProvider locale="en" messages={enMessages}>
       <MobileNavigation
-        isOpen={isOpen}
+        open={open}
         onClose={onClose}
-        onToggle={onToggle}
         navItems={navItems}
+        triggerRef={triggerRef}
       />
     </NextIntlClientProvider>
   );
 
-  return { ...result, onClose, onToggle };
+  return { ...result, onClose };
 }
 
 describe("MobileNavigation — closed by default", () => {
-  it("renders with data-state=closed when isOpen=false", () => {
+  it("renders with data-state=closed when open=false", () => {
     const { container } = renderMobileNav(false);
     const drawer = container.querySelector('[role="dialog"]');
     expect(drawer).toHaveAttribute("data-state", "closed");
   });
 
-  it("renders with data-state=open when isOpen=true", () => {
+  it("renders with data-state=open when open=true", () => {
     const { container } = renderMobileNav(true);
     const drawer = container.querySelector('[role="dialog"]');
     expect(drawer).toHaveAttribute("data-state", "open");
   });
 });
 
-describe("MobileNavigation — open/close behavior", () => {
-  it("calls onToggle when trigger is clicked", () => {
-    const { onToggle } = renderMobileNav(false);
-    const trigger = screen.getByRole("button", { name: /open/i });
-    fireEvent.click(trigger);
-    expect(onToggle).toHaveBeenCalledOnce();
-  });
-
+describe("MobileNavigation — close behavior", () => {
   it("calls onClose when close button is clicked", () => {
     const { onClose, container } = renderMobileNav(true);
-    // The close button has aria-label="Close navigation menu" (from translation)
+    // Reset count from the initial mount effect that fires once
+    onClose.mockClear();
     const closeButton = container.querySelector('[aria-label="Close navigation menu"]');
     expect(closeButton).toBeInTheDocument();
     fireEvent.click(closeButton!);
@@ -95,14 +90,25 @@ describe("MobileNavigation — open/close behavior", () => {
 
   it("calls onClose on Escape key", () => {
     const { onClose } = renderMobileNav(true);
+    onClose.mockClear();
     fireEvent.keyDown(document, { key: "Escape" });
     expect(onClose).toHaveBeenCalled();
   });
 
   it("calls onClose after selecting a link", () => {
     const { onClose } = renderMobileNav(true);
+    onClose.mockClear();
     const link = screen.getByText("Home");
     fireEvent.click(link);
+    expect(onClose).toHaveBeenCalled();
+  });
+
+  it("calls onClose when overlay is clicked", () => {
+    const { onClose, container } = renderMobileNav(true);
+    onClose.mockClear();
+    const overlay = container.querySelector('[aria-hidden="true"]');
+    expect(overlay).toBeInTheDocument();
+    fireEvent.click(overlay!);
     expect(onClose).toHaveBeenCalled();
   });
 });
@@ -136,15 +142,6 @@ describe("MobileNavigation — desktop hiding", () => {
 });
 
 describe("MobileNavigation — accessibility", () => {
-  it("trigger has aria-expanded when menu is open", () => {
-    renderMobileNav(true);
-    // Find the trigger by aria-controls (unique to the trigger button)
-    const triggers = screen.getAllByRole("button", { name: /close navigation menu/i });
-    const trigger = triggers.find((btn) => btn.getAttribute("aria-controls") === "mobile-navigation");
-    expect(trigger).toBeDefined();
-    expect(trigger).toHaveAttribute("aria-expanded", "true");
-  });
-
   it("drawer has dialog role", () => {
     const { container } = renderMobileNav(true);
     expect(container.querySelector('[role="dialog"]')).toBeInTheDocument();
@@ -157,9 +154,6 @@ describe("MobileNavigation — accessibility", () => {
 });
 
 describe("MobileNavigation — RTL side classes", () => {
-  // RTL behavior depends on useParams returning ar/ku locale
-  // We can verify the component renders with the correct side by
-  // checking the component logic produces data-state correctly
   it("renders correctly regardless of locale", () => {
     const { container } = renderMobileNav(false);
     const drawer = container.querySelector('[role="dialog"]');

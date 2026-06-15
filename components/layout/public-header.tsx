@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
+import { Menu } from "lucide-react";
 import { Link } from "@/lib/i18n/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -15,10 +16,15 @@ import { type Locale } from "@/lib/i18n/routing";
 
 export function PublicHeader() {
   const t = useTranslations("navigation");
+  const common = useTranslations("common");
   const params = useParams();
   const locale = (params.locale as Locale) || "ar";
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement | null>(null);
+
+  // Stabilize onClose so it never triggers unnecessary re-renders or effects
+  const closeMenu = useCallback(() => setIsMenuOpen(false), []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -78,16 +84,27 @@ export function PublicHeader() {
               </Link>
             </div>
 
-            {/* Mobile menu trigger is inside MobileNavigation component */}
+            {/* Mobile menu trigger — inside the header flex row, hidden on md+ */}
+            <button
+              ref={triggerRef}
+              type="button"
+              className="md:hidden rounded-md p-2 text-foreground-muted hover:bg-surface-subtle"
+              onClick={() => setIsMenuOpen((prev) => !prev)}
+              aria-label={isMenuOpen ? common("closeMenu") : common("openMenu")}
+              aria-expanded={isMenuOpen}
+              aria-controls="mobile-navigation"
+            >
+              <Menu className="h-5 w-5" />
+            </button>
           </div>
         </div>
       </ResponsiveContainer>
 
       <MobileNavigation
-        isOpen={isMenuOpen}
-        onClose={() => setIsMenuOpen(false)}
-        onToggle={() => setIsMenuOpen((prev) => !prev)}
+        open={isMenuOpen}
+        onClose={closeMenu}
         navItems={navItems}
+        triggerRef={triggerRef}
       />
     </header>
   );

@@ -1,13 +1,13 @@
+"use client";
+
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ResponsiveContainer } from "@/components/shared/responsive-container";
 
-type Props = {
-  params: Promise<{ locale: string }>;
-};
-
-export default async function NotFound({ params }: Props) {
-  const { locale } = await params;
+export default function NotFound() {
+  const params = useParams();
+  const locale = (params?.locale as string) || "ar";
 
   return (
     <div className="flex min-h-screen items-center justify-center">
