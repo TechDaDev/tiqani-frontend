@@ -21,7 +21,8 @@
     "language": "Language",
     "switchLanguage": "Switch language",
     "password": "Password",
-    "logout": "Log out"
+    "logout": "Log out",
+    "remove": "Remove"
   },
   "navigation": {
     "home": "Home",

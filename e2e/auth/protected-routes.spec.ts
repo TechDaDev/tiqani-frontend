@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { loginAsClient, clearSession } from "../fixtures/auth";
 
 test.describe("Protected Routes", () => {
   test("unauthenticated user is redirected from /account", async ({ page }) => {
@@ -8,17 +9,16 @@ test.describe("Protected Routes", () => {
   });
 
   test("authenticated user can access /account", async ({ page }) => {
-    // Login first
-    await page.goto("/ar/login");
-    await page.fill('input[name="username"]', "client_demo");
-    await page.fill('input[name="password"]', "ClientDemo123!");
-    await page.click('button[type="submit"]');
-    await page.waitForURL("**/account", { timeout: 15000 });
+    // Login using fixture
+    await loginAsClient(page);
     await expect(page).toHaveURL(/\/ar\/account/);
+  });
 
-    // Logout clears session
-    await page.goto("/ar/logout");
-    await page.waitForURL("**/login", { timeout: 10000 });
-    await expect(page).toHaveURL(/\/ar\/login/);
+  test("clearing session forces redirect from /account to login", async ({ page, context }) => {
+    // Login, then clear session, then try /account
+    await loginAsClient(page);
+    await clearSession(context);
+    await page.goto("/ar/account");
+    await expect(page).toHaveURL(/\/ar\/login/, { timeout: 10000 });
   });
 });

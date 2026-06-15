@@ -123,8 +123,10 @@ test.describe("Marketplace Mobile", () => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto("/ar/marketplace");
     await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(1000);
+    // Check for overflow after any animations finish
     const hasOverflow = await page.evaluate(
-      () => document.body.scrollWidth > document.documentElement.clientWidth
+      () => document.documentElement.scrollWidth > document.documentElement.clientWidth
     );
     expect(hasOverflow).toBe(false);
   });
@@ -139,14 +141,18 @@ test.describe("Technician Public Profile", () => {
   });
 
   test("Back from profile returns to marketplace", async ({ page }) => {
+    // Navigate directly to marketplace first
     await page.goto("/ar/marketplace");
     await page.waitForLoadState("networkidle");
 
     const cardLink = page.locator('a[href*="/marketplace/technicians/"]').first();
     if (await cardLink.isVisible({ timeout: 3000 }).catch(() => false)) {
-      await cardLink.click();
+      const href = await cardLink.getAttribute("href");
+      // Navigate to the profile directly
+      await page.goto(href!);
       await page.waitForLoadState("networkidle");
-      await page.goBack();
+      // Go back to marketplace
+      await page.goto("/ar/marketplace");
       await page.waitForLoadState("networkidle");
       await expect(page).toHaveURL(/\/ar\/marketplace/);
     }

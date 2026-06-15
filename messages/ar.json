@@ -21,7 +21,8 @@
     "language": "اللغة",
     "switchLanguage": "تغيير اللغة",
     "password": "كلمة المرور",
-    "logout": "تسجيل الخروج"
+    "logout": "تسجيل الخروج",
+    "remove": "إزالة"
   },
   "navigation": {
     "home": "الرئيسية",
