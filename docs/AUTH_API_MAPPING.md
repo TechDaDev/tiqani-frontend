@@ -1,6 +1,8 @@
-# Auth API Mapping
+# Auth API Mapping — tiqani_v3 → tiqani-frontend
 
-Based on backend inspection of TechDaDev/tiqani_v3.
+**Source:** Backend source code (`tiqani_v3/accounts/views.py`, `accounts/serializers.py`, `accounts/urls.py`, `tiqani_v3/settings/base.py`)
+
+**Last Updated:** 2026-06-15
 
 ## Base URLs
 

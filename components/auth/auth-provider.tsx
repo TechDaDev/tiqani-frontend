@@ -3,7 +3,6 @@
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react";
 import type { AuthUser, AuthStatus } from "@/lib/auth/types";
 import * as authService from "@/lib/auth/service";
-import { setAccessToken } from "@/lib/api/client";
 
 interface AuthContextValue {
   user: AuthUser | null;
@@ -22,80 +21,66 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-const STORAGE_REFRESH_KEY = "tiqani_refresh";
-
-function getStoredRefresh(): string | null {
-  try {
-    return sessionStorage.getItem(STORAGE_REFRESH_KEY);
-  } catch {
-    return null;
-  }
-}
-
-function setStoredRefresh(token: string | null) {
-  try {
-    if (token) {
-      sessionStorage.setItem(STORAGE_REFRESH_KEY, token);
-    } else {
-      sessionStorage.removeItem(STORAGE_REFRESH_KEY);
-    }
-  } catch {
-    // sessionStorage unavailable
-  }
-}
-
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [status, setStatus] = useState<AuthStatus>("loading");
-  const [refreshTokenValue, setRefreshTokenValue] = useState<string | null>(null);
 
   const clearSession = useCallback(() => {
     setUser(null);
-    setAccessToken(null);
-    setRefreshTokenValue(null);
-    setStoredRefresh(null);
+    setStatus("unauthenticated");
   }, []);
 
   const refreshSession = useCallback(async (): Promise<boolean> => {
-    const stored = getStoredRefresh();
-    const token = stored || refreshTokenValue;
-    if (!token) {
-      setStatus("unauthenticated");
-      return false;
-    }
     try {
-      const { access } = await authService.refreshToken(token);
-      setAccessToken(access);
+      // Try refreshing the access token using the HTTP-only refresh cookie
+      const refreshed = await authService.refreshToken();
+      if (!refreshed) {
+        clearSession();
+        return false;
+      }
       const currentUser = await authService.fetchCurrentUser();
-      setUser(currentUser);
-      setStatus(currentUser.isActive ? "authenticated" : "blocked");
-      return true;
+      if (currentUser) {
+        setUser(currentUser);
+        setStatus(currentUser.isActive ? "authenticated" : "blocked");
+        return true;
+      }
+      clearSession();
+      return false;
     } catch {
       clearSession();
-      setStatus("unauthenticated");
       return false;
     }
-  }, [refreshTokenValue, clearSession]);
+  }, [clearSession]);
 
-  // Restore session on mount
+  // Restore session on mount — server checks HTTP-only cookies
   useEffect(() => {
-    const stored = getStoredRefresh();
-    if (stored) {
-      setRefreshTokenValue(stored);
-      refreshSession();
-    } else {
-      setStatus("unauthenticated");
-    }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+    const init = async () => {
+      const currentUser = await authService.fetchCurrentUser();
+      if (currentUser) {
+        setUser(currentUser);
+        setStatus(currentUser.isActive ? "authenticated" : "blocked");
+      } else {
+        // Try refresh (may have valid refresh cookie)
+        const refreshed = await authService.refreshToken();
+        if (refreshed) {
+          const user = await authService.fetchCurrentUser();
+          if (user) {
+            setUser(user);
+            setStatus(user.isActive ? "authenticated" : "blocked");
+            return;
+          }
+        }
+        setStatus("unauthenticated");
+      }
+    };
+    init();
+  }, []);
 
   const login = useCallback(async (username: string, password: string): Promise<AuthUser> => {
     const result = await authService.login({ username, password });
-    setAccessToken(result.access);
-    setRefreshTokenValue(result.refresh);
-    setStoredRefresh(result.refresh);
-    setUser(result.user);
+    setUser(result);
     setStatus("authenticated");
-    return result.user;
+    return result;
   }, []);
 
   const registerFn = useCallback(async (data: Parameters<typeof authService.register>[0]) => {
@@ -120,14 +105,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const logout = useCallback(async () => {
-    const stored = getStoredRefresh();
-    const token = stored || refreshTokenValue;
-    if (token) {
-      await authService.logout(token);
-    }
+    await authService.logoutFn();
     clearSession();
-    setStatus("unauthenticated");
-  }, [refreshTokenValue, clearSession]);
+  }, [clearSession]);
 
   return (
     <AuthContext.Provider

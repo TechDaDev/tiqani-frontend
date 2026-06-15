@@ -114,23 +114,49 @@ export interface CurrentUserResponse {
   profile_image?: string;
   is_active: boolean;
   is_verified?: boolean;
+  job_title?: string;
+  is_available?: boolean;
+  rating?: number;
+  total_reviews?: number;
 }
 
-export function mapUserData(data: CurrentUserResponse | LoginUserData): AuthUser {
+export function mapCurrentUserData(data: CurrentUserResponse): AuthUser {
   return {
     id: data.id,
     username: data.username,
     role: data.role,
-    firstName: (data as CurrentUserResponse).first_name || "",
-    lastName: (data as CurrentUserResponse).last_name || "",
-    fullName: (data as LoginUserData).full_name || `${(data as CurrentUserResponse).first_name || ""} ${(data as CurrentUserResponse).last_name || ""}`.trim(),
-    email: (data as CurrentUserResponse).email,
-    profileImage: (data as LoginUserData).profile_image || (data as CurrentUserResponse).profile_image,
-    jobTitle: (data as LoginUserData).job_title,
-    isActive: (data as CurrentUserResponse).is_active !== false,
-    isVerified: (data as CurrentUserResponse).is_verified !== false,
-    isAvailable: (data as LoginUserData).is_available,
-    rating: (data as LoginUserData).rating,
-    totalReviews: (data as LoginUserData).total_reviews,
+    firstName: data.first_name || "",
+    lastName: data.last_name || "",
+    fullName: `${data.first_name || ""} ${data.last_name || ""}`.trim(),
+    email: data.email,
+    phoneNumber: data.phone_number,
+    profileImage: data.profile_image,
+    isActive: data.is_active !== false,
+    isVerified: true,
+    jobTitle: data.job_title,
+    isAvailable: data.is_available,
+    rating: data.rating,
+    totalReviews: data.total_reviews,
+  };
+}
+
+/** Map login userdata (from login response) to AuthUser */
+export function mapLoginUserData(data: Record<string, unknown>): AuthUser {
+  return {
+    id: data.id as string,
+    username: data.username as string,
+    role: data.role as UserRole,
+    firstName: "",
+    lastName: "",
+    fullName: (data.full_name as string) || "",
+    email: data.email as string | undefined,
+    phoneNumber: data.phone_number as string | undefined,
+    profileImage: data.profile_image as string | undefined,
+    jobTitle: data.job_title as string | undefined,
+    isActive: true,
+    isVerified: true,
+    isAvailable: data.is_available as boolean | undefined,
+    rating: data.rating as number | undefined,
+    totalReviews: data.total_reviews as number | undefined,
   };
 }
