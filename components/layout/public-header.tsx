@@ -12,6 +12,7 @@ import { ResponsiveContainer } from "@/components/shared/responsive-container";
 import { ThemeSwitcher } from "@/components/controls/theme-switcher";
 import { LanguageSwitcher } from "@/components/controls/language-switcher";
 import { MobileNavigation } from "@/components/layout/mobile-navigation";
+import { useAuth } from "@/components/auth/auth-provider";
 import { type Locale } from "@/lib/i18n/routing";
 
 export function PublicHeader() {
@@ -22,6 +23,7 @@ export function PublicHeader() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
+  const { user, isAuthenticated, isLoading } = useAuth();
 
   // Stabilize onClose so it never triggers unnecessary re-renders or effects
   const closeMenu = useCallback(() => setIsMenuOpen(false), []);
@@ -72,16 +74,28 @@ export function PublicHeader() {
             <LanguageSwitcher />
 
             <div className="hidden md:flex items-center gap-2 ms-2">
-              <Link href={`/${locale}/login`}>
-                <Button variant="ghost" size="sm">
-                  {t("login")}
-                </Button>
-              </Link>
-              <Link href={`/${locale}/register`}>
-                <Button variant="primary" size="sm">
-                  {t("createAccount")}
-                </Button>
-              </Link>
+              {isLoading ? null : isAuthenticated && user ? (
+                <>
+                  <Link href={`/${locale}/account`}>
+                    <Button variant="ghost" size="sm">
+                      {user.fullName || user.username}
+                    </Button>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link href={`/${locale}/login`}>
+                    <Button variant="ghost" size="sm">
+                      {t("login")}
+                    </Button>
+                  </Link>
+                  <Link href={`/${locale}/register`}>
+                    <Button variant="primary" size="sm">
+                      {t("createAccount")}
+                    </Button>
+                  </Link>
+                </>
+              )}
             </div>
 
             {/* Mobile menu trigger — inside the header flex row, hidden on md+ */}

@@ -3,6 +3,7 @@ import { getMessages, getTranslations } from "next-intl/server";
 import { Inter, Noto_Sans_Arabic } from "next/font/google";
 import { ReactNode } from "react";
 import { ThemeProvider } from "@/components/layout/theme-provider";
+import { AuthProvider } from "@/components/auth/auth-provider";
 import { localeDirections } from "@/lib/i18n/routing";
 import "../globals.css";
 import type { Locale } from "@/lib/i18n/routing";
@@ -107,10 +108,12 @@ export default async function LocaleLayout({ children, params }: Props) {
             enableSystem
             disableTransitionOnChange
           >
-            <a href="#main-content" className="skip-to-content">
-              {typeof messages.common === 'object' && messages.common !== null && 'skipToContent' in messages.common ? String((messages.common as Record<string, unknown>).skipToContent) : "Skip to content"}
-            </a>
-            {children}
+            <AuthProvider>
+              <a href="#main-content" className="skip-to-content">
+                {typeof messages.common === 'object' && messages.common !== null && 'skipToContent' in messages.common ? String((messages.common as Record<string, unknown>).skipToContent) : "Skip to content"}
+              </a>
+              {children}
+            </AuthProvider>
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>

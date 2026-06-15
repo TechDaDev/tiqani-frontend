@@ -1,4 +1,5 @@
 import { apiGet, ApiClientError } from "./client";
+import type { ApiError } from "./client";
 
 export type Technician = {
   id: string | number;

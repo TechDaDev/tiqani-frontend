@@ -55,6 +55,10 @@ NEXT_PUBLIC_APP_NAME=Tiqani
 1. Saved locale cookie (NEXT_LOCALE)
 2. Arabic fallback (default)
 
+## Auth
+
+See [docs/FRONTEND_PHASE_1.md](docs/FRONTEND_PHASE_1.md) and [docs/AUTH_API_MAPPING.md](docs/AUTH_API_MAPPING.md).
+
 ## Project Structure
 
 ```
