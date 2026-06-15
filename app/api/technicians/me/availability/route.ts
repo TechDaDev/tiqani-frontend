@@ -4,7 +4,7 @@ import { COOKIE_NAMES } from "@/lib/auth/cookies";
 import { requireRole } from "@/lib/api/role-guard";
 
 /**
- * GET — Fetch technician profile from Django's /api/technicians/me/
+ * GET — Fetch technician availability from Django's /api/technicians/me/availability/
  */
 export async function GET(request: NextRequest) {
   const guard = await requireRole(request, ["technician"]);
@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     const accessToken = request.cookies.get(COOKIE_NAMES.ACCESS)?.value;
 
     const { data, status } = await backendGet<Record<string, unknown>>(
-      "/api/technicians/me/",
+      "/api/technicians/me/availability/",
       { headers: { Authorization: `Bearer ${accessToken}` } }
     );
 
@@ -24,12 +24,12 @@ export async function GET(request: NextRequest) {
       const apiError = error as { status: number; message: string };
       return NextResponse.json({ detail: apiError.message }, { status: apiError.status });
     }
-    return NextResponse.json({ detail: "Failed to fetch technician profile." }, { status: 500 });
+    return NextResponse.json({ detail: "Failed to fetch availability." }, { status: 500 });
   }
 }
 
 /**
- * PATCH — Update technician profile on Django's /api/technicians/me/
+ * PATCH — Update technician availability on Django's /api/technicians/me/availability/
  */
 export async function PATCH(request: NextRequest) {
   const guard = await requireRole(request, ["technician"]);
@@ -40,7 +40,7 @@ export async function PATCH(request: NextRequest) {
     const body = await request.json();
 
     const { data, status } = await backendPatch<Record<string, unknown>>(
-      "/api/technicians/me/",
+      "/api/technicians/me/availability/",
       body,
       { headers: { Authorization: `Bearer ${accessToken}` } }
     );
@@ -51,6 +51,6 @@ export async function PATCH(request: NextRequest) {
       const apiError = error as { status: number; message: string };
       return NextResponse.json({ detail: apiError.message }, { status: apiError.status });
     }
-    return NextResponse.json({ detail: "Failed to update technician profile." }, { status: 500 });
+    return NextResponse.json({ detail: "Failed to update availability." }, { status: 500 });
   }
 }

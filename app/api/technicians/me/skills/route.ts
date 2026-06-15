@@ -1,16 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { backendGet, backendPatch } from "@/lib/api/backend-client";
 import { COOKIE_NAMES } from "@/lib/auth/cookies";
+import { requireRole } from "@/lib/api/role-guard";
 
 /**
  * GET — Fetch technician skills from Django's /api/technicians/me/skills/
  */
 export async function GET(request: NextRequest) {
+  const guard = await requireRole(request, ["technician"]);
+  if (!guard.allowed) return guard.response;
+
   try {
     const accessToken = request.cookies.get(COOKIE_NAMES.ACCESS)?.value;
-    if (!accessToken) {
-      return NextResponse.json({ detail: "Not authenticated." }, { status: 401 });
-    }
 
     const { data, status } = await backendGet<Record<string, unknown>>(
       "/api/technicians/me/skills/",
@@ -31,12 +32,11 @@ export async function GET(request: NextRequest) {
  * PATCH — Update technician skills on Django's /api/technicians/me/skills/
  */
 export async function PATCH(request: NextRequest) {
+  const guard = await requireRole(request, ["technician"]);
+  if (!guard.allowed) return guard.response;
+
   try {
     const accessToken = request.cookies.get(COOKIE_NAMES.ACCESS)?.value;
-    if (!accessToken) {
-      return NextResponse.json({ detail: "Not authenticated." }, { status: 401 });
-    }
-
     const body = await request.json();
 
     const { data, status } = await backendPatch<Record<string, unknown>>(

@@ -13,7 +13,9 @@ export interface ClientProfileData {
   email: string | null;
   phone_number: string | null;
   governorate: string | null;
+  address: string | null;
   gender: string | null;
+  date_of_birth: string | null;
   profile_image: string | null;
   age: number | null;
   is_complete: boolean;
@@ -29,7 +31,9 @@ export interface TechnicianProfileData {
   email: string | null;
   phone_number: string | null;
   governorate: string | null;
+  address: string | null;
   gender: string | null;
+  date_of_birth: string | null;
   profile_image: string | null;
   job_title: string | null;
   about: string | null;
@@ -39,6 +43,9 @@ export interface TechnicianProfileData {
   is_complete: boolean;
   rate: string;
   last_active: string | null;
+  url1: string | null;
+  url2: string | null;
+  identification_documents: string | null;
   skill_sets: Record<string, unknown>;
   images: Array<Record<string, unknown>>;
   wallet_id: string | null;
@@ -156,4 +163,100 @@ export async function updateTechnicianSkills(
     method: "PATCH",
     body: data,
   });
+}
+
+// ── Availability ───────────────────────────────────────────────
+
+export interface TechnicianAvailabilityData {
+  is_available: boolean;
+  last_active: string | null;
+  is_online: boolean;
+}
+
+/**
+ * Fetch technician availability (GET /api/technicians/me/availability/)
+ */
+export async function fetchTechnicianAvailability(): Promise<TechnicianAvailabilityData> {
+  return browserRequest<TechnicianAvailabilityData>(
+    "/api/technicians/me/availability",
+    { method: "GET" }
+  );
+}
+
+/**
+ * Update technician availability (PATCH /api/technicians/me/availability/)
+ */
+export async function updateTechnicianAvailability(
+  is_available: boolean
+): Promise<TechnicianAvailabilityData> {
+  return browserRequest<TechnicianAvailabilityData>(
+    "/api/technicians/me/availability",
+    { method: "PATCH", body: { is_available } }
+  );
+}
+
+// ── Portfolio Images ───────────────────────────────────────────
+
+export interface TechnicianImageData {
+  id: string;
+  image: string;
+  description: string;
+  uploaded_at: string;
+}
+
+/**
+ * Fetch technician portfolio images (GET /api/technicians/me/images/)
+ */
+export async function fetchTechnicianImages(): Promise<TechnicianImageData[]> {
+  return browserRequest<TechnicianImageData[]>(
+    "/api/technicians/me/images",
+    { method: "GET" }
+  );
+}
+
+/**
+ * Upload technician portfolio image (POST /api/technicians/me/images/)
+ * Uses FormData for multipart upload.
+ */
+export async function uploadTechnicianImage(
+  file: File,
+  description?: string
+): Promise<TechnicianImageData> {
+  const formData = new FormData();
+  formData.append("image", file);
+  if (description) {
+    formData.append("description", description);
+  }
+
+  const response = await fetch("/api/technicians/me/images", {
+    method: "POST",
+    body: formData,
+    credentials: "same-origin",
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({ detail: "Upload failed." }));
+    throw new Error(err.detail || "Upload failed.");
+  }
+
+  return response.json();
+}
+
+// ── Ratings ────────────────────────────────────────────────────
+
+export interface TechnicianRatingsData {
+  average_rating: number;
+  total_reviews: number;
+  rating_breakdown: Record<string, number>;
+  recent_reviews: Array<Record<string, unknown>>;
+}
+
+/**
+ * Fetch technician ratings (GET /api/technicians/me/ratings/)
+ */
+export async function fetchTechnicianRatings(): Promise<TechnicianRatingsData> {
+  return browserRequest<TechnicianRatingsData>(
+    "/api/technicians/me/ratings",
+    { method: "GET" }
+  );
 }
