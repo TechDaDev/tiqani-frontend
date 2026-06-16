@@ -1,24 +1,11 @@
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations } from "next-intl/server";
-import { Inter, Noto_Sans_Arabic } from "next/font/google";
 import { ReactNode } from "react";
 import { ThemeProvider } from "@/components/layout/theme-provider";
 import { AuthProvider } from "@/components/auth/auth-provider";
 import { localeDirections } from "@/lib/i18n/routing";
 import "../globals.css";
 import type { Locale } from "@/lib/i18n/routing";
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-});
-
-const notoArabic = Noto_Sans_Arabic({
-  subsets: ["arabic"],
-  variable: "--font-noto-arabic",
-  display: "swap",
-});
 
 type Props = {
   children: ReactNode;
@@ -77,7 +64,7 @@ export default async function LocaleLayout({ children, params }: Props) {
     <html
       lang={locale}
       dir={dir}
-      className={`${inter.variable} ${notoArabic.variable}`}
+      className={``}
       suppressHydrationWarning
     >
       <head>
@@ -97,7 +84,7 @@ export default async function LocaleLayout({ children, params }: Props) {
         />
       </head>
       <body
-        className={`min-h-screen ${inter.variable} ${
+        className={`min-h-screen ${
           isRtl ? "font-arabic" : "font-sans"
         } antialiased`}
       >
