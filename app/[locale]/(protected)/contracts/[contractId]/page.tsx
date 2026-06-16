@@ -6,6 +6,8 @@ import { ArrowRight, Loader2, CreditCard } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect, useCallback } from "react";
 import { browserRequest } from "@/lib/api/browser-client";
+import { useAuth } from "@/components/auth/auth-provider";
+import { isClient } from "@/lib/auth/guards";
 import { ContractStatusBadge } from "@/components/contracts/contract-status-badge";
 import { MoneyDisplay } from "@/components/offers/money-display";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -43,6 +45,7 @@ export default function ContractDetailPage() {
   const tCommon = useTranslations("common");
   const tFunding = useTranslations("funding");
   const tPayStatus = useTranslations("paymentStatus");
+  const { user } = useAuth();
 
   const [contract, setContract] = useState<Phase6Contract | null | undefined>(undefined);
   const [funding, setFunding] = useState<ContractFundingStatus | null>(null);
@@ -71,7 +74,7 @@ export default function ContractDetailPage() {
 
   useEffect(() => { fetchData(); }, [fetchData]);
 
-  const isClient = false; // Simplified — real impl uses auth context
+  const currentUserIsClient = user ? isClient(user.role as Parameters<typeof isClient>[0]) : false;
   const fundStatus: FundingStatus = funding?.funding_status || "unfunded";
 
   if (isLoading) {
@@ -142,7 +145,7 @@ export default function ContractDetailPage() {
           </div>
 
           {/* Funding action for client */}
-          {isClient && canStartFunding(fundStatus) && (contract.status as string) === "in_progress" && (
+          {currentUserIsClient && canStartFunding(fundStatus) && (contract.status as string) === "in_progress" && (
             <Link href={`/${locale}/contracts/${contractId}/fund`}>
               <Button className="w-full">
                 <CreditCard className="h-4 w-4 mr-2" />

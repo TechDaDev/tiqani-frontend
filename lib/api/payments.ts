@@ -49,7 +49,7 @@ export async function sandboxConfirmPayment(
     `/api/payments/${intentId}/sandbox-confirm/`,
     {
       method: "POST",
-      body: JSON.stringify({ simulate_failure: simulateFailure }),
+      body: { simulate_failure: simulateFailure },
     }
   );
   return res;

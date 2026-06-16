@@ -6,6 +6,8 @@ import { useTranslations } from "next-intl";
 import { Loader2, AlertTriangle, CheckCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/components/auth/auth-provider";
+import { isTechnician } from "@/lib/auth/guards";
 import { FundingSummary } from "@/components/payments/funding-summary";
 import { FundingAction } from "@/components/payments/funding-action";
 import { formatIQD } from "@/lib/payments/money";
@@ -47,6 +49,11 @@ export default function ContractFundingPage() {
       ]);
       setEligibility(elig);
       setFundingStatus(status);
+      // If there's already a pending intent, populate paymentIntent for sandbox confirm
+      const activeIntent = (status as Record<string, unknown>)?.active_intent as Record<string, unknown> | undefined;
+      if (activeIntent && !paymentIntent) {
+        setPaymentIntent(activeIntent as unknown as PaymentIntent);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : t("loadingError"));
     } finally {
@@ -108,14 +115,15 @@ export default function ContractFundingPage() {
     );
   }
 
-  const isTechnician = false; // Determined by auth context — simplified for demo
+  const { user } = useAuth();
+  const currentUserIsTechnician = user ? isTechnician(user.role as Parameters<typeof isTechnician>[0]) : false;
 
   return (
     <div className="mx-auto max-w-2xl space-y-6 py-8">
       <h1 className="text-2xl font-bold text-foreground">{t("fundContract")}</h1>
 
       {fundingStatus && (
-        <FundingSummary fundingStatus={fundingStatus} isTechnician={isTechnician} />
+        <FundingSummary fundingStatus={fundingStatus} isTechnician={currentUserIsTechnician} />
       )}
 
       {eligibility && !eligibility.eligible && fundingStatus?.funding_status !== "funded" && (
@@ -126,7 +134,7 @@ export default function ContractFundingPage() {
         </Card>
       )}
 
-      {eligibility?.eligible && !paymentIntent && (
+      {eligibility?.eligible && (
         <Card className="border-border-warm bg-surface-pure">
           <CardHeader>
             <CardTitle className="text-lg">{t("paymentDetails")}</CardTitle>
