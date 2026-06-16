@@ -2,15 +2,20 @@
 
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { ArrowRight, Loader2 } from "lucide-react";
+import { ArrowRight, Loader2, CreditCard } from "lucide-react";
 import Link from "next/link";
 import { useState, useEffect, useCallback } from "react";
 import { browserRequest } from "@/lib/api/browser-client";
 import { ContractStatusBadge } from "@/components/contracts/contract-status-badge";
 import { MoneyDisplay } from "@/components/offers/money-display";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { PaymentStatusBadge } from "@/components/payments/payment-status-badge";
+import { formatIQD } from "@/lib/payments/money";
+import { canStartFunding } from "@/lib/payments/status";
 import type { Phase6Contract } from "@/lib/contracts/types";
 import type { Locale } from "@/lib/i18n/routing";
+import type { ContractFundingStatus, FundingStatus } from "@/lib/payments/types";
 
 function mapContract(raw: Record<string, unknown>): Phase6Contract {
   return {
@@ -36,18 +41,27 @@ export default function ContractDetailPage() {
   const t = useTranslations("contracts");
   const tOffers = useTranslations("offers");
   const tCommon = useTranslations("common");
+  const tFunding = useTranslations("funding");
+  const tPayStatus = useTranslations("paymentStatus");
 
   const [contract, setContract] = useState<Phase6Contract | null | undefined>(undefined);
+  const [funding, setFunding] = useState<ContractFundingStatus | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
 
-  const fetchContract = useCallback(async () => {
+  const fetchData = useCallback(async () => {
     if (!contractId) return;
     setIsLoading(true);
     setError(null);
     try {
-      const raw = await browserRequest<Record<string, unknown>>(`/api/contracts/${contractId}/`);
+      const [raw, fundingRaw] = await Promise.all([
+        browserRequest<Record<string, unknown>>(`/api/contracts/${contractId}/`),
+        browserRequest<Record<string, unknown>>(`/api/contracts/${contractId}/funding/status/`).catch(() => null),
+      ]);
       setContract(raw ? mapContract(raw) : null);
+      if (fundingRaw) {
+        setFunding(fundingRaw as unknown as ContractFundingStatus);
+      }
     } catch (err) {
       setError(err instanceof Error ? err : new Error("Failed to load contract"));
     } finally {
@@ -55,7 +69,10 @@ export default function ContractDetailPage() {
     }
   }, [contractId]);
 
-  useEffect(() => { fetchContract(); }, [fetchContract]);
+  useEffect(() => { fetchData(); }, [fetchData]);
+
+  const isClient = false; // Simplified — real impl uses auth context
+  const fundStatus: FundingStatus = funding?.funding_status || "unfunded";
 
   if (isLoading) {
     return (
@@ -78,38 +95,69 @@ export default function ContractDetailPage() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl">
+    <div className="mx-auto max-w-2xl space-y-6">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <div>
             <CardTitle>{t("contractDetail")}</CardTitle>
-            <p className="text-sm text-muted-foreground">{contract.contract_reference}</p>
+            <p className="text-sm text-foreground-muted">{contract.contract_reference}</p>
           </div>
           <ContractStatusBadge status={contract.status} />
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
-            <p className="text-sm text-muted-foreground">{t("client")}</p>
+            <p className="text-sm text-foreground-muted">{t("client")}</p>
             <p className="font-medium">{contract.client?.full_name}</p>
           </div>
           <div>
-            <p className="text-sm text-muted-foreground">{t("technician")}</p>
+            <p className="text-sm text-foreground-muted">{t("technician")}</p>
             <p className="font-medium">{contract.technician?.full_name}</p>
           </div>
           <div>
-            <p className="text-sm text-muted-foreground">{t("workDescription")}</p>
+            <p className="text-sm text-foreground-muted">{t("workDescription")}</p>
             <p className="whitespace-pre-wrap text-sm">{contract.work_description}</p>
           </div>
-          <div>
-            <p className="text-sm text-muted-foreground">{t("agreedAmount")}</p>
-            <MoneyDisplay amount={contract.agreed_amount} className="text-lg" />
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm text-foreground-muted">{t("agreedAmount")}</p>
+              <MoneyDisplay amount={contract.agreed_amount} className="text-lg" />
+            </div>
+            <div className="text-right">
+              <p className="text-sm text-foreground-muted">{tFunding("fundingStatus")}</p>
+              <PaymentStatusBadge status={fundStatus} />
+            </div>
           </div>
+          {funding && (
+            <div className="flex items-center justify-between border-t border-border-warm pt-3">
+              <div>
+                <p className="text-sm text-foreground-muted">{tFunding("escrowHeld")}</p>
+                <p className="font-medium">{formatIQD(funding.escrow_amount)}</p>
+              </div>
+              <p className="text-xs text-foreground-muted">{tFunding("fundsNotReleased")}</p>
+            </div>
+          )}
           <div>
-            <p className="text-sm text-muted-foreground">{t("createdAt")}</p>
+            <p className="text-sm text-foreground-muted">{t("createdAt")}</p>
             <p className="font-medium">{new Date(contract.created_at).toLocaleDateString()}</p>
           </div>
 
-          <div className="rounded-lg border border-blue-200 bg-blue-50 p-3 text-sm text-blue-700 dark:border-blue-800 dark:bg-blue-900/20 dark:text-blue-300">
+          {/* Funding action for client */}
+          {isClient && canStartFunding(fundStatus) && (contract.status as string) === "in_progress" && (
+            <Link href={`/${locale}/contracts/${contractId}/fund`}>
+              <Button className="w-full">
+                <CreditCard className="h-4 w-4 mr-2" />
+                {tFunding("fundContract")}
+              </Button>
+            </Link>
+          )}
+
+          {fundStatus === "funded" && (
+            <div className="rounded-lg border border-success-soft bg-success-soft/30 p-3 text-sm text-success">
+              <p>{tFunding("fundingSuccessDesc")}</p>
+            </div>
+          )}
+
+          <div className="rounded-lg border border-border-warm bg-surface-warm p-3 text-sm text-foreground-muted">
             <p>{t("createdFromOffer")}</p>
             <p className="mt-1">{t("paymentNote")}</p>
           </div>
