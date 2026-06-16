@@ -38,7 +38,7 @@ export default function TechnicianRequestsPage() {
       {isLoading && (
         <div className="space-y-3">
           {[1, 2, 3].map((n) => (
-            <div key={n} className="h-24 animate-pulse rounded-lg bg-gray-100 dark:bg-gray-800" />
+            <div key={n} className="h-24 animate-pulse rounded-lg bg-surface-warm dark:bg-gray-800" />
           ))}
         </div>
       )}
@@ -51,8 +51,8 @@ export default function TechnicianRequestsPage() {
 
       {requests && requests.length === 0 && (
         <div className="flex flex-col items-center gap-4 py-16 text-center">
-          <Inbox className="h-12 w-12 text-gray-300 dark:text-gray-600" />
-          <p className="text-gray-500 dark:text-gray-400">{t("empty")}</p>
+          <Inbox className="h-12 w-12 text-neutral-soft dark:text-gray-600" />
+          <p className="text-foreground-muted dark:text-gray-400">{t("empty")}</p>
         </div>
       )}
 

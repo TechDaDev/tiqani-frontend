@@ -85,8 +85,8 @@ export default function NewRequestPage() {
   };
 
   const inputClass =
-    "w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100";
-  const labelClass = "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1";
+    "w-full rounded-lg border border-border-warm bg-surface-pure px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-100";
+  const labelClass = "block text-sm font-medium text-foreground-muted dark:text-gray-300 mb-1";
   const errorClass = "mt-1 text-xs text-red-500";
 
   return (
@@ -104,7 +104,7 @@ export default function NewRequestPage() {
       {technicianName && (
         <Card className="mb-6 bg-primary-soft/50">
           <CardContent className="p-4">
-            <p className="text-sm text-gray-500 dark:text-gray-400">{t("requestingTo")}</p>
+            <p className="text-sm text-foreground-muted dark:text-gray-400">{t("requestingTo")}</p>
             <p className="font-semibold">{decodeURIComponent(technicianName)}</p>
           </CardContent>
         </Card>
@@ -144,7 +144,7 @@ export default function NewRequestPage() {
             aria-invalid={!!formErrors.description}
             data-error={!!formErrors.description}
           />
-          <p className="mt-1 text-xs text-gray-400">{t("descriptionHint")}</p>
+          <p className="mt-1 text-xs text-neutral-soft">{t("descriptionHint")}</p>
           {formErrors.description && <p className={errorClass} role="alert">{formErrors.description}</p>}
         </div>
 
@@ -215,9 +215,9 @@ export default function NewRequestPage() {
             type="checkbox"
             checked={formData.is_urgent}
             onChange={handleChange}
-            className="h-4 w-4 rounded border-gray-300"
+            className="h-4 w-4 rounded border-border-warm"
           />
-          <label htmlFor="is_urgent" className="text-sm font-medium text-gray-700 dark:text-gray-300">
+          <label htmlFor="is_urgent" className="text-sm font-medium text-foreground-muted dark:text-gray-300">
             {t("isUrgent")}
           </label>
         </div>

@@ -90,7 +90,7 @@ export default function CreateOfferPage() {
           <p className="text-sm text-muted-foreground">{request.client?.full_name}</p>
         </CardHeader>
         <CardContent>
-          <p className="mb-4 text-sm text-gray-600 dark:text-gray-300">{request.description}</p>
+          <p className="mb-4 text-sm text-foreground-muted dark:text-gray-300">{request.description}</p>
         </CardContent>
       </Card>
 

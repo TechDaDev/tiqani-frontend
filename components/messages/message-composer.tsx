@@ -41,7 +41,7 @@ export function MessageComposer({ onSend, isPending }: MessageComposerProps) {
   const isOverLimit = charsLeft < 0;
 
   return (
-    <div className="border-t border-gray-200 p-4 bg-white" role="region" aria-label={t("composerLabel")}>
+    <div className="border-t border-border-warm p-4 bg-surface-pure" role="region" aria-label={t("composerLabel")}>
       <div className="flex items-end gap-2">
         <div className="flex-1 relative">
           <textarea
@@ -52,14 +52,14 @@ export function MessageComposer({ onSend, isPending }: MessageComposerProps) {
             placeholder={t("placeholder")}
             maxLength={maxLength + 100}
             rows={2}
-            className="w-full resize-none rounded-xl border border-gray-300 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="w-full resize-none rounded-xl border border-border-warm bg-surface-pure px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             aria-label={t("messageInput")}
             disabled={isPending}
           />
           {text.length > 0 && (
             <span
               className={`absolute bottom-2 right-3 text-xs ${
-                isOverLimit ? "text-red-500" : "text-gray-400"
+                isOverLimit ? "text-red-500" : "text-neutral-soft"
               }`}
               aria-live="polite"
             >

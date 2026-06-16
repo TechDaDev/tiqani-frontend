@@ -110,7 +110,7 @@ export function MarketplaceFilterDrawer({
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 lg:hidden"
+        className="inline-flex items-center gap-2 rounded-lg border border-border-warm bg-surface-pure px-4 py-2 text-sm font-medium text-foreground-muted transition-colors hover:bg-surface-warm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-gray-700 lg:hidden"
         aria-label={t("filterDrawerButton")}
         aria-expanded={open}
       >
@@ -138,20 +138,20 @@ export function MarketplaceFilterDrawer({
         role="dialog"
         aria-modal="true"
         aria-label={t("filterDrawerTitle")}
-        className={`fixed inset-y-0 z-50 w-full max-w-sm bg-white shadow-xl transition-transform duration-300 dark:bg-gray-900 ${
+        className={`fixed inset-y-0 z-50 w-full max-w-sm bg-surface-pure shadow-xl transition-transform duration-300 dark:bg-gray-900 ${
           open ? "translate-x-0" : "translate-x-full"
         } ${isRtl ? "left-0" : "right-0"}`}
       >
         <div className="flex h-full flex-col">
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-gray-200 px-4 py-3 dark:border-gray-700">
-            <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+          <div className="flex items-center justify-between border-b border-border-warm px-4 py-3 dark:border-gray-700">
+            <h2 className="text-lg font-semibold text-foreground dark:text-white">
               {t("filterButtonLabel")}
             </h2>
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="rounded-lg p-1 text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-gray-400 dark:hover:bg-gray-700"
+              className="rounded-lg p-1 text-foreground-muted hover:bg-surface-warm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:text-gray-400 dark:hover:bg-gray-700"
               aria-label={t("closeFilterDrawer")}
             >
               <X className="h-5 w-5" aria-hidden="true" />
@@ -172,11 +172,11 @@ export function MarketplaceFilterDrawer({
           </div>
 
           {/* Footer */}
-          <div className="flex gap-3 border-t border-gray-200 px-4 py-3 dark:border-gray-700">
+          <div className="flex gap-3 border-t border-border-warm px-4 py-3 dark:border-gray-700">
             <button
               type="button"
               onClick={handleReset}
-              className="flex-1 rounded-lg border border-gray-300 px-4 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
+              className="flex-1 rounded-lg border border-border-warm bg-surface-pure px-4 py-2.5 text-sm font-medium text-foreground-muted transition-colors hover:bg-surface-warm focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:text-gray-300 dark:hover:bg-gray-700"
             >
               {t("resetFilters")}
             </button>

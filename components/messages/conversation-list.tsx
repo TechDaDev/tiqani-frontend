@@ -13,10 +13,10 @@ export function ConversationList() {
       <div className="space-y-4 p-4" role="status" aria-label={t("loading")}>
         {[1, 2, 3].map((i) => (
           <div key={i} className="flex items-center gap-3 animate-pulse">
-            <div className="w-12 h-12 rounded-full bg-gray-200" />
+            <div className="w-12 h-12 rounded-full bg-neutral-soft/50" />
             <div className="flex-1 space-y-2">
-              <div className="h-4 bg-gray-200 rounded w-1/3" />
-              <div className="h-3 bg-gray-200 rounded w-2/3" />
+              <div className="h-4 bg-neutral-soft/50 rounded w-1/3" />
+              <div className="h-3 bg-neutral-soft/50 rounded w-2/3" />
             </div>
           </div>
         ))}
@@ -42,7 +42,7 @@ export function ConversationList() {
   if (!conversations || conversations.length === 0) {
     return (
       <div className="p-8 text-center">
-        <p className="text-gray-500 text-lg">{t("empty")}</p>
+        <p className="text-foreground-muted text-lg">{t("empty")}</p>
       </div>
     );
   }

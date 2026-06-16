@@ -42,7 +42,7 @@ export default function ClientOfferListPage() {
       </div>
 
       {!offers || offers.length === 0 ? (
-        <div className="py-12 text-center text-gray-500 dark:text-gray-400">
+        <div className="py-12 text-center text-foreground-muted dark:text-gray-400">
           <p>{t("noIncomingOffers")}</p>
         </div>
       ) : (

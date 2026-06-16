@@ -28,6 +28,10 @@
     --danger-soft: #fdecec;
     --info: #2b7cd3;
     --info-soft: #eaf3fc;
+    --surface-pure: #fefcff;
+    --surface-warm: #f9f8f0;
+    --border-warm: #dcd9cd;
+    --neutral-soft: #d3d3d3;
   }
 
   .dark {
@@ -45,6 +49,10 @@
     --border: #21494a;
     --input: #102f30;
     --ring: #2dd4bf;
+    --surface-pure: #ffffff;
+    --surface-warm: #0d292a;
+    --border-warm: #21494a;
+    --neutral-soft: #3a5a5b;
   }
 }
 

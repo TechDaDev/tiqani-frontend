@@ -7,9 +7,9 @@ export default function ConversationListPage() {
   const t = useTranslations("conversations");
 
   return (
-    <div className="max-w-2xl mx-auto min-h-screen bg-white border-x border-gray-200">
-      <div className="sticky top-0 z-10 bg-white border-b border-gray-200 px-4 py-3">
-        <h1 className="text-xl font-semibold text-gray-900">{t("title")}</h1>
+    <div className="max-w-2xl mx-auto min-h-screen bg-surface-pure border-x border-border-warm">
+      <div className="sticky top-0 z-10 bg-surface-pure border-b border-border-warm px-4 py-3">
+        <h1 className="text-xl font-semibold text-foreground">{t("title")}</h1>
       </div>
       <ConversationList />
     </div>

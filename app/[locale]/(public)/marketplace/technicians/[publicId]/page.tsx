@@ -145,7 +145,7 @@ export default function PublicTechnicianProfilePage() {
 
             {/* Profile header */}
             <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
-              <div className="relative h-28 w-28 flex-shrink-0 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-700">
+              <div className="relative h-28 w-28 flex-shrink-0 overflow-hidden rounded-full bg-surface-warm dark:bg-gray-700">
                 {profile.profile_image ? (
                   <Image
                     src={profile.profile_image}
@@ -156,21 +156,21 @@ export default function PublicTechnicianProfilePage() {
                     unoptimized
                   />
                 ) : (
-                  <span className="flex h-full w-full items-center justify-center text-3xl font-semibold text-gray-500 dark:text-gray-400" aria-hidden="true">
+                  <span className="flex h-full w-full items-center justify-center text-3xl font-semibold text-foreground-muted dark:text-gray-400" aria-hidden="true">
                     {profile.full_name?.charAt(0)?.toUpperCase() || "?"}
                   </span>
                 )}
               </div>
 
               <div className="flex-1 text-center sm:text-left">
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                <h1 className="text-2xl font-bold text-foreground dark:text-white">
                   {profile.full_name}
                 </h1>
                 {profile.job_title && (
-                  <p className="text-lg text-gray-500 dark:text-gray-400">{profile.job_title}</p>
+                  <p className="text-lg text-foreground-muted dark:text-gray-400">{profile.job_title}</p>
                 )}
 
-                <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-gray-500 dark:text-gray-400 sm:justify-start">
+                <div className="mt-3 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm text-foreground-muted dark:text-gray-400 sm:justify-start">
                   {profile.governorate && (
                     <span className="inline-flex items-center gap-1">
                       <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -209,7 +209,7 @@ export default function PublicTechnicianProfilePage() {
                   </Button>
                 </Link>
               ) : user?.role === "technician" ? (
-                <p className="text-sm text-gray-500 dark:text-gray-400">
+                <p className="text-sm text-foreground-muted dark:text-gray-400">
                   {tTech("technicianCannotRequest")}
                 </p>
               ) : (
@@ -227,10 +227,10 @@ export default function PublicTechnicianProfilePage() {
           {/* About */}
             {profile.about && (
               <section className="mt-8" aria-labelledby="about-heading">
-                <h2 id="about-heading" className="text-lg font-semibold text-gray-900 dark:text-white">
+                <h2 id="about-heading" className="text-lg font-semibold text-foreground dark:text-white">
                   {tTech("about")}
                 </h2>
-                <p className="mt-2 text-gray-600 dark:text-gray-400 whitespace-pre-line">
+                <p className="mt-2 text-foreground-muted dark:text-gray-400 whitespace-pre-line">
                   {profile.about}
                 </p>
               </section>
@@ -239,7 +239,7 @@ export default function PublicTechnicianProfilePage() {
             {/* Skills */}
             {skills && skills.length > 0 && (
               <section className="mt-8" aria-labelledby="skills-heading">
-                <h2 id="skills-heading" className="text-lg font-semibold text-gray-900 dark:text-white">
+                <h2 id="skills-heading" className="text-lg font-semibold text-foreground dark:text-white">
                   {tTech("skills")}
                 </h2>
                 <div className="mt-3 flex flex-wrap gap-2">
@@ -258,14 +258,14 @@ export default function PublicTechnicianProfilePage() {
             {/* Categories */}
             {categories && categories.length > 0 && (
               <section className="mt-6" aria-labelledby="categories-heading">
-                <h2 id="categories-heading" className="text-lg font-semibold text-gray-900 dark:text-white">
+                <h2 id="categories-heading" className="text-lg font-semibold text-foreground dark:text-white">
                   {tTech("categories")}
                 </h2>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {categories.map((cat) => (
                     <span
                       key={cat.id}
-                      className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-sm font-medium text-gray-700 dark:bg-gray-700 dark:text-gray-300"
+                      className="inline-flex items-center rounded-full bg-surface-warm px-3 py-1 text-sm font-medium text-foreground-muted dark:bg-gray-700 dark:text-gray-300"
                     >
                       {cat.name}
                     </span>
@@ -277,12 +277,12 @@ export default function PublicTechnicianProfilePage() {
             {/* Portfolio images */}
             {profile.images && profile.images.length > 0 && (
               <section className="mt-8" aria-labelledby="portfolio-heading">
-                <h2 id="portfolio-heading" className="text-lg font-semibold text-gray-900 dark:text-white">
+                <h2 id="portfolio-heading" className="text-lg font-semibold text-foreground dark:text-white">
                   {tTech("portfolio")}
                 </h2>
                 <div className="mt-3 grid grid-cols-2 gap-4 sm:grid-cols-3">
                   {profile.images.map((img) => (
-                    <div key={img.id} className="group relative overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700">
+                    <div key={img.id} className="group relative overflow-hidden rounded-lg border border-border-warm dark:border-gray-700">
                       <Image
                         src={img.image}
                         alt={img.description || tTech("portfolioImage")}
@@ -305,7 +305,7 @@ export default function PublicTechnicianProfilePage() {
             {/* External links */}
             {(profile.url1 || profile.url2) && (
               <section className="mt-8" aria-labelledby="links-heading">
-                <h2 id="links-heading" className="text-lg font-semibold text-gray-900 dark:text-white">
+                <h2 id="links-heading" className="text-lg font-semibold text-foreground dark:text-white">
                   {tTech("links")}
                 </h2>
                 <div className="mt-3 flex flex-wrap gap-3">
@@ -341,7 +341,7 @@ export default function PublicTechnicianProfilePage() {
 
             {/* Last active */}
             {profile.last_active && (
-              <p className="mt-8 text-center text-xs text-gray-400 dark:text-gray-500">
+              <p className="mt-8 text-center text-xs text-neutral-soft dark:text-gray-500">
                 {tTech("lastActive", { date: new Date(profile.last_active).toLocaleDateString() })}
               </p>
             )}

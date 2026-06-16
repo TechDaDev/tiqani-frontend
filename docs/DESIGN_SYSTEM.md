@@ -47,6 +47,10 @@ The identity is designed for the Iraqi market, suitable for contracts and financ
 --danger-soft:      #FDECEC
 --info:             #2B7CD3
 --info-soft:        #EAF3FC
+--surface-pure:     #FEFCFF
+--surface-warm:     #F9F8F0
+--border-warm:      #DCD9CD
+--neutral-soft:     #D3D3D3
 ```
 
 ## Color Tokens — Dark Theme
@@ -66,6 +70,10 @@ The identity is designed for the Iraqi market, suitable for contracts and financ
 --border:           #21494A
 --input:            #102F30
 --ring:             #2DD4BF
+--surface-pure:     #FFFFFF
+--surface-warm:     #0D292A
+--border-warm:      #21494A
+--neutral-soft:     #3A5A5B
 ```
 
 ## Typography

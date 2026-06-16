@@ -33,7 +33,7 @@ export function ConversationListItem({ conversation }: ConversationListItemProps
   return (
     <Link
       href={`/messages/${conversation.id}`}
-      className="flex items-center gap-3 p-4 border-b border-gray-200 hover:bg-gray-50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg"
+      className="flex items-center gap-3 p-4 border-b border-border-warm hover:bg-surface-warm/50 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 rounded-lg"
       aria-label={`${t("conversationWith")} ${otherUser.full_name}`}
     >
       <div className="flex-shrink-0 w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold text-sm">
@@ -52,11 +52,11 @@ export function ConversationListItem({ conversation }: ConversationListItemProps
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between">
-          <h3 className="font-medium text-gray-900 truncate">
+          <h3 className="font-medium text-foreground truncate">
             {otherUser.full_name}
           </h3>
           {lastMessageTime && (
-            <span className="text-xs text-gray-500 flex-shrink-0">
+            <span className="text-xs text-foreground-muted flex-shrink-0">
               {lastMessageTime}
             </span>
           )}
@@ -68,7 +68,7 @@ export function ConversationListItem({ conversation }: ConversationListItemProps
           </p>
         )}
 
-        <p className="text-sm text-gray-600 truncate mt-0.5">
+        <p className="text-sm text-foreground-muted/80 truncate mt-0.5">
           {lastMessagePreview}
         </p>
       </div>

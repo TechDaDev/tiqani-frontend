@@ -25,10 +25,10 @@ export function ConversationHeader({ conversation }: ConversationHeaderProps) {
     .slice(0, 2);
 
   return (
-    <div className="flex items-center gap-3 p-4 border-b border-gray-200 bg-white">
+    <div className="flex items-center gap-3 p-4 border-b border-border-warm bg-surface-pure">
       <Link
         href="/messages"
-        className="text-gray-500 hover:text-gray-700 p-2 -ml-2"
+        className="text-foreground-muted hover:text-foreground p-2 -ml-2"
         aria-label={t("backToList")}
       >
         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -51,7 +51,7 @@ export function ConversationHeader({ conversation }: ConversationHeaderProps) {
       </div>
 
       <div className="flex-1 min-w-0">
-        <h2 className="font-medium text-gray-900 truncate">
+        <h2 className="font-medium text-foreground truncate">
           {otherUser.full_name}
         </h2>
         {conversation.service_request_title && (
@@ -62,7 +62,7 @@ export function ConversationHeader({ conversation }: ConversationHeaderProps) {
       </div>
 
       {conversation.status && (
-        <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+        <span className="text-xs text-foreground-muted bg-surface-warm px-2 py-1 rounded-full">
           {t(`status.${conversation.status}`)}
         </span>
       )}

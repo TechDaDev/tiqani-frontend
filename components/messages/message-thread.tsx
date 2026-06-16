@@ -59,7 +59,7 @@ export function MessageThread({
     return (
       <div className="flex-1 flex flex-col">
         <div className="flex-1 flex items-center justify-center">
-          <p className="text-gray-500">{t("empty")}</p>
+          <p className="text-foreground-muted">{t("empty")}</p>
         </div>
         <MessageComposer onSend={onSend} isPending={isSending} />
       </div>

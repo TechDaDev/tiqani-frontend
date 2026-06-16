@@ -26,10 +26,10 @@ export default function TechnicianRequestDetailPage() {
   if (isLoading) {
     return (
       <div className="mx-auto max-w-2xl py-12">
-        <div className="h-8 w-48 animate-pulse rounded bg-gray-200 dark:bg-gray-700" />
+        <div className="h-8 w-48 animate-pulse rounded bg-neutral-soft/50 dark:bg-gray-700" />
         <div className="mt-4 space-y-3">
           {[1, 2, 3].map((n) => (
-            <div key={n} className="h-24 animate-pulse rounded-lg bg-gray-100 dark:bg-gray-800" />
+            <div key={n} className="h-24 animate-pulse rounded-lg bg-surface-warm dark:bg-gray-800" />
           ))}
         </div>
       </div>

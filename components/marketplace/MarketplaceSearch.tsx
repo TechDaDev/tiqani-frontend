@@ -71,7 +71,7 @@ export function MarketplaceSearch({
         {t("searchPlaceholder")}
       </label>
       <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-        <Search className="h-5 w-5 text-gray-400" aria-hidden="true" />
+        <Search className="h-5 w-5 text-neutral-soft" aria-hidden="true" />
       </div>
       <input
         ref={inputRef}
@@ -81,19 +81,19 @@ export function MarketplaceSearch({
         onChange={handleChange}
         onKeyDown={handleKeyDown}
         placeholder={t("searchPlaceholder")}
-        className="w-full rounded-xl border border-gray-300 bg-white py-2.5 pl-10 pr-10 text-sm text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder-gray-500 dark:focus:border-blue-400"
+        className="w-full rounded-xl border border-border-warm bg-surface-pure py-2.5 pl-10 pr-10 text-sm text-foreground placeholder-foreground-muted focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:text-white dark:placeholder-gray-500 dark:focus:border-blue-400"
       />
       {localValue && (
         <button
           type="button"
           onClick={handleClear}
-          className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 focus:outline-none focus:text-gray-600 dark:hover:text-gray-300"
+          className="absolute inset-y-0 right-0 flex items-center pr-3 text-neutral-soft hover:text-foreground-muted focus:outline-none focus:text-foreground-muted dark:hover:text-gray-300"
           aria-label={t("clearSearch")}
         >
           <X className="h-5 w-5" aria-hidden="true" />
         </button>
       )}
-      <p id="search-help-text" className="mt-1 text-xs text-gray-400">
+      <p id="search-help-text" className="mt-1 text-xs text-neutral-soft">
         {t("searchHint")}
       </p>
     </div>

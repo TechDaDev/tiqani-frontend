@@ -17,12 +17,12 @@ export function TechnicianCard({ technician }: TechnicianCardProps) {
   return (
     <Link
       href={`/marketplace/technicians/${technician.userId}`}
-      className="group block rounded-xl border border-gray-200 bg-white p-5 shadow-sm transition-all hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-750"
+      className="group block rounded-xl border border-border-warm bg-surface-pure p-5 shadow-sm transition-all hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-750"
       aria-label={t("viewProfile", { name: technician.fullName })}
     >
       <div className="flex items-start gap-4">
         {/* Avatar */}
-        <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-full bg-gray-100 dark:bg-gray-700">
+        <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-full bg-surface-warm dark:bg-gray-700">
           {technician.profileImage ? (
             <Image
               src={technician.profileImage}
@@ -34,7 +34,7 @@ export function TechnicianCard({ technician }: TechnicianCardProps) {
             />
           ) : (
             <span
-              className="flex h-full w-full items-center justify-center text-lg font-semibold text-gray-500 dark:text-gray-400"
+              className="flex h-full w-full items-center justify-center text-lg font-semibold text-foreground-muted dark:text-gray-400"
               aria-hidden="true"
             >
               {initial}
@@ -44,15 +44,15 @@ export function TechnicianCard({ technician }: TechnicianCardProps) {
 
         {/* Content */}
         <div className="min-w-0 flex-1">
-          <h3 className="truncate text-base font-semibold text-gray-900 dark:text-white">
+          <h3 className="truncate text-base font-semibold text-foreground dark:text-white">
             {technician.fullName}
           </h3>
           {technician.jobTitle && (
-            <p className="truncate text-sm text-gray-500 dark:text-gray-400">
+            <p className="truncate text-sm text-foreground-muted dark:text-gray-400">
               {technician.jobTitle}
             </p>
           )}
-          <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-gray-500 dark:text-gray-400">
+          <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-foreground-muted dark:text-gray-400">
             {technician.governorate && (
               <span className="inline-flex items-center gap-1">
                 <svg

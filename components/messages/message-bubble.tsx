@@ -25,7 +25,7 @@ export function MessageBubble({ message, isOwn }: MessageBubbleProps) {
   if (message.message_type === "SYSTEM") {
     return (
       <div className="flex justify-center my-2" role="status">
-        <span className="text-xs text-gray-500 bg-gray-100 px-3 py-1 rounded-full">
+        <span className="text-xs text-foreground-muted bg-surface-warm px-3 py-1 rounded-full">
           {message.safe_body || message.body}
         </span>
       </div>
@@ -35,7 +35,7 @@ export function MessageBubble({ message, isOwn }: MessageBubbleProps) {
   if (message.is_deleted) {
     return (
       <div className={`flex ${isOwn ? "justify-end" : "justify-start"} my-1`}>
-        <div className="px-4 py-2 rounded-lg bg-gray-100 text-gray-400 text-sm italic">
+        <div className="px-4 py-2 rounded-lg bg-surface-warm text-neutral-soft text-sm italic">
           {t("deleted")}
         </div>
       </div>
@@ -52,7 +52,7 @@ export function MessageBubble({ message, isOwn }: MessageBubbleProps) {
         className={`max-w-[75%] px-4 py-2 rounded-2xl ${
           isOwn
             ? "bg-blue-600 text-white rounded-br-md"
-            : "bg-gray-100 text-gray-900 rounded-bl-md"
+            : "bg-surface-warm text-foreground rounded-bl-md"
         }`}
       >
         {message.message_type === "FILE" && (
@@ -69,7 +69,7 @@ export function MessageBubble({ message, isOwn }: MessageBubbleProps) {
           </p>
         )}
         <div className={`flex items-center gap-1 mt-1 ${isOwn ? "justify-end" : "justify-start"}`}>
-          <span className={`text-xs ${isOwn ? "text-blue-200" : "text-gray-400"}`}>
+          <span className={`text-xs ${isOwn ? "text-blue-200" : "text-neutral-soft"}`}>
             {time}
           </span>
           {isOwn && (

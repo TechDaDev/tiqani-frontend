@@ -213,7 +213,7 @@ export default function MarketplacePage() {
               onChange={handleFilterChange}
             />
             {activeFilterCount > 0 && (
-              <span className="text-sm text-gray-500 dark:text-gray-400">
+              <span className="text-sm text-foreground-muted dark:text-gray-400">
                 {t("activeFilterCount", { count: activeFilterCount })}
               </span>
             )}
@@ -240,7 +240,7 @@ export default function MarketplacePage() {
               <ErrorState title={t("loadError")} message={error} onRetry={() => window.location.reload()} />
             ) : data && data.results.length > 0 ? (
               <>
-                <p className="mb-4 text-sm text-gray-500 dark:text-gray-400" role="status">
+                <p className="mb-4 text-sm text-foreground-muted dark:text-gray-400" role="status">
                   {t("resultsCount", { count: data.count })}
                 </p>
                 <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">

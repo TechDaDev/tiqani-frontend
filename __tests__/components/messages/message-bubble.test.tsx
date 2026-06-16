@@ -70,10 +70,10 @@ describe("MessageBubble", () => {
     expect(bubble?.className).toContain("bg-blue-600");
   });
 
-  it("renders other message with gray background", () => {
+  it("renders other message with warm background", () => {
     renderBubble({}, false);
     const bubble = screen.getByText("Test message body").closest("div[class*='max-w-']");
-    expect(bubble?.className).toContain("bg-gray-100");
+    expect(bubble?.className).toContain("bg-surface-warm");
   });
 
   it("renders safe_body text", () => {

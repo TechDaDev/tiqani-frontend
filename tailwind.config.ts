@@ -31,6 +31,10 @@ const config: Config = {
         "danger-soft": "var(--danger-soft)",
         info: "var(--info)",
         "info-soft": "var(--info-soft)",
+        "surface-pure": "var(--surface-pure)",
+        "surface-warm": "var(--surface-warm)",
+        "border-warm": "var(--border-warm)",
+        "neutral-soft": "var(--neutral-soft)",
       },
       fontFamily: {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],

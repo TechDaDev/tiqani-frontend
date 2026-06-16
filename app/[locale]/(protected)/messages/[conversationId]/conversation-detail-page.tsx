@@ -58,7 +58,7 @@ export default function ConversationDetailPage({
 
   if (convLoading) {
     return (
-      <div className="max-w-2xl mx-auto min-h-screen bg-white border-x border-gray-200 flex items-center justify-center">
+      <div className="max-w-2xl mx-auto min-h-screen bg-surface-pure border-x border-border-warm flex items-center justify-center">
         <div className="animate-spin h-8 w-8 border-4 border-blue-600 border-t-transparent rounded-full" role="status" />
       </div>
     );
@@ -66,7 +66,7 @@ export default function ConversationDetailPage({
 
   if (convError || !conversation) {
     return (
-      <div className="max-w-2xl mx-auto min-h-screen bg-white border-x border-gray-200 flex items-center justify-center">
+      <div className="max-w-2xl mx-auto min-h-screen bg-surface-pure border-x border-border-warm flex items-center justify-center">
         <div className="text-center" role="alert">
           <p className="text-red-600 mb-4">{t("error")}</p>
           <button
@@ -81,7 +81,7 @@ export default function ConversationDetailPage({
   }
 
   return (
-    <div className="max-w-2xl mx-auto min-h-screen bg-white border-x border-gray-200 flex flex-col">
+    <div className="max-w-2xl mx-auto min-h-screen bg-surface-pure border-x border-border-warm flex flex-col">
       <ConversationHeader conversation={conversation} />
       <MessageThread
         conversation={conversation}

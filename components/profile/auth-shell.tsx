@@ -185,7 +185,7 @@ export function AuthShell({ children }: ShellProps) {
                         className={cn(
                           "inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-xs font-medium leading-none",
                           isActive(item.href)
-                            ? "bg-white text-primary"
+                            ? "bg-surface-pure text-primary"
                             : "bg-blue-600 text-white"
                         )}
                         aria-label={`${item.badge} unread ${item.badge === 1 ? "message" : "messages"}`}
