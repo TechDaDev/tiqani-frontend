@@ -42,9 +42,9 @@ export function useConversations() {
     }
   }, []);
 
-  if (data === undefined && !error && isLoading) {
+  useEffect(() => {
     fetch();
-  }
+  }, [fetch]);
 
   return { data, isLoading, error, refetch: fetch };
 }
@@ -72,9 +72,9 @@ export function useConversationDetail(conversationId: string) {
     }
   }, [conversationId]);
 
-  if (data === undefined && !error && isLoading) {
+  useEffect(() => {
     fetch();
-  }
+  }, [fetch]);
 
   return { data, isLoading, error, refetch: fetch };
 }
@@ -118,9 +118,9 @@ export function useMessages(conversationId: string) {
     }
   }, [data, hasMore, isLoading, fetch]);
 
-  if (data === undefined && !error && isLoading) {
+  useEffect(() => {
     fetch();
-  }
+  }, [fetch]);
 
   return { data, isLoading, error, hasMore, loadOlder, refetch: () => fetch() };
 }
@@ -179,38 +179,102 @@ export function useMarkRead(conversationId: string) {
 
 // ---- Unread count ----
 
+const POLLING_INTERVAL_MS = 30_000;
+
 export function useUnreadCount() {
   const [data, setData] = useState<UnreadSummary | null>(null);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const isPollingRef = useRef(false);
+  const isPausedRef = useRef(false);
 
-  const fetch = useCallback(async () => {
+  const fetch = useCallback(async (): Promise<boolean> => {
     try {
       const raw = await browserRequest<Record<string, unknown>>(
         "/api/messages/unread-count/"
       );
       setData(mapUnreadSummary(raw));
-    } catch {
-      // Silent fail for polling
+      return true;
+    } catch (err) {
+      // Stop polling on auth failures
+      if (err && typeof err === "object" && "status" in err) {
+        const status = (err as { status: number }).status;
+        if (status === 401 || status === 403) {
+          return false;
+        }
+      }
+      // Transient errors: return true to keep polling
+      return true;
     }
   }, []);
-
-  const startPolling = useCallback(() => {
-    fetch();
-    intervalRef.current = setInterval(fetch, 30000); // 30s polling
-  }, [fetch]);
 
   const stopPolling = useCallback(() => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
+    isPollingRef.current = false;
+    isPausedRef.current = false;
   }, []);
 
+  const startPolling = useCallback(() => {
+    if (isPollingRef.current) return; // No duplicate timers
+    isPollingRef.current = true;
+    isPausedRef.current = false;
+
+    // Initial fetch
+    fetch().then((keepPolling) => {
+      if (!keepPolling) {
+        stopPolling();
+        return;
+      }
+    });
+
+    intervalRef.current = setInterval(async () => {
+      if (isPausedRef.current) return; // Skip while hidden
+      const keepPolling = await fetch();
+      if (!keepPolling) {
+        stopPolling();
+      }
+    }, POLLING_INTERVAL_MS);
+  }, [fetch, stopPolling]);
+
+  // Handle document visibility changes
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "hidden") {
+        isPausedRef.current = true;
+      } else {
+        isPausedRef.current = false;
+        // Fetch immediately when becoming visible again
+        if (isPollingRef.current) {
+          fetch().then((keepPolling) => {
+            if (!keepPolling) stopPolling();
+          });
+        }
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      stopPolling();
+    };
+  }, [fetch, stopPolling]);
+
+  // Cleanup on unmount
   useEffect(() => {
     return () => stopPolling();
   }, [stopPolling]);
 
-  return { data, fetch, startPolling, stopPolling };
+  return {
+    data,
+    fetch,
+    startPolling,
+    stopPolling,
+    /** True while polling is active (not paused by visibility). */
+    isPollingRef,
+    POLLING_INTERVAL_MS,
+  };
 }
 
 // ---- Request-linked conversation ----
@@ -253,9 +317,9 @@ export function useRequestConversation(requestId: string) {
     }
   }, [requestId]);
 
-  if (data === undefined && !error && isLoading) {
+  useEffect(() => {
     fetch();
-  }
+  }, [fetch]);
 
   return { data, isLoading, error, create, refetch: fetch };
 }

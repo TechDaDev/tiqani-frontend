@@ -18,15 +18,15 @@ test.describe("Technician conversations", () => {
 
   test("opens conversation from list", async ({ page }) => {
     await openConversationList(page);
-    const firstLink = page.locator("a[href*='/ar/messages/']").first();
+    const firstLink = page.locator("a[href*='/messages/']").first();
     await expect(firstLink).toBeVisible();
     await firstLink.click();
-    await expect(page).toHaveURL(/\/ar\/messages\//);
+    await expect(page).toHaveURL(/\/messages\//);
   });
 
   test("can send reply", async ({ page }) => {
     await openConversationList(page);
-    const firstLink = page.locator("a[href*='/ar/messages/']").first();
+    const firstLink = page.locator("a[href*='/messages/']").first();
     if (await firstLink.isVisible()) {
       await firstLink.click();
       await page.waitForTimeout(500);
@@ -37,7 +37,7 @@ test.describe("Technician conversations", () => {
 
   test("reply persists after reload", async ({ page }) => {
     await openConversationList(page);
-    const firstLink = page.locator("a[href*='/ar/messages/']").first();
+    const firstLink = page.locator("a[href*='/messages/']").first();
     if (await firstLink.isVisible()) {
       const href = await firstLink.getAttribute("href");
       await firstLink.click();

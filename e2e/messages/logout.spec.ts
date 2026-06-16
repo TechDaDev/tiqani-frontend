@@ -13,7 +13,8 @@ test.describe("Messaging logout", () => {
     await openConversationList(page);
 
     // Logout
-    await page.getByRole("button", { name: /log out/i }).click();
+    // Click logout - the button is inside the sidebar nav with a LogOut SVG icon
+    await page.locator('nav:has(a[href*="/messages"]) button').click();
     await page.waitForTimeout(1000);
 
     // Try to access messages
@@ -28,7 +29,7 @@ test.describe("Messaging logout", () => {
     await loginAsClient(page);
     await openConversationList(page);
 
-    await page.getByRole("button", { name: /log out/i }).click();
+    await page.locator('nav:has(a[href*="/messages"]) button').click();
     await page.waitForTimeout(1000);
 
     await page.goto("/ar/messages/some-conversation-id");

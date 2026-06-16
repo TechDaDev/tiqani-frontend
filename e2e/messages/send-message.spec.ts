@@ -13,7 +13,7 @@ test.describe("Send message", () => {
   });
 
   test("send button is disabled for empty input", async ({ page }) => {
-    const firstLink = page.locator("a[href*='/ar/messages/']").first();
+    const firstLink = page.locator("a[href*='/messages/']").first();
     if (await firstLink.isVisible()) {
       await firstLink.click();
       await page.waitForTimeout(500);
@@ -24,7 +24,7 @@ test.describe("Send message", () => {
   });
 
   test("textarea accepts input", async ({ page }) => {
-    const firstLink = page.locator("a[href*='/ar/messages/']").first();
+    const firstLink = page.locator("a[href*='/messages/']").first();
     if (await firstLink.isVisible()) {
       await firstLink.click();
       await page.waitForTimeout(500);
@@ -36,7 +36,7 @@ test.describe("Send message", () => {
   });
 
   test("can send and see message", async ({ page }) => {
-    const firstLink = page.locator("a[href*='/ar/messages/']").first();
+    const firstLink = page.locator("a[href*='/messages/']").first();
     if (await firstLink.isVisible()) {
       await firstLink.click();
       await page.waitForTimeout(500);

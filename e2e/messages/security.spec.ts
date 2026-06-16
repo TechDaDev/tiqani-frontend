@@ -14,7 +14,7 @@ test.describe("Messaging security", () => {
     // Login as client
     await loginAsClient(page);
     // Try to access a non-existent conversation
-    await page.goto(`/ar/messages/${NONEXISTENT_UUID}`);
+    await page.goto(`/messages/${NONEXISTENT_UUID}`);
     await page.waitForTimeout(1000);
 
     // Should not crash or show data - either 404 page or safe error
@@ -35,7 +35,7 @@ test.describe("Messaging security", () => {
   });
 
   test("anonymous cannot access specific conversation", async ({ page }) => {
-    await page.goto(`/ar/messages/${NONEXISTENT_UUID}`);
+    await page.goto(`/messages/${NONEXISTENT_UUID}`);
     await page.waitForTimeout(1000);
     await expect(page).toHaveURL(/login/);
   });

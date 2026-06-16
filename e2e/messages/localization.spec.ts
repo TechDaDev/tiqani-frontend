@@ -23,7 +23,7 @@ test.describe("Messaging localization", () => {
     await page.goto("/en/login");
     await page.locator("input[type='text']").first().fill("e2e_client");
     await page.locator("input[type='password']").first().fill("local-test-only");
-    await page.getByRole("button", { name: /login/i }).click();
+    await page.locator('button[type="submit"]').click();
     await page.waitForURL("**/account");
 
     await page.goto("/en/messages");

@@ -5,7 +5,7 @@
 
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { browserRequest } from "@/lib/api/browser-client";
 import { mapServiceRequest } from "./mappers";
 import type { ServiceRequest, CreateServiceRequestPayload, RequestListFilters } from "./types";
@@ -31,10 +31,9 @@ export function useClientRequests(filters?: RequestListFilters) {
     }
   }, [filters?.status]);
 
-  // Fetch on first call
-  if (data === undefined && !error && isLoading) {
+  useEffect(() => {
     fetch();
-  }
+  }, [fetch]);
 
   return { data, isLoading, error, refetch: fetch };
 }
@@ -58,9 +57,9 @@ export function useClientRequestDetail(requestId: string) {
     }
   }, [requestId]);
 
-  if (data === undefined && !error && isLoading) {
+  useEffect(() => {
     fetch();
-  }
+  }, [fetch]);
 
   return { data, isLoading, error, refetch: fetch };
 }
@@ -153,9 +152,9 @@ export function useTechnicianRequests(filters?: RequestListFilters) {
     }
   }, [filters?.status]);
 
-  if (data === undefined && !error && isLoading) {
+  useEffect(() => {
     fetch();
-  }
+  }, [fetch]);
 
   return { data, isLoading, error, refetch: fetch };
 }
@@ -179,9 +178,9 @@ export function useTechnicianRequestDetail(requestId: string) {
     }
   }, [requestId]);
 
-  if (data === undefined && !error && isLoading) {
+  useEffect(() => {
     fetch();
-  }
+  }, [fetch]);
 
   return { data, isLoading, error, refetch: fetch };
 }

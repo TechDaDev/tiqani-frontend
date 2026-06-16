@@ -46,7 +46,7 @@ export async function markConversationRead(page: Page, conversationId: string): 
  * Get the displayed unread count from the navigation badge.
  */
 export async function getUnreadCount(page: Page): Promise<number> {
-  const badge = page.locator("nav a[href*='/ar/messages']").locator("span.rounded-full");
+  const badge = page.locator("nav a[href*='/messages']").locator("span.rounded-full");
   if (await badge.isVisible()) {
     const text = await badge.textContent();
     if (text === "99+") return 100;

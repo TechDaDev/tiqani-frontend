@@ -22,16 +22,16 @@ test.describe("Client conversations", () => {
   test("opens a conversation from the list", async ({ page }) => {
     await openConversationList(page);
     // Click the first conversation link
-    const firstLink = page.locator("a[href*='/ar/messages/']").first();
+    const firstLink = page.locator("a[href*='/messages/']").first();
     await expect(firstLink).toBeVisible();
     await firstLink.click();
     // Should navigate to conversation detail
-    await expect(page).toHaveURL(/\/ar\/messages\//);
+    await expect(page).toHaveURL(/\/messages\//);
   });
 
   test("displays message history in conversation", async ({ page }) => {
     await openConversationList(page);
-    const firstLink = page.locator("a[href*='/ar/messages/']").first();
+    const firstLink = page.locator("a[href*='/messages/']").first();
     if (await firstLink.isVisible()) {
       await firstLink.click();
       await page.waitForTimeout(1000);
@@ -43,7 +43,7 @@ test.describe("Client conversations", () => {
 
   test("can send a message", async ({ page }) => {
     await openConversationList(page);
-    const firstLink = page.locator("a[href*='/ar/messages/']").first();
+    const firstLink = page.locator("a[href*='/messages/']").first();
     if (await firstLink.isVisible()) {
       await firstLink.click();
       await page.waitForTimeout(500);
@@ -55,7 +55,7 @@ test.describe("Client conversations", () => {
 
   test("message persists after reload", async ({ page }) => {
     await openConversationList(page);
-    const firstLink = page.locator("a[href*='/ar/messages/']").first();
+    const firstLink = page.locator("a[href*='/messages/']").first();
     if (await firstLink.isVisible()) {
       const href = await firstLink.getAttribute("href");
       await firstLink.click();
@@ -75,7 +75,7 @@ test.describe("Client conversations", () => {
 
   test("conversation cannot reopen after logout", async ({ page, context }) => {
     await openConversationList(page);
-    const firstLink = page.locator("a[href*='/ar/messages/']").first();
+    const firstLink = page.locator("a[href*='/messages/']").first();
     if (await firstLink.isVisible()) {
       const href = await firstLink.getAttribute("href");
 

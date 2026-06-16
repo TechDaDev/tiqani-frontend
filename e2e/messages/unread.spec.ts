@@ -19,7 +19,7 @@ test.describe("Unread messages", () => {
 
     if (countBefore > 0) {
       // Open first conversation with unread
-      const firstLink = page.locator("a[href*='/ar/messages/']").first();
+      const firstLink = page.locator("a[href*='/messages/']").first();
       await firstLink.click();
       await page.waitForTimeout(1500); // Wait for mark-read to complete
 
