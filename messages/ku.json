@@ -548,7 +548,8 @@
   },
   "unreadMessages": {
     "ariaLabel": "{count} پەیامی نەخوێندراوە",
-    "label": "نەخوێندراوە"  },
+    "label": "نەخوێندراوە"
+  },
   "offers": {
     "title": "پێشنیارەکان",
     "myOffers": "پێشنیارەکانی من",
@@ -648,5 +649,57 @@
     "paymentNote": "پارەدان و گەرەنتی هێشتا چالاک نەکراوە.",
     "statusLabels": {
       "draft": "ڕەشنوس"
-    }  }
+    }
+  },
+  "paymentStatus": {
+    "unfunded": "Unfunded",
+    "pending": "Pending",
+    "funded": "Funded",
+    "failed": "Failed"
+  },
+  "funding": {
+    "fundContract": "Fund Contract",
+    "fundingStatus": "Funding Status",
+    "status": "Status",
+    "agreedAmount": "Agreed Amount",
+    "escrowHeld": "Escrow Held",
+    "fundsNotReleased": "Funds are held in escrow and have not been released to the technician.",
+    "paymentDetails": "Payment Details",
+    "serviceFee": "Service Fee",
+    "totalAmount": "Total Amount",
+    "sandboxNotice": "This is a test/sandbox payment. No real funds are used.",
+    "startFunding": "Start Funding",
+    "starting": "Starting...",
+    "intentCreated": "Payment intent created successfully",
+    "completePayment": "Complete the payment using the sandbox controls below.",
+    "confirmPayment": "Confirm Payment",
+    "sandboxConfirmNotice": "Use the controls below to simulate a successful or failed payment.",
+    "simulateSuccess": "Simulate Success",
+    "simulateFailure": "Simulate Failure",
+    "fundingSuccess": "Funding Successful",
+    "fundingSuccessDesc": "Your payment has been confirmed. The funds are now held in escrow.",
+    "fundingFailed": "Payment Failed",
+    "fundingFailedDesc": "The payment was not successful. You can try again.",
+    "fundingError": "An error occurred while starting funding.",
+    "confirmError": "An error occurred while confirming payment.",
+    "loadingError": "Failed to load funding information.",
+    "retry": "Try Again",
+    "fundedBadge": "Funded",
+    "notFunded": "Not yet funded"
+  },
+  "escrow": {
+    "title": "Escrow",
+    "held": "Held",
+    "amount": "Escrow Amount",
+    "status": "Escrow Status",
+    "notReleased": "Funds are held securely and will be released only after work completion."
+  },
+  "paymentErrors": {
+    "notEligible": "This contract is not eligible for funding.",
+    "alreadyFunded": "This contract is already funded.",
+    "pendingPayment": "A payment is already pending for this contract.",
+    "notFound": "Contract not found.",
+    "unauthorized": "You are not authorized to fund this contract.",
+    "sandboxOnly": "Sandbox payment is only available in development mode."
+  }
 }
