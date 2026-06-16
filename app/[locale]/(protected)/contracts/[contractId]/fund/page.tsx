@@ -39,6 +39,9 @@ export default function ContractFundingPage() {
   const [result, setResult] = useState<"success" | "failure" | null>(null);
   const [error, setError] = useState<string | null>(null);
 
+  const { user } = useAuth();
+  const currentUserIsTechnician = user ? isTechnician(user.role as Parameters<typeof isTechnician>[0]) : false;
+
   const fetchData = useCallback(async () => {
     setIsLoading(true);
     setError(null);
@@ -50,7 +53,7 @@ export default function ContractFundingPage() {
       setEligibility(elig);
       setFundingStatus(status);
       // If there's already a pending intent, populate paymentIntent for sandbox confirm
-      const activeIntent = (status as Record<string, unknown>)?.active_intent as Record<string, unknown> | undefined;
+      const activeIntent = status.active_intent;
       if (activeIntent && !paymentIntent) {
         setPaymentIntent(activeIntent as unknown as PaymentIntent);
       }
@@ -114,9 +117,6 @@ export default function ContractFundingPage() {
       </div>
     );
   }
-
-  const { user } = useAuth();
-  const currentUserIsTechnician = user ? isTechnician(user.role as Parameters<typeof isTechnician>[0]) : false;
 
   return (
     <div className="mx-auto max-w-2xl space-y-6 py-8">
