@@ -548,6 +548,105 @@
   },
   "unreadMessages": {
     "ariaLabel": "{count} پەیامی نەخوێندراوە",
-    "label": "نەخوێندراوە"
-  }
+    "label": "نەخوێندراوە"  },
+  "offers": {
+    "title": "پێشنیارەکان",
+    "myOffers": "پێشنیارەکانی من",
+    "incomingOffers": "پێشنیارە وارده‌کان",
+    "createOffer": "دروستکردنی پێشنیار",
+    "offerDetail": "وردەکارییەکانی پێشنیار",
+    "amount": "بڕ",
+    "description": "وەسف",
+    "duration": "ماوە (ڕۆژ)",
+    "currency": "د.ع",
+    "status": "ڕەوش",
+    "createdAt": "ڕێکەوتی دروستکردن",
+    "updatedAt": "دوایین نوێکردنەوە",
+    "serviceRequest": "داواکاری خزمەتگوزاری",
+    "technician": "تەکنیک",
+    "client": "کڕیار",
+    "noOffers": "هێشتا پێشنیار نییە.",
+    "noIncomingOffers": "هیچ پێشنیارێکی واردة نییە.",
+    "areYouSure": "دڵنیایت؟",
+    "acceptConfirm": "قبوڵکردنی ئەم پێشنیارە عەقدێک دروست دەکات. ئەم کارە ناگەڕێتەوە.",
+    "rejectConfirm": "دڵنیایت لە ڕەتکردنی ئەم پێشنیارە؟",
+    "withdrawConfirm": "دڵنیایت لە کشانەوەی ئەم پێشنیارە؟",
+    "statusLabels": {
+      "DRAFT": "ڕەشنوس",
+      "SUBMITTED": "نێردراو",
+      "ACCEPTED": "قبوڵ کراو",
+      "REJECTED": "ڕەت کراو",
+      "WITHDRAWN": "کشێنراو"
+    },
+    "statusDescriptions": {
+      "DRAFT": "ئەم پێشنیارە هێشتا لە ژێر ئامادەکاریە.",
+      "SUBMITTED": "ئەم پێشنیارە چاوەڕوانی پێداچوونەوەی کڕیارە.",
+      "ACCEPTED": "ئەم پێشنیارە قبوڵ کراوە.",
+      "REJECTED": "ئەم پێشنیارە ڕەت کراوە.",
+      "WITHDRAWN": "ئەم پێشنیارە کێشراوە."
+    }
+  },
+  "offerForm": {
+    "title": "دروستکردنی پێشنیارەکەت",
+    "amountLabel": "بڕی پێشنیارکراو (د.ع)",
+    "amountPlaceholder": "نرخی گشتی بنووسە",
+    "descriptionLabel": "ماوەی کار",
+    "descriptionPlaceholder": "بە وردی بنووسە کە چی دەکەیت",
+    "durationLabel": "ماوەی خەمڵێنراو (ڕۆژ)",
+    "durationPlaceholder": "بۆ نموونە: 3",
+    "submit": "ناردنی پێشنیار",
+    "submitting": "ناردن...",
+    "saving": "پاشەکەوتکردن...",
+    "edit": "دەستکاری پێشنیار",
+    "cancel": "پاشگەزبوونەوە",
+    "validation": {
+      "amountRequired": "بڕە پارە پێویستە.",
+      "amountPositive": "بڕە پارە دەبێت لە سفر زیاتر بێت.",
+      "descriptionRequired": "وەسف پێویستە.",
+      "durationPositive": "ماوە دەبێت ژمارەیەکی ئەرێنی بێت."
+    }
+  },
+  "offerActions": {
+    "submit": "ناردن",
+    "withdraw": "کشانەوە",
+    "accept": "قبوڵکردنی پێشنیار",
+    "reject": "ڕەتکردنی پێشنیار",
+    "view": "بینین",
+    "edit": "دەستکاری",
+    "accepting": "قبوڵکردن...",
+    "rejecting": "ڕەتکردن...",
+    "submitting": "ناردن...",
+    "withdrawing": "کشانەوە...",
+    "accepted": "قبوڵ کراو",
+    "rejected": "ڕەت کراو",
+    "contractCreated": "عەقدێک لەم پێشنیارە دروست کراوە."
+  },
+  "offerErrors": {
+    "loadFailed": "بارکردنی پێشنیارەکان سەرکەوتوو نەبوو.",
+    "createFailed": "دروستکردنی پێشنیار سەرکەوتوو نەبوو.",
+    "updateFailed": "نوێکردنەوەی پێشنیار سەرکەوتوو نەبوو.",
+    "submitFailed": "ناردنی پێشنیار سەرکەوتوو نەبوو.",
+    "withdrawFailed": "کشانەوەی پێشنیار سەرکەوتوو نەبوو.",
+    "acceptFailed": "قبوڵکردنی پێشنیار سەرکەوتوو نەبوو.",
+    "rejectFailed": "ڕەتکردنی پێشنیار سەرکەوتوو نەبوو.",
+    "notFound": "پێشنیار نەدۆزرایەوە.",
+    "conflict": "ئەم کارە لە ڕەوشی ئێستادا ڕێگەپێدراو نییە."
+  },
+  "contracts": {
+    "title": "عەقد",
+    "contractDetail": "وردەکارییەکانی عەقد",
+    "reference": "ژمارە",
+    "workDescription": "ماوەی کار",
+    "agreedAmount": "بڕی ڕێککەوتوو",
+    "status": "ڕەوش",
+    "currency": "د.ع",
+    "client": "کڕیار",
+    "technician": "تەکنیک",
+    "createdAt": "ڕێکەوتی دروستکردن",
+    "noContracts": "هێشتا عەقد نییە.",
+    "createdFromOffer": "ئەم عەقدە لە پێشنیارێکی قبوڵکراو دروست کراوە.",
+    "paymentNote": "پارەدان و گەرەنتی هێشتا چالاک نەکراوە.",
+    "statusLabels": {
+      "draft": "ڕەشنوس"
+    }  }
 }

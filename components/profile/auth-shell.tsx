@@ -16,6 +16,8 @@ import {
   Inbox,
   Send,
   MessageSquare,
+  FileText,
+  Handshake,
 } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/components/auth/auth-provider";
@@ -35,6 +37,8 @@ export function AuthShell({ children }: ShellProps) {
   const tAccount = useTranslations("account");
   const tNav = useTranslations("navigation");
   const tCommon = useTranslations("common");
+  const tOffers = useTranslations("offers");
+  const tContracts = useTranslations("contracts");
   const { user, logout } = useAuth();
   const params = useParams();
   const pathname = usePathname();
@@ -105,6 +109,18 @@ export function AuthShell({ children }: ShellProps) {
       href: `/${locale}/technician/requests`,
       icon: <Inbox className="h-4 w-4" />,
       showFor: ["technician"],
+    },
+    {
+      label: tOffers("myOffers"),
+      href: `/${locale}/technician/offers`,
+      icon: <FileText className="h-4 w-4" />,
+      showFor: ["technician"],
+    },
+    {
+      label: tOffers("incomingOffers"),
+      href: `/${locale}/offers`,
+      icon: <Handshake className="h-4 w-4" />,
+      showFor: ["client"],
     },
   ];
 

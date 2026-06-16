@@ -2,7 +2,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { ArrowRight, Loader2, Check, X } from "lucide-react";
+import { ArrowRight, Loader2, Check, X, FileText } from "lucide-react";
 import { useTechnicianRequestDetail, useAcceptRequest, useDeclineRequest } from "@/lib/requests/query";
 import { getAllowedTechnicianActions } from "@/lib/requests/status";
 import { RequestStatusBadge } from "@/components/requests/request-status-badge";
@@ -167,6 +167,17 @@ export default function TechnicianRequestDetailPage() {
               {t("declineRequest")}
             </Button>
           )}
+        </div>
+      )}
+
+      {request.status === "ACCEPTED" && (
+        <div className="mt-4">
+          <Link href={`/${locale}/technician/offers/new/${requestId}`}>
+            <Button className="w-full sm:w-auto">
+              <FileText className="ml-2 h-4 w-4" />
+              Create Offer
+            </Button>
+          </Link>
         </div>
       )}
     </div>

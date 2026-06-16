@@ -551,5 +551,106 @@
   "unreadMessages": {
     "ariaLabel": "{count} رسائل غير مقروءة",
     "label": "غير مقروء"
+  },
+  "offers": {
+    "title": "العروض",
+    "myOffers": "عروضي",
+    "incomingOffers": "العروض الواردة",
+    "createOffer": "إنشاء عرض",
+    "offerDetail": "تفاصيل العرض",
+    "amount": "المبلغ",
+    "description": "الوصف",
+    "duration": "المدة (أيام)",
+    "currency": "د.ع",
+    "status": "الحالة",
+    "createdAt": "تاريخ الإنشاء",
+    "updatedAt": "آخر تحديث",
+    "serviceRequest": "طلب الخدمة",
+    "technician": "الفني",
+    "client": "العميل",
+    "noOffers": "لا توجد عروض بعد.",
+    "noIncomingOffers": "لا توجد عروض واردة.",
+    "areYouSure": "هل أنت متأكد؟",
+    "acceptConfirm": "قبول هذا العرض سيؤدي إلى إنشاء عقد. لا يمكن التراجع عن هذا الإجراء.",
+    "rejectConfirm": "هل أنت متأكد من رفض هذا العرض؟",
+    "withdrawConfirm": "هل أنت متأكد من سحب هذا العرض؟",
+    "statusLabels": {
+      "DRAFT": "مسودة",
+      "SUBMITTED": "مُرسَل",
+      "ACCEPTED": "مقبول",
+      "REJECTED": "مرفوض",
+      "WITHDRAWN": "مُسحَب"
+    },
+    "statusDescriptions": {
+      "DRAFT": "هذا العرض لا يزال قيد الإعداد.",
+      "SUBMITTED": "هذا العرض بانتظار مراجعة العميل.",
+      "ACCEPTED": "تم قبول هذا العرض.",
+      "REJECTED": "تم رفض هذا العرض.",
+      "WITHDRAWN": "تم سحب هذا العرض."
+    }
+  },
+  "offerForm": {
+    "title": "إنشاء عرضك",
+    "amountLabel": "المبلغ المقترح (د.ع)",
+    "amountPlaceholder": "أدخل السعر الإجمالي",
+    "descriptionLabel": "نطاق العمل",
+    "descriptionPlaceholder": "صف بالتفصيل ما الذي ستفعله",
+    "durationLabel": "المدة المقدرة (أيام)",
+    "durationPlaceholder": "مثال: 3",
+    "submit": "إرسال العرض",
+    "submitting": "جاري الإرسال...",
+    "saving": "جاري الحفظ...",
+    "edit": "تعديل العرض",
+    "cancel": "إلغاء",
+    "validation": {
+      "amountRequired": "المبلغ مطلوب.",
+      "amountPositive": "يجب أن يكون المبلغ أكبر من صفر.",
+      "descriptionRequired": "الوصف مطلوب.",
+      "durationPositive": "يجب أن تكون المدة رقماً موجباً."
+    }
+  },
+  "offerActions": {
+    "submit": "إرسال",
+    "withdraw": "سحب",
+    "accept": "قبول العرض",
+    "reject": "رفض العرض",
+    "view": "عرض",
+    "edit": "تعديل",
+    "accepting": "جاري القبول...",
+    "rejecting": "جاري الرفض...",
+    "submitting": "جاري الإرسال...",
+    "withdrawing": "جاري السحب...",
+    "accepted": "مقبول",
+    "rejected": "مرفوض",
+    "contractCreated": "تم إنشاء عقد من هذا العرض."
+  },
+  "offerErrors": {
+    "loadFailed": "فشل تحميل العروض.",
+    "createFailed": "فشل إنشاء العرض.",
+    "updateFailed": "فشل تحديث العرض.",
+    "submitFailed": "فشل إرسال العرض.",
+    "withdrawFailed": "فشل سحب العرض.",
+    "acceptFailed": "فشل قبول العرض.",
+    "rejectFailed": "فشل رفض العرض.",
+    "notFound": "العرض غير موجود.",
+    "conflict": "هذا الإجراء غير مسموح به في الحالة الحالية."
+  },
+  "contracts": {
+    "title": "العقد",
+    "contractDetail": "تفاصيل العقد",
+    "reference": "المرجع",
+    "workDescription": "نطاق العمل",
+    "agreedAmount": "المبلغ المتفق عليه",
+    "status": "الحالة",
+    "currency": "د.ع",
+    "client": "العميل",
+    "technician": "الفني",
+    "createdAt": "تاريخ الإنشاء",
+    "noContracts": "لا توجد عقود بعد.",
+    "createdFromOffer": "تم إنشاء هذا العقد من عرض تم قبوله.",
+    "paymentNote": "لم يتم تفعيل الدفع والضمان بعد.",
+    "statusLabels": {
+      "draft": "مسودة"
+    }
   }
 }

@@ -551,5 +551,106 @@
   "unreadMessages": {
     "ariaLabel": "{count} unread {count, plural, one {message} other {messages}}",
     "label": "Unread"
+  },
+  "offers": {
+    "title": "Offers",
+    "myOffers": "My Offers",
+    "incomingOffers": "Incoming Offers",
+    "createOffer": "Create Offer",
+    "offerDetail": "Offer Detail",
+    "amount": "Amount",
+    "description": "Description",
+    "duration": "Duration (days)",
+    "currency": "IQD",
+    "status": "Status",
+    "createdAt": "Created",
+    "updatedAt": "Updated",
+    "serviceRequest": "Service Request",
+    "technician": "Technician",
+    "client": "Client",
+    "noOffers": "No offers yet.",
+    "noIncomingOffers": "No incoming offers.",
+    "areYouSure": "Are you sure?",
+    "acceptConfirm": "Accepting this offer will create a contract. This action cannot be undone.",
+    "rejectConfirm": "Are you sure you want to reject this offer?",
+    "withdrawConfirm": "Are you sure you want to withdraw this offer?",
+    "statusLabels": {
+      "DRAFT": "Draft",
+      "SUBMITTED": "Submitted",
+      "ACCEPTED": "Accepted",
+      "REJECTED": "Rejected",
+      "WITHDRAWN": "Withdrawn"
+    },
+    "statusDescriptions": {
+      "DRAFT": "This offer is still being prepared.",
+      "SUBMITTED": "This offer is awaiting client review.",
+      "ACCEPTED": "This offer has been accepted.",
+      "REJECTED": "This offer has been rejected.",
+      "WITHDRAWN": "This offer has been withdrawn."
+    }
+  },
+  "offerForm": {
+    "title": "Create Your Offer",
+    "amountLabel": "Proposed amount (IQD)",
+    "amountPlaceholder": "Enter the total price",
+    "descriptionLabel": "Scope of work",
+    "descriptionPlaceholder": "Describe what you will do in detail",
+    "durationLabel": "Estimated duration (days)",
+    "durationPlaceholder": "e.g., 3",
+    "submit": "Submit Offer",
+    "submitting": "Submitting...",
+    "saving": "Saving...",
+    "edit": "Edit Offer",
+    "cancel": "Cancel",
+    "validation": {
+      "amountRequired": "Amount is required.",
+      "amountPositive": "Amount must be greater than zero.",
+      "descriptionRequired": "Description is required.",
+      "durationPositive": "Duration must be a positive number."
+    }
+  },
+  "offerActions": {
+    "submit": "Submit",
+    "withdraw": "Withdraw",
+    "accept": "Accept Offer",
+    "reject": "Reject Offer",
+    "view": "View Offer",
+    "edit": "Edit",
+    "accepting": "Accepting...",
+    "rejecting": "Rejecting...",
+    "submitting": "Submitting...",
+    "withdrawing": "Withdrawing...",
+    "accepted": "Accepted",
+    "rejected": "Rejected",
+    "contractCreated": "Contract created from this offer."
+  },
+  "offerErrors": {
+    "loadFailed": "Failed to load offers.",
+    "createFailed": "Failed to create offer.",
+    "updateFailed": "Failed to update offer.",
+    "submitFailed": "Failed to submit offer.",
+    "withdrawFailed": "Failed to withdraw offer.",
+    "acceptFailed": "Failed to accept offer.",
+    "rejectFailed": "Failed to reject offer.",
+    "notFound": "Offer not found.",
+    "conflict": "This action is not allowed in the current state."
+  },
+  "contracts": {
+    "title": "Contract",
+    "contractDetail": "Contract Detail",
+    "reference": "Reference",
+    "workDescription": "Scope of Work",
+    "agreedAmount": "Agreed Amount",
+    "status": "Status",
+    "currency": "IQD",
+    "client": "Client",
+    "technician": "Technician",
+    "createdAt": "Created",
+    "noContracts": "No contracts yet.",
+    "createdFromOffer": "This contract was created from an accepted offer.",
+    "paymentNote": "Payment and escrow have not yet been activated.",
+    "statusLabels": {
+      "draft": "Draft"
+    }
   }
 }
