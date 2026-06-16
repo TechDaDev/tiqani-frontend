@@ -2,21 +2,21 @@
  * Playwright E2E: Offer acceptance creates a contract.
  */
 import { test, expect } from "@playwright/test";
-import { OFFER_FIXTURES, OFFER_USER_FIXTURES, OFFER_PAGES } from "../fixtures/offers";
+import { OFFER_FIXTURES, OFFER_CONTRACT_FIXTURES, OFFER_USER_FIXTURES, OFFER_PAGES } from "../fixtures/offers";
 
 test.describe("Offer Acceptance and Contract", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/ar/login");
-    await page.fill('input[name="username"]', OFFER_USER_FIXTURES.client.username);
-    await page.fill('input[name="password"]', OFFER_USER_FIXTURES.client.password);
+    await page.goto("/en/login");
+    await page.fill('#username', OFFER_USER_FIXTURES.client.username);
+    await page.fill('#password', OFFER_USER_FIXTURES.client.password);
     await page.click('button[type="submit"]');
-    await page.waitForURL(/\/ar\/account/);
+    await page.waitForURL(/\/en\/account/);
   });
 
   test("client can view contract detail from accepted offer", async ({ page }) => {
     // Navigate to contract detail for the contract created from the accepted offer
-    await page.goto(OFFER_PAGES.contractDetail(OFFER_FIXTURES.accepted.uuid));
+    await page.goto(OFFER_PAGES.contractDetail(OFFER_CONTRACT_FIXTURES.fromAcceptedOffer.uuid));
     // Should show contract details without error
-    await expect(page.locator("text=ContractDetail").or(page.locator("text=Contract"))).toBeVisible();
+    await expect(page.locator("body")).toContainText("Scope of Work");
   });
 });

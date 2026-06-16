@@ -9,7 +9,7 @@ export default defineConfig({
   reporter: "html",
   globalSetup: "./e2e/globalSetup.ts",
   use: {
-    baseURL: "http://localhost:3000",
+    baseURL: "http://localhost:3002",
     trace: "on-first-retry",
   },
   projects: [

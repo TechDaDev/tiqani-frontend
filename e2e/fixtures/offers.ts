@@ -19,6 +19,7 @@ export const OFFER_FIXTURES = {
     uuid: "ab9e2ec2-b3fc-501b-a539-781005e5cb07",
     amount: "120000.00",
     status: "ACCEPTED",
+    contractUuid: "f603b727-4044-5ef0-a5cf-a0198dfcfa5c",
   },
   withdrawn: {
     uuid: "4a4f6261-23c5-5443-b6ff-0f943734d0cf",
@@ -54,10 +55,10 @@ export const OFFER_USER_FIXTURES = {
 } as const;
 
 export const OFFER_PAGES = {
-  technicianList: "/ar/technician/offers",
-  technicianDetail: (id: string) => `/ar/technician/offers/${id}`,
-  createOffer: (requestId: string) => `/ar/technician/offers/new/${requestId}`,
-  clientList: "/ar/offers",
-  clientDetail: (id: string) => `/ar/offers/${id}`,
-  contractDetail: (id: string) => `/ar/contracts/${id}`,
+  technicianList: "/en/technician/offers",
+  technicianDetail: (id: string) => `/en/technician/offers/${id}`,
+  createOffer: (requestId: string) => `/en/technician/offers/new/${requestId}`,
+  clientList: "/en/offers",
+  clientDetail: (id: string) => `/en/offers/${id}`,
+  contractDetail: (id: string) => `/en/contracts/${id}`,
 } as const;

@@ -6,11 +6,11 @@ import { OFFER_FIXTURES, OFFER_USER_FIXTURES, OFFER_PAGES } from "../fixtures/of
 
 test.describe("Client Offer Review", () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto("/ar/login");
-    await page.fill('input[name="username"]', OFFER_USER_FIXTURES.client.username);
-    await page.fill('input[name="password"]', OFFER_USER_FIXTURES.client.password);
+    await page.goto("/en/login");
+    await page.fill('#username', OFFER_USER_FIXTURES.client.username);
+    await page.fill('#password', OFFER_USER_FIXTURES.client.password);
     await page.click('button[type="submit"]');
-    await page.waitForURL(/\/ar\/account/);
+    await page.waitForURL(/\/en\/account/);
   });
 
   test("client can view incoming offers", async ({ page }) => {
@@ -21,7 +21,7 @@ test.describe("Client Offer Review", () => {
 
   test("client can view offer detail", async ({ page }) => {
     await page.goto(OFFER_PAGES.clientDetail(OFFER_FIXTURES.submitted.uuid));
-    await expect(page.locator("text=SUBMITTED")).toBeVisible();
+    await expect(page.locator("text=Submitted")).toBeVisible();
     await expect(page.locator("text=150,000")).toBeVisible();
   });
 
@@ -30,13 +30,13 @@ test.describe("Client Offer Review", () => {
     page.on("dialog", (dialog) => dialog.accept());
 
     await page.goto(OFFER_PAGES.clientDetail(OFFER_FIXTURES.forRejection.uuid));
-    await expect(page.locator("text=SUBMITTED")).toBeVisible();
+    await expect(page.locator("text=Submitted")).toBeVisible();
 
     // Click reject
     await page.click("text=Reject Offer");
     await page.waitForTimeout(1000);
 
     // Verify rejected state
-    await expect(page.locator("text=REJECTED")).toBeVisible();
+    await expect(page.locator("text=Rejected")).toBeVisible();
   });
 });
