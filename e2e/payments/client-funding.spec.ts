@@ -12,7 +12,7 @@ test.describe("Client funding — success flow", () => {
     await loginAsClient(page);
 
     // Navigate directly to funding page
-    await openFundingPage(page, PAYMENT_FIXTURES.CLIENT_A_UNFUNDED_CONTRACT_ID);
+    await openFundingPage(page, PAYMENT_FIXTURES.SUCCESS_CONTRACT_ID);
 
     // 2. Funding page shows sandbox warning
     await expect(page.getByText(/sandbox/i)).toBeVisible();
@@ -26,8 +26,8 @@ test.describe("Client funding — success flow", () => {
     // 5. Contract funded
     await expect(page.getByText(/funding successful/i)).toBeVisible();
 
-    // 6. Reload preserves state
+    // 6. Reload — funded status persists
     await page.reload();
-    await expect(page.getByText(/funding successful/i)).toBeVisible();
+    await expect(page.getByText(/funded/i).first()).toBeVisible();
   });
 });

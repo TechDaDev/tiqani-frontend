@@ -10,7 +10,7 @@ test.describe("Payment success flow", () => {
   test("sandbox success funds contract", async ({ page }) => {
     await loginAsClient(page);
 
-    await openFundingPage(page, PAYMENT_FIXTURES.CLIENT_A_UNFUNDED_CONTRACT_ID);
+    await openFundingPage(page, PAYMENT_FIXTURES.DUPLICATE_CONFIRM_CONTRACT_ID);
 
     await startFunding(page);
     await confirmSandboxSuccess(page);

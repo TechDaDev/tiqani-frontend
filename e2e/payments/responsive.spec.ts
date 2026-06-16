@@ -17,7 +17,7 @@ test.describe("Payment responsive", () => {
     test(`funding page at ${vp.width}px`, async ({ page }) => {
       await page.setViewportSize(vp);
       await loginAsClient(page);
-      await page.goto(`/en/contracts/${PAYMENT_FIXTURES.CLIENT_A_UNFUNDED_CONTRACT_ID}`);
+      await page.goto(`/en/contracts/${PAYMENT_FIXTURES.RESPONSIVE_CONTRACT_ID}`);
       await page.waitForLoadState("networkidle");
       // No horizontal overflow
       const overflowX = await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth);
@@ -29,7 +29,7 @@ test.describe("Payment responsive", () => {
 test.describe("Payment dark theme", () => {
   test("funding page renders in dark mode", async ({ page }) => {
     await loginAsClient(page);
-    await page.goto(`/en/contracts/${PAYMENT_FIXTURES.CLIENT_A_UNFUNDED_CONTRACT_ID}`);
+    await page.goto(`/en/contracts/${PAYMENT_FIXTURES.RESPONSIVE_CONTRACT_ID}`);
     await page.waitForLoadState("networkidle");
     // Toggle dark mode via the theme switcher
     const darkToggle = page.locator('button[aria-label*="dark"i], button[aria-label*="theme"i]').first();

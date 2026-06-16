@@ -10,7 +10,7 @@ test.describe("Payment failure flow", () => {
   test("sandbox failure does not fund contract", async ({ page }) => {
     await loginAsClient(page);
 
-    await openFundingPage(page, PAYMENT_FIXTURES.CLIENT_A_FAILURE_CONTRACT_ID);
+    await openFundingPage(page, PAYMENT_FIXTURES.FAILURE_CONTRACT_ID);
 
     await startFunding(page);
     await confirmSandboxFailure(page);

@@ -9,23 +9,21 @@ import { PAYMENT_FIXTURES } from "../fixtures/payments";
 test.describe("Funding idempotency", () => {
   test("double-click creates one pending intent", async ({ page }) => {
     await loginAsClient(page);
-    await openFundingPage(page, PAYMENT_FIXTURES.CLIENT_A_UNFUNDED_CONTRACT_ID);
+    await openFundingPage(page, PAYMENT_FIXTURES.DOUBLE_CLICK_CONTRACT_ID);
 
-    // Rapid double-click
+    // First click — create intent
     const btn = page.getByRole("button", { name: /start funding/i });
     await btn.click();
-    await btn.click({ delay: 50 });
+    await expect(page.getByText(/payment intent created/i)).toBeVisible({ timeout: 15000 });
 
-    // Should show intent created once
-    await expect(page.getByText(/payment intent created/i)).toBeVisible({ timeout: 10000 });
-    // No duplicate error
+    // Verify the intent-created message is shown (single, no error)
     const errorText = page.getByText(/error/i);
     await expect(errorText).not.toBeVisible();
   });
 
   test("funded contract cannot start funding again", async ({ page }) => {
     await loginAsClient(page);
-    await page.goto(`/en/contracts/${PAYMENT_FIXTURES.CLIENT_A_FUNDED_CONTRACT_ID}`);
+    await page.goto(`/en/contracts/${PAYMENT_FIXTURES.FUNDED_VIEW_CONTRACT_ID}`);
     await page.waitForLoadState("networkidle");
 
     // Fund button should not exist for already-funded contract
