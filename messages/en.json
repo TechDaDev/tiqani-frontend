@@ -33,7 +33,8 @@
     "login": "Login",
     "createAccount": "Create Account",
     "myRequests": "My Requests",
-    "incomingRequests": "Incoming Requests"
+    "incomingRequests": "Incoming Requests",
+    "messages": "Messages"
   },
   "hero": {
     "badge": "Secure technical services platform",

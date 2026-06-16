@@ -1,23 +1,21 @@
 "use client";
 
-import { type ReactNode } from "react";
+import { type ReactNode, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useParams, usePathname } from "next/navigation";
 import Link from "next/link";
 import {
   User,
-  Settings,
   Briefcase,
   ClipboardList,
   ChevronRight,
   LogOut,
   Shield,
-  CheckCircle2,
-  AlertCircle,
   Menu,
   X,
   Inbox,
   Send,
+  MessageSquare,
 } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/components/auth/auth-provider";
@@ -25,6 +23,7 @@ import { PublicHeader } from "@/components/layout/public-header";
 import { PublicFooter } from "@/components/layout/public-footer";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useUnreadCount } from "@/lib/messages/query";
 import type { Locale } from "@/lib/i18n/routing";
 
 type ShellProps = {
@@ -43,14 +42,26 @@ export function AuthShell({ children }: ShellProps) {
   const isRtl = locale === "ar" || locale === "ku";
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { data: unreadData, startPolling, stopPolling } = useUnreadCount();
+
+  // Start/stop unread polling based on user session
+  useEffect(() => {
+    if (user) {
+      startPolling();
+    }
+    return () => stopPolling();
+  }, [user, startPolling, stopPolling]);
 
   if (!user) return null;
+
+  const unreadTotal = unreadData?.total_unread ?? 0;
 
   const navItems: Array<{
     label: string;
     href: string;
     icon: ReactNode;
     showFor: string[];
+    badge?: number;
   }> = [
     {
       label: tAccount("title"),
@@ -75,6 +86,13 @@ export function AuthShell({ children }: ShellProps) {
       href: `/${locale}/onboarding`,
       icon: <ClipboardList className="h-4 w-4" />,
       showFor: ["technician"],
+    },
+    {
+      label: tNav("messages"),
+      href: `/${locale}/messages`,
+      icon: <MessageSquare className="h-4 w-4" />,
+      showFor: ["client", "technician"],
+      badge: unreadTotal,
     },
     {
       label: tNav("myRequests"),
@@ -146,6 +164,19 @@ export function AuthShell({ children }: ShellProps) {
                   >
                     {item.icon}
                     <span>{item.label}</span>
+                    {item.badge !== undefined && item.badge > 0 && (
+                      <span
+                        className={cn(
+                          "inline-flex items-center justify-center min-w-[20px] h-5 px-1.5 rounded-full text-xs font-medium leading-none",
+                          isActive(item.href)
+                            ? "bg-white text-primary"
+                            : "bg-blue-600 text-white"
+                        )}
+                        aria-label={`${item.badge} unread ${item.badge === 1 ? "message" : "messages"}`}
+                      >
+                        {item.badge > 99 ? "99+" : String(item.badge)}
+                      </span>
+                    )}
                     {isRtl ? (
                       <ChevronRight
                         className={cn(

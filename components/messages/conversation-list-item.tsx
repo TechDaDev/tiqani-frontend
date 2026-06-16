@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { UnreadBadge } from "./unread-badge";
 import type { Conversation } from "@/lib/messages/types";
@@ -37,9 +38,11 @@ export function ConversationListItem({ conversation }: ConversationListItemProps
     >
       <div className="flex-shrink-0 w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold text-sm">
         {otherUser.profile_image ? (
-          <img
+          <Image
             src={otherUser.profile_image}
             alt={otherUser.full_name}
+            width={48}
+            height={48}
             className="w-12 h-12 rounded-full object-cover"
           />
         ) : (

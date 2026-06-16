@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import type { ConversationDetail } from "@/lib/messages/types";
 
@@ -37,9 +38,11 @@ export function ConversationHeader({ conversation }: ConversationHeaderProps) {
 
       <div className="flex-shrink-0 w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-700 font-semibold text-sm">
         {otherUser.profile_image ? (
-          <img
+          <Image
             src={otherUser.profile_image}
             alt={otherUser.full_name}
+            width={40}
+            height={40}
             className="w-10 h-10 rounded-full object-cover"
           />
         ) : (

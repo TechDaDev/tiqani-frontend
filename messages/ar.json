@@ -33,7 +33,8 @@
     "login": "تسجيل الدخول",
     "createAccount": "إنشاء حساب",
     "myRequests": "طلباتي",
-    "incomingRequests": "الطلبات الواردة"
+    "incomingRequests": "الطلبات الواردة",
+    "messages": "الرسائل"
   },
   "hero": {
     "badge": "منصة خدمات تقنية آمنة",

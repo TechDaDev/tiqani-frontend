@@ -7,9 +7,8 @@ import { z } from "zod";
 export const sendMessageSchema = z.object({
   body: z
     .string()
-    .min(1, "Message cannot be empty")
-    .max(2000, "Message must be 2000 characters or less")
-    .transform((s) => s.trim()),
+    .transform((s) => s.trim())
+    .pipe(z.string().min(1, "Message cannot be empty").max(2000, "Message must be 2000 characters or less")),
 });
 
 export const conversationIdSchema = z.string().uuid("Invalid conversation ID");

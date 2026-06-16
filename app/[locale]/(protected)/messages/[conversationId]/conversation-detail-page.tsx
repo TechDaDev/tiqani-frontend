@@ -54,7 +54,7 @@ export default function ConversationDetailPage({
     if (conversation && conversation.unread_count > 0) {
       markRead();
     }
-  }, [conversation?.id, conversation?.unread_count, markRead]);
+  }, [conversation, markRead]);
 
   if (convLoading) {
     return (
