@@ -7,8 +7,8 @@ import { OFFER_FIXTURES, OFFER_USER_FIXTURES, OFFER_PAGES } from "../fixtures/of
 test.describe("Offer Security", () => {
   test("anonymous user is redirected from offer pages", async ({ page }) => {
     await page.goto(OFFER_PAGES.technicianList);
-    // Should redirect to login
-    await expect(page).toHaveURL(/\/en\/login/);
+    // Should redirect to login (allow up to 15s for middleware compilation)
+    await expect(page).toHaveURL(/\/en\/login/, { timeout: 15_000 });
   });
 
   test("client cannot view technician offer list", async ({ page }) => {

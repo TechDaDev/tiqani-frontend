@@ -19,10 +19,8 @@ test.describe("Messaging logout", () => {
 
     // Try to access messages
     await page.goto("/ar/messages");
-    await page.waitForTimeout(1000);
-
-    // Should redirect to login
-    await expect(page).toHaveURL(/login/);
+    // Should redirect to login (allow up to 15s for middleware compilation)
+    await expect(page).toHaveURL(/login/, { timeout: 15_000 });
   });
 
   test("specific conversation redirects after logout", async ({ page }) => {
@@ -33,8 +31,7 @@ test.describe("Messaging logout", () => {
     await page.waitForTimeout(1000);
 
     await page.goto("/ar/messages/some-conversation-id");
-    await page.waitForTimeout(1000);
-
-    await expect(page).toHaveURL(/login/);
+    // Allow up to 15s for middleware compilation on fresh Next.js dev boot
+    await expect(page).toHaveURL(/login/, { timeout: 15_000 });
   });
 });

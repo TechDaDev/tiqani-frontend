@@ -16,6 +16,8 @@ test.describe("Offer Acceptance and Contract", () => {
   test("client can view contract detail from accepted offer", async ({ page }) => {
     // Navigate to contract detail for the contract created from the accepted offer
     await page.goto(OFFER_PAGES.contractDetail(OFFER_CONTRACT_FIXTURES.fromAcceptedOffer.uuid));
+    // Wait for page to load (allows up to 15s for first compilation)
+    await page.waitForLoadState("networkidle", { timeout: 15_000 });
     // Should show contract details without error
     await expect(page.locator("body")).toContainText("Scope of Work");
   });

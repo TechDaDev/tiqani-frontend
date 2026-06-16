@@ -29,15 +29,14 @@ test.describe("Messaging security", () => {
   test("anonymous access redirects to login", async ({ page }) => {
     // Not logged in
     await page.goto("/ar/messages");
-    await page.waitForTimeout(1000);
-    // Should redirect to login
-    await expect(page).toHaveURL(/login/);
+    // Should redirect to login (allow up to 10s for middleware compilation)
+    await expect(page).toHaveURL(/login/, { timeout: 10_000 });
   });
 
   test("anonymous cannot access specific conversation", async ({ page }) => {
     await page.goto(`/messages/${NONEXISTENT_UUID}`);
-    await page.waitForTimeout(1000);
-    await expect(page).toHaveURL(/login/);
+    // Should redirect to login (allow up to 10s for middleware compilation)
+    await expect(page).toHaveURL(/login/, { timeout: 10_000 });
   });
 
   test("technician cannot access client-only data", async ({ page }) => {
