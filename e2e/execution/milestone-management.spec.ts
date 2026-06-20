@@ -50,13 +50,11 @@ test.describe("Milestone management", () => {
 
   test("unrelated client cannot access milestones", async ({ page }) => {
     await loginAsClient(page);
-    // Client B's contract
-    await openMilestonesPage(page, EXECUTION_FIXTURES.CLIENT_B_ONLY_CONTRACT_ID);
-    // Should show error or 404
-    // Should show error state, not milestone UI
-    const body = await page.innerText("body");
-    const hasMilestoneUI = body.includes("#1") || body.includes("Create Milestone");
-    expect(hasMilestoneUI).toBeFalsy();
+    // The milestones API should deny access for unrelated contracts
+    const resp = await page.request.get(
+      `/api/contracts/${EXECUTION_FIXTURES.CLIENT_B_ONLY_CONTRACT_ID}/milestones/`
+    );
+    expect(resp.ok()).toBeFalsy();
   });
 
   test("reload preserves milestone order", async ({ page }) => {

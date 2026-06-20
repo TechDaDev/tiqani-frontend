@@ -14,10 +14,11 @@ import { EXECUTION_FIXTURES } from "../fixtures/execution";
 test.describe("Execution permissions", () => {
   test("Client A cannot access Client B execution", async ({ page }) => {
     await loginAsClient(page);
-    await openExecutionPage(page, EXECUTION_FIXTURES.CLIENT_B_ONLY_CONTRACT_ID);
-    const body = await page.innerText("body");
-    const isDenied = body.includes("404") || body.includes("not found") || body.includes("error");
-    expect(isDenied).toBeTruthy();
+    // The eligibility API should deny access for unrelated contracts
+    const resp = await page.request.get(
+      `/api/contracts/${EXECUTION_FIXTURES.CLIENT_B_ONLY_CONTRACT_ID}/execution/eligibility/`
+    );
+    expect(resp.status()).toBe(404);
   });
 
   test("Technician A cannot access Technician B execution", async ({ page }) => {

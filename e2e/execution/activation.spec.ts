@@ -44,13 +44,11 @@ test.describe("Contract activation", () => {
 
   test("unrelated client cannot access activation contract", async ({ page }) => {
     await loginAsClient(page);
-    // Client B's contract
-    await page.goto(`/en/contracts/${EXECUTION_FIXTURES.CLIENT_B_ONLY_CONTRACT_ID}/execution`);
-    await page.waitForLoadState("networkidle");
-    // Should show error state (not the execution UI)
-    const body = await page.innerText("body");
-    const hasError = body.includes("error") || body.includes("not found") || body.includes("403") || body.includes("Something went wrong");
-    expect(hasError || page.url().includes("login")).toBeTruthy();
+    // The API should deny access for unrelated contracts
+    const resp = await page.request.get(
+      `/api/contracts/${EXECUTION_FIXTURES.CLIENT_B_ONLY_CONTRACT_ID}/execution/eligibility/`
+    );
+    expect(resp.status()).toBe(404);
   });
 
   test("duplicate activation is safe", async ({ page }) => {

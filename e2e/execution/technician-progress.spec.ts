@@ -20,7 +20,6 @@ test.describe("Technician progress — milestone start", () => {
     const statusBadge = page.getByRole("status").filter({ hasText: /pending/i });
     await expect(statusBadge).toBeVisible({ timeout: 5000 });
   });
-  });
 
   test("client cannot start milestone", async ({ page }) => {
     await loginAsClient(page);

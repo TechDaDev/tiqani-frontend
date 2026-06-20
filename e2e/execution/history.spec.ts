@@ -38,12 +38,11 @@ test.describe("Execution history", () => {
 
   test("unrelated users denied", async ({ page }) => {
     await loginAsClient(page);
-    await page.goto(`/en/contracts/${EXECUTION_FIXTURES.CLIENT_B_ONLY_CONTRACT_ID}/history`);
-    await page.waitForLoadState("networkidle");
-    // Should show error state or redirect — check it's not the normal execution history page
-    const body = await page.innerText("body");
-    const hasExecutionContent = body.includes("Event") || body.includes("event") || body.includes("activated");
-    expect(hasExecutionContent).toBeFalsy();
+    // The history API should deny access for unrelated contracts
+    const resp = await page.request.get(
+      `/api/contracts/${EXECUTION_FIXTURES.CLIENT_B_ONLY_CONTRACT_ID}/execution-history/`
+    );
+    expect(resp.status()).toBe(404);
   });
 
   test("anonymous users redirected", async ({ page }) => {
