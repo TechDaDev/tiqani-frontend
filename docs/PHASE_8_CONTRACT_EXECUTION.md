@@ -126,8 +126,22 @@ All execution UI text is translated via `next-intl` message files with keys in t
 
 ## Quality Gates
 
-- TypeScript: `npx tsc --noEmit` → 0 errors
-- Lint: `npx next lint` → 0 errors
-- Unit tests: `npx vitest run` → 523 passed
-- E2E serial: `npx playwright test e2e/execution/ --workers=1` → 117/117 passed
-- Prior suites: 110/110 passed
+| Gate | Result |
+|------|--------|
+| TypeScript (`npx tsc --noEmit`) | 0 errors |
+| Lint (`npx next lint`) | 0 errors (1 pre-existing warning) |
+| Vitest | 523/523 passed |
+| Build (`npm run build`) | exit 0 |
+| npm audit | 8 vulns (pre-existing: 6 moderate, 1 high, 1 critical) |
+| Execution E2E (serial) | 117/117 passed |
+| Execution E2E (parallel) | 117/117 passed |
+| Independent suites (auth, marketplace, requests, messages, offers, payments) | 110/110 passed |
+| Full Run 1 | 227/227 passed |
+| Full Run 2 | 227/227 passed |
+
+## Infrastructure Changes (Phase 8 Closure)
+
+1. **Isolated E2E cache**: `NEXT_DIST_DIR=.next-e2e` separates Playwright cache from production `.next`
+2. **Server lifecycle**: `webServer` in `playwright.config.ts` with `reuseExistingServer: false` — Playwright owns the frontend lifecycle
+3. **Process cleanup**: `scripts/run-e2e-clean.sh` performs deterministic fixture reseed, port verification, and stale process cleanup
+4. **Cache isolation**: `.next-e2e` added to `.gitignore`; `distDir` configurable via `NEXT_DIST_DIR` env var

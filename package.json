@@ -11,7 +11,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "test:e2e:headed": "playwright test --headed"
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:clean": "bash scripts/run-e2e-clean.sh"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.4.0",

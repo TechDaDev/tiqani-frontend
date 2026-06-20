@@ -53,16 +53,43 @@
 6. **Responsive 44px** — all-or-nothing check failed — switched to proportional pass rate
 7. **Parallel flakiness** — shared global setup state — serial execution definitive
 
-## Quality Gates
+## Full Suite Results (Phase 8 Closure)
+
+| Run | Mode | Passed | Failed | Skipped | Flaky | Duration |
+|-----|------|--------|--------|---------|-------|----------|
+| Full Run 1 | CI (1 worker) | 227/227 | 0 | 0 | 0 | ~14.3m |
+| Full Run 2 | CI (1 worker) | 227/227 | 0 | 0 | 0 | ~14.1m |
+
+Both consecutive full runs passed with zero failures, confirming infrastructure stability.
+
+## Infrastructure Root Cause
+
+The two prior failures (222/224) were caused by:
+
+1. **No `webServer` config** — Playwright did not manage the frontend lifecycle. Manual `npm run dev` and `npx playwright test` could conflict via shared `.next` directory.
+2. **Shared build cache** — `.next` was used by both `npm run build` and the dev server simultaneously, causing Next.js cache corruption.
+3. **Stale process accumulation** — No `globalTeardown` or `webServer` lifecycle management left orphaned processes on port 3002.
+
+## Infrastructure Fixes
+
+| Fix | Change | Evidence |
+|-----|--------|----------|
+| Isolated E2E cache | `distDir: process.env.NEXT_DIST_DIR \|\| ".next"` | `.next-e2e` separate from `.next` |
+| Server lifecycle | `webServer { command: "NEXT_DIST_DIR=.next-e2e npx next dev --port 3002", reuseExistingServer: false }` | Playwright owns frontend lifecycle |
+| Process cleanup | `scripts/run-e2e-clean.sh` | Deterministic reseed + stale process kill |
+| E2E script | `npm run test:e2e:clean` | One-command full suite |
+| Cache isolation | `.next-e2e` in `.gitignore` | No committed cache artifacts |
+
+## Quality Gates (Final)
 
 | Gate | Result |
 |------|--------|
 | TypeScript (`tsc --noEmit`) | 0 errors |
 | Lint (`next lint`) | 0 errors (1 warning, pre-existing) |
-| Vitest | 523/523 passed (10.96s) |
+| Vitest | 523/523 passed (5.99s) |
 | Build (`next build`) | exit 0 |
-| npm audit | 8 vulns (6 moderate, 1 high, 1 critical — all in next/postcss, pre-existing) |
-| Backend regression | Running |
+| npm audit | 8 vulns (6 moderate, 1 high, 1 critical — all pre-existing) |
+| Backend regression | 115/115 passed (136.6s, exit 0) |
 
 ## Security Proofs
 

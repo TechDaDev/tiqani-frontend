@@ -71,6 +71,31 @@ duplicate data.
 E2E_FIXTURE_PASSWORD='local-test-only' python manage.py seed_e2e_fixtures --reset
 ```
 
+## Clean Suite Runner
+
+A deterministic full-suite script is available:
+
+```bash
+# From the frontend project root:
+E2E_FIXTURE_PASSWORD='local-test-only' bash scripts/run-e2e-clean.sh
+```
+
+Or via npm:
+
+```bash
+E2E_FIXTURE_PASSWORD='local-test-only' npm run test:e2e:clean
+```
+
+The script:
+1. Kills stale project processes
+2. Verifies ports
+3. Removes stale E2E cache only (never touches production `.next`)
+4. Reseeds fixtures deterministically
+5. Verifies backend reachability
+6. Runs full Playwright suite with isolated cache
+7. Cleans up owned processes on exit
+8. Returns the real Playwright exit code
+
 ## Credential Safety
 
 - No credentials are hardcoded in committed test source files.
