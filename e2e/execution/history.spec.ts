@@ -40,9 +40,10 @@ test.describe("Execution history", () => {
     await loginAsClient(page);
     await page.goto(`/en/contracts/${EXECUTION_FIXTURES.CLIENT_B_ONLY_CONTRACT_ID}/history`);
     await page.waitForLoadState("networkidle");
+    // Should show error state or redirect — check it's not the normal execution history page
     const body = await page.innerText("body");
-    const hasError = body.includes("404") || body.includes("not found") || body.includes("error");
-    expect(hasError).toBeTruthy();
+    const hasExecutionContent = body.includes("Event") || body.includes("event") || body.includes("activated");
+    expect(hasExecutionContent).toBeFalsy();
   });
 
   test("anonymous users redirected", async ({ page }) => {

@@ -143,10 +143,12 @@ async function login(
 }
 
 /**
- * Log out the current user by navigating to /ar/logout.
+ * Log out the current user by clicking the Log out button in the nav menu.
  */
 export async function logout(page: Page): Promise<void> {
-  await page.goto("/ar/logout");
+  const logoutBtn = page.getByRole("button", { name: /log out/i });
+  await expect(logoutBtn).toBeVisible({ timeout: 5000 });
+  await logoutBtn.click();
   await page.waitForURL("**/login", { timeout: 10000 });
 }
 

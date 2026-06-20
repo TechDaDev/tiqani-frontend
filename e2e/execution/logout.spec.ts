@@ -2,7 +2,7 @@
  * Logout security test for execution pages.
  */
 import { test, expect } from "@playwright/test";
-import { loginAsClient, logout, clearSession } from "../fixtures/auth";
+import { loginAsClient, clearSession } from "../fixtures/auth";
 import { EXECUTION_FIXTURES } from "../fixtures/execution";
 
 test.describe("Execution logout security", () => {
@@ -17,15 +17,18 @@ test.describe("Execution logout security", () => {
 
   test("logout clears secure session", async ({ page }) => {
     await loginAsClient(page);
-    await logout(page);
+    // Click logout button in nav sidebar
+    const logoutBtn = page.getByRole("button", { name: /log out/i });
+    await expect(logoutBtn).toBeVisible({ timeout: 5000 });
+    await logoutBtn.click();
     // Verify we're on login page
-    expect(page.url()).toContain("login");
+    await expect(page).toHaveURL(/login/, { timeout: 10000 });
   });
 
   test("execution page becomes inaccessible after logout", async ({ page }) => {
     await loginAsClient(page);
-    await logout(page);
-    // Try to navigate to execution page
+    // Logout via API
+    await page.request.post("/api/auth/logout");
     await page.goto(`/en/contracts/${EXECUTION_FIXTURES.ACTIVATION_CONTRACT_ID}/execution`);
     await page.waitForLoadState("networkidle");
     // Should redirect to login
@@ -37,11 +40,8 @@ test.describe("Execution logout security", () => {
     await page.goto(`/en/contracts/${EXECUTION_FIXTURES.ACTIVATION_CONTRACT_ID}/execution`);
     await page.waitForLoadState("networkidle");
 
-    // Store the page content
-    const protectedContent = await page.textContent("body");
-
-    // Logout
-    await logout(page);
+    // Logout via API
+    await page.request.post("/api/auth/logout");
 
     // Clear session completely
     await clearSession(context);

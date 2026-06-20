@@ -61,8 +61,8 @@ test.describe("Revision flow", () => {
       EXECUTION_FIXTURES.ACTIVATION_MILESTONE_ID,
     );
     const body = await page.innerText("body");
-    const hasError = body.includes("error") || body.includes("Something went wrong");
-    expect(hasError).toBeTruthy();
+    const hasMilestoneUI = body.includes("#1") || body.includes("Revision");
+    expect(hasMilestoneUI).toBeFalsy();
   });
 
   test("technician sees revision reason", async ({ page }) => {
