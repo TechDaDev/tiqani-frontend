@@ -725,7 +725,8 @@
     "viewMilestones": "بینینی قۆناغەکان",
     "viewHistory": "بینینی مێژوو",
     "loading": "لە بارکردندا...",
-    "genericError": "هەڵەیەک ڕوویدا. تکایە دووبارە هەوڵ بدەرەوە."
+    "genericError": "هەڵەیەک ڕوویدا. تکایە دووبارە هەوڵ بدەرەوە.",
+    "completionDefaultMessage": "All milestones completed."
   },
   "executionStatus": {
     "draft": "ڕەشنەویس",
@@ -789,7 +790,9 @@
     "submitSuccess": "کار نێردرا",
     "submitError": "ناردنی کار سەرکەوتوو نەبوو",
     "loading": "لە بارکردندا...",
-    "cancel": "پاشگەزبوونەوە"
+    "cancel": "پاشگەزبوونەوە",
+    "approve": "پەسندکردن",
+    "submitDeliverable": "ناردنی ڕادەستکراو"
   },
   "revisions": {
     "request": "داواکاری دەستکاری",

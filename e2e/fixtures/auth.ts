@@ -40,6 +40,7 @@ export interface E2EConfig {
   clientPassword: string;
   technicianUsername: string;
   technicianPassword: string;
+  approvedUsername: string;
   approvedPublicId: string;
   restrictedPublicId: string;
 }
@@ -67,6 +68,7 @@ export function getE2EConfig(): E2EConfig {
       process.env[ENV.TECHNICIAN_EMAIL] || DEFAULTS.technicianUsername,
     technicianPassword:
       process.env[ENV.TECHNICIAN_PASSWORD] || DEFAULTS.password,
+    approvedUsername: DEFAULTS.approvedUsername,
     approvedPublicId:
       process.env[ENV.APPROVED_PUBLIC_ID] || "e2e-approved-tech",
     restrictedPublicId:
@@ -93,6 +95,21 @@ export async function loginAsClient(page: Page): Promise<void> {
 export async function loginAsTechnician(page: Page): Promise<void> {
   const config = getE2EConfig();
   await login(page, config.technicianUsername, config.technicianPassword);
+}
+
+/**
+ * Log in as the E2E approved technician fixture (owns most execution contracts).
+ */
+export async function loginAsApprovedTechnician(page: Page): Promise<void> {
+  const config = getE2EConfig();
+  await login(page, config.approvedUsername, config.clientPassword);
+}
+
+/**
+ * Log in as the second approved technician fixture.
+ */
+export async function loginAsSecondTechnician(page: Page): Promise<void> {
+  await login(page, "e2e_approved_tech2", "local-test-only");
 }
 
 /**

@@ -18,6 +18,8 @@ export default function MilestoneDetailPage() {
   const params = useParams();
   const milestoneId = params.milestoneId as string;
   const t = useTranslations("milestones");
+  const td = useTranslations("deliverables");
+  const tr = useTranslations("revisions");
   const { user } = useAuth();
   const role = user?.role ?? "client";
   const isClientRole = isClient(role);
@@ -31,7 +33,7 @@ export default function MilestoneDetailPage() {
     setLoading(true);
     try {
       const data = await browserRequest<MilestoneDetail>(
-        `/api/contracts/milestones/${milestoneId}/`,
+        `/api/milestones/${milestoneId}/`,
       );
       setMilestone(data);
     } finally {
@@ -42,7 +44,7 @@ export default function MilestoneDetailPage() {
   useEffect(() => { fetchMilestone(); }, [fetchMilestone]);
 
   const handleSubmit = useCallback(async (data: { summary: string; notes?: string; external_link?: string }) => {
-    await browserRequest(`/api/contracts/milestones/${milestoneId}/submit/`, {
+    await browserRequest(`/api/milestones/${milestoneId}/submit/`, {
       method: "POST",
       body: data,
     });
@@ -51,7 +53,7 @@ export default function MilestoneDetailPage() {
   }, [milestoneId, fetchMilestone]);
 
   const handleRevision = useCallback(async (reason: string) => {
-    await browserRequest(`/api/contracts/milestones/${milestoneId}/revision/`, {
+    await browserRequest(`/api/milestones/${milestoneId}/revision/`, {
       method: "POST",
       body: { reason },
     });
@@ -60,7 +62,7 @@ export default function MilestoneDetailPage() {
   }, [milestoneId, fetchMilestone]);
 
   const handleApprove = useCallback(async () => {
-    await browserRequest(`/api/contracts/milestones/${milestoneId}/approve/`, {
+    await browserRequest(`/api/milestones/${milestoneId}/approve/`, {
       method: "POST",
     });
     await fetchMilestone();
@@ -94,7 +96,7 @@ export default function MilestoneDetailPage() {
       )}
 
       <section>
-        <h2 className="text-lg font-semibold mb-2">{t("submissions")}</h2>
+        <h2 className="text-lg font-semibold mb-2">{td("versions") || "Deliverables"}</h2>
         <DeliverableList submissions={milestone.submissions || []} />
       </section>
 
@@ -103,7 +105,7 @@ export default function MilestoneDetailPage() {
           onClick={() => setShowSubmitForm(true)}
           className="rounded-lg bg-brand px-4 py-2 text-sm font-medium text-white"
         >
-          {milestone.status === MILESTONE_STATUS.REVISION_REQUESTED ? t("resubmit") : t("submit")}
+          {milestone.status === MILESTONE_STATUS.REVISION_REQUESTED ? td("resubmit") || t("resubmit") : td("submit")}
         </button>
       )}
 
@@ -119,7 +121,7 @@ export default function MilestoneDetailPage() {
           onClick={() => setShowRevisionForm(true)}
           className="rounded-lg border border-brand px-4 py-2 text-sm font-medium text-brand"
         >
-          {t("requestRevision")}
+          {tr("request")}
         </button>
       )}
 
@@ -135,12 +137,12 @@ export default function MilestoneDetailPage() {
           onClick={handleApprove}
           className="rounded-lg bg-green-600 px-4 py-2 text-sm font-medium text-white"
         >
-          {t("approve")}
+          {td("approve")}
         </button>
       )}
 
       <section>
-        <h2 className="text-lg font-semibold mb-2">{t("revisionHistory")}</h2>
+        <h2 className="text-lg font-semibold mb-2">{tr("history")}</h2>
         <RevisionHistory revisions={milestone.revisions || []} />
       </section>
     </div>

@@ -727,7 +727,8 @@
     "viewMilestones": "عرض المراحل",
     "viewHistory": "عرض السجل",
     "loading": "جاري التحميل...",
-    "genericError": "حدث خطأ. الرجاء المحاولة مرة أخرى."
+    "genericError": "حدث خطأ. الرجاء المحاولة مرة أخرى.",
+    "completionDefaultMessage": "All milestones completed."
   },
   "executionStatus": {
     "draft": "مسودة",
@@ -791,7 +792,9 @@
     "submitSuccess": "تم تسليم العمل",
     "submitError": "فشل تسليم العمل",
     "loading": "جاري التحميل...",
-    "cancel": "إلغاء"
+    "cancel": "إلغاء",
+    "approve": "اعتماد",
+    "submitDeliverable": "تقديم التسليم"
   },
   "revisions": {
     "request": "طلب تعديل",

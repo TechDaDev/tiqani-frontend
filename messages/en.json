@@ -720,7 +720,15 @@
     "requestCompletion": "Request Completion",
     "requestingCompletion": "Requesting...",
     "noExecutionData": "No execution data available",
-    "fundsNotReleased": "Work completed. Payment not yet released."
+    "fundsNotReleased": "Work completed. Payment not yet released.",
+    "executionTitle": "Contract Execution",
+    "loading": "Loading...",
+    "genericError": "Something went wrong",
+    "fundingStatus": "Funding",
+    "progress": "Progress",
+    "viewMilestones": "View Milestones",
+    "viewHistory": "View History",
+    "completionDefaultMessage": "All milestones completed."
   },
   "executionStatus": {
     "draft": "Draft",
@@ -771,7 +779,9 @@
     "submittedBy": "Submitted by {name}",
     "noSubmissions": "No submissions yet.",
     "submitSuccess": "Deliverable submitted",
-    "submitError": "Failed to submit deliverable"
+    "submitError": "Failed to submit deliverable",
+    "approve": "Approve",
+    "submitDeliverable": "Submit Deliverable"
   },
   "revisions": {
     "request": "Request Revision",

@@ -57,6 +57,27 @@ export default function ExecutionPage() {
     await fetchState();
   }, [contractId, fetchState]);
 
+  const handleRequestCompletion = useCallback(async (message: string) => {
+    await browserRequest(`/api/contracts/${contractId}/completion-request/`, {
+      method: "POST",
+      body: { completion_message: message },
+    });
+    await fetchState();
+  }, [contractId, fetchState]);
+
+  const handleConfirmCompletion = useCallback(async () => {
+    await browserRequest(`/api/contracts/${contractId}/complete/`, { method: "POST" });
+    await fetchState();
+  }, [contractId, fetchState]);
+
+  const handleRejectCompletion = useCallback(async (reason: string) => {
+    await browserRequest(`/api/contracts/${contractId}/completion-reject/`, {
+      method: "POST",
+      body: { response_message: reason },
+    });
+    await fetchState();
+  }, [contractId, fetchState]);
+
   const status = (contractStatus || eligibility?.contract_status || "") as CES;
   const isCompleted = status === CONTRACT_EXECUTION_STATUS.COMPLETED;
   const isCompletionRequested = status === CONTRACT_EXECUTION_STATUS.COMPLETION_REQUESTED;
@@ -89,7 +110,14 @@ export default function ExecutionPage() {
           isClient={isClientRole}
           milestoneCount={eligibility.milestone_count}
           onActivate={handleActivate}
+          onRequestCompletion={handleRequestCompletion}
+          onConfirmCompletion={handleConfirmCompletion}
+          onRejectCompletion={handleRejectCompletion}
         />
+      )}
+
+      {isCompleted && (
+        <EscrowHeldNotice />
       )}
 
       {isCompleted && (
