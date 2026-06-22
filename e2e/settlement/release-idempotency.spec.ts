@@ -11,13 +11,14 @@ test.describe("Settlement idempotency", () => {
     await loginAsClient(page);
     await openSettlementPageFor(page, SETTLEMENT_FIXTURES.DUPLICATE_CONTRACT_ID);
 
-    await expect(page.getByText(/eligible/i)).toBeVisible({ timeout: 15000 });
+    // Check eligibility text
+    await expect(page.getByText(/eligible for escrow release/i).first()).toBeVisible({ timeout: 15000 });
     await releaseEscrow(page);
     await assertSettlementCompleted(page);
 
     // Navigate away and back
     await openSettlementPageFor(page, SETTLEMENT_FIXTURES.DUPLICATE_CONTRACT_ID);
-    await expect(page.getByText(/settlement receipt/i)).toBeVisible({ timeout: 15000 });
+    await expect(page.getByText(/settlement receipt/i).first()).toBeVisible({ timeout: 15000 });
 
     // Should not show release checkbox again
     await expect(page.getByRole("checkbox", { name: /confirm/i })).not.toBeVisible({ timeout: 5000 });

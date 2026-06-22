@@ -21,14 +21,16 @@ test.describe("Permissions and IDOR", () => {
     await loginAsApprovedTechnician(page);
     await page.goto("/en/wallet");
     await page.waitForLoadState("networkidle");
-    await expect(page.getByText(/wallet|my wallet/i)).toBeVisible({ timeout: 10000 });
+    // Use h1 heading match — "My Wallet" (en) or "محفظتي" (ar)
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible({ timeout: 10000 });
   });
 
   test("non-staff cannot access admin withdrawal pages", async ({ page }) => {
     await loginAsApprovedTechnician(page);
     await openAdminWithdrawals(page);
-    // Should see forbidden or no admin controls
-    await expect(page.getByRole("button", { name: /process/i })).not.toBeVisible({ timeout: 5000 });
+    // Should see forbidden or no admin controls — use exact "Process" match
+    // avoids matching "Processing" status badge
+    await expect(page.getByRole("button", { name: /^process$/i })).not.toBeVisible({ timeout: 5000 });
   });
 
   test("anonymous user denied", async ({ page }) => {

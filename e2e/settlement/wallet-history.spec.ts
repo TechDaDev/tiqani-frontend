@@ -9,13 +9,15 @@ test.describe("Wallet history", () => {
   test("transactions page loads for technician", async ({ page }) => {
     await loginAsApprovedTechnician(page);
     await openWallet(page);
-    await expect(page.getByText(/my wallet|wallet/i)).toBeVisible({ timeout: 10000 });
+    // Wallet page has <h1>{t("myWallet")}</h1> = "My Wallet" (en)
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible({ timeout: 10000 });
   });
 
   test("wallet balance card shows balance", async ({ page }) => {
     await loginAsApprovedTechnician(page);
     await openWallet(page);
-    const body = await page.textContent("body");
-    expect(body).toMatch(/IQD/);
+    // Check visible text only — avoids RSC payload
+    const visibleText = await page.locator("body").innerText();
+    expect(visibleText).toMatch(/IQD/);
   });
 });

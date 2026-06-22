@@ -9,6 +9,6 @@ test.describe("Admin withdrawal rejection", () => {
   test("non-staff denied rejection access", async ({ page }) => {
     await loginAsApprovedTechnician(page);
     await openAdminWithdrawals(page);
-    await expect(page.getByRole("button", { name: /process/i })).not.toBeVisible({ timeout: 5000 });
+    await expect(page.getByRole("button", { name: /^process$/i })).not.toBeVisible({ timeout: 5000 });
   });
 });

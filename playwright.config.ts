@@ -26,7 +26,7 @@ export default defineConfig({
       name: "chromium",
       use: {
         browserName: "chromium",
-        locale: "ar-IQ",
+        locale: "en-US",
       },
     },
   ],

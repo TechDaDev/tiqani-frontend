@@ -10,31 +10,33 @@ test.describe("Settlement eligibility", () => {
   test("own completed funded contract is eligible", async ({ page }) => {
     await loginAsClient(page);
     await openSettlementPageFor(page, SETTLEMENT_FIXTURES.ELIGIBLE_CONTRACT_ID);
-    await expect(page.getByText(/eligible for release/i)).toBeVisible({ timeout: 10000 });
+    // Check for eligibility text — rendered in <p role="status">
+    await expect(page.getByText(/eligible for escrow release/i).first()).toBeVisible({ timeout: 10000 });
   });
 
   test("active contract is ineligible", async ({ page }) => {
     await loginAsClient(page);
     await openSettlementPageFor(page, SETTLEMENT_FIXTURES.ACTIVE_CONTRACT_ID);
-    await expect(page.getByText(/not eligible/i)).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText(/not eligible/i).first()).toBeVisible({ timeout: 10000 });
   });
 
   test("completed unfunded contract is ineligible", async ({ page }) => {
     await loginAsClient(page);
     await openSettlementPageFor(page, SETTLEMENT_FIXTURES.UNFUNDED_CONTRACT_ID);
-    await expect(page.getByText(/not eligible/i)).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText(/not eligible/i).first()).toBeVisible({ timeout: 10000 });
   });
 
   test("zero escrow contract is ineligible", async ({ page }) => {
     await loginAsClient(page);
     await openSettlementPageFor(page, SETTLEMENT_FIXTURES.ZERO_ESCROW_CONTRACT_ID);
-    await expect(page.getByText(/not eligible/i)).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText(/not eligible/i).first()).toBeVisible({ timeout: 10000 });
   });
 
   test("already settled contract is ineligible", async ({ page }) => {
     await loginAsClient(page);
     await openSettlementPageFor(page, SETTLEMENT_FIXTURES.ALREADY_SETTLED_CONTRACT_ID);
-    await expect(page.getByText(/not eligible|settlement receipt/i)).toBeVisible({ timeout: 10000 });
+    // Should see settlement receipt (already settled) — use .first() for strict-mode safety
+    await expect(page.getByText(/settlement receipt|receipt/i).first()).toBeVisible({ timeout: 10000 });
   });
 
   test("technician cannot release escrow", async ({ page }) => {

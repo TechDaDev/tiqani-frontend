@@ -26,12 +26,13 @@ export async function openContractDetail(page: Page, contractId: string) {
  * Check the eligibility checkbox and click release.
  */
 export async function releaseEscrow(page: Page) {
-  // Check the confirmation checkbox
-  const checkbox = page.getByRole("checkbox", { name: /confirm/i });
+  // Check the confirmation checkbox — accessible name is translation of
+  // "I understand this action cannot be undone." so use getByRole without name filter
+  const checkbox = page.getByRole("checkbox");
   await checkbox.check();
 
-  // Click release button
-  const releaseBtn = page.getByRole("button", { name: /release escrow|release/i });
+  // Click release button — match English or Arabic
+  const releaseBtn = page.getByRole("button", { name: /release escrow|تحرير/i });
   await releaseBtn.click();
 }
 
@@ -39,7 +40,8 @@ export async function releaseEscrow(page: Page) {
  * Assert settlement completed successfully and receipt is visible.
  */
 export async function assertSettlementCompleted(page: Page) {
-  await expect(page.getByText(/settlement receipt|settlement completed/i)).toBeVisible({ timeout: 15000 });
+  // Use .first() to handle multiple matches (heading + card body)
+  await expect(page.getByText(/settlement receipt|settlement completed/i).first()).toBeVisible({ timeout: 15000 });
 }
 
 // ── Wallet ──────────────────────────────────────────────────────────────
@@ -63,8 +65,9 @@ export async function assertWalletBalances(
     await expect(page.getByText(opts.exactTotal).first()).toBeVisible({ timeout: 10000 });
   }
   if (opts.minTotal) {
-    const body = await page.textContent("body");
-    expect(body).toContain(opts.minTotal);
+    // Check visible text only — avoids RSC payload false positives
+    const visibleText = await page.locator("body").innerText();
+    expect(visibleText).toContain(opts.minTotal);
   }
 }
 
@@ -91,9 +94,11 @@ export async function openWithdrawals(page: Page) {
  * Request a withdrawal.
  */
 export async function requestWithdrawal(page: Page, amount: string) {
-  const input = page.getByPlaceholder(/amount|withdrawal amount/i);
+  // Withdrawal amount input: placeholder="1000.00" (hardcoded, locale-independent)
+  const input = page.getByPlaceholder("1000.00");
   await input.fill(amount);
-  const submitBtn = page.getByRole("button", { name: /request|submit|withdraw/i });
+  // Submit button — match English or Arabic
+  const submitBtn = page.getByRole("button", { name: /submit request|تقديم/i });
   await submitBtn.click();
   await page.waitForLoadState("networkidle");
 }
@@ -147,7 +152,8 @@ export async function rejectWithdrawal(page: Page, reason: string) {
  * Process an approved withdrawal.
  */
 export async function processWithdrawal(page: Page) {
-  const btn = page.getByRole("button", { name: /process/i });
+  // Use exact "Process" button — avoid matching "Processing" status label
+  const btn = page.getByRole("button", { name: /^process$/i });
   await btn.click();
   await page.waitForLoadState("networkidle");
 }
@@ -185,15 +191,14 @@ export async function retryPayout(page: Page) {
  * Assert no private financial data is visible on the page.
  */
 export async function assertNoPrivateFinancialData(page: Page) {
-  const body = await page.textContent("body");
-  expect(body).not.toBeNull();
-  // Should not contain internal wallet IDs or platform balances
+  // Check visible text only — avoid RSC payload false positives
+  const visibleText = await page.locator("body").innerText();
   const sensitivePatterns = [
     /platform.?wallet/i, /internal.?wallet/i,
     /provider.?secret/i, /sandbox.?secret/i,
   ];
   for (const pattern of sensitivePatterns) {
-    expect(body).not.toMatch(pattern);
+    expect(visibleText).not.toMatch(pattern);
   }
 }
 
@@ -201,15 +206,15 @@ export async function assertNoPrivateFinancialData(page: Page) {
  * Assert no production payout credentials are exposed.
  */
 export async function assertNoProductionCredentials(page: Page) {
-  const body = await page.textContent("body");
-  // Check for common credential patterns
+  // Use visible text only — avoids RSC payload false positives
+  const visibleText = await page.locator("body").innerText();
   const credentialPatterns = [
     /sk_live_/, /pk_live_/, /sandbox_secret/i,
     /stripe.*secret/i, /production.*key/i,
     /live.*token/i, /live.*secret/i,
   ];
   for (const pattern of credentialPatterns) {
-    expect(body).not.toMatch(pattern);
+    expect(visibleText).not.toMatch(pattern);
   }
 }
 
@@ -217,14 +222,10 @@ export async function assertNoProductionCredentials(page: Page) {
  * Assert the page shows a 403 or unauthorized message.
  */
 export async function assertForbidden(page: Page) {
-  // Check for forbidden indicators
-  const body = await page.textContent("body");
+  // Check visible elements only — avoids RSC payload false positives
+  const visible = page.locator("body");
   const isForbidden =
-    body!.includes("forbidden") ||
-    body!.includes("403") ||
-    body!.includes("unauthorized") ||
-    body!.includes("not authorized") ||
-    body!.includes("permission denied");
+    (await visible.getByText(/403|forbidden|unauthorized|not authorized|permission denied/i).first().isVisible().catch(() => false));
   expect(isForbidden).toBeTruthy();
 }
 
@@ -232,11 +233,9 @@ export async function assertForbidden(page: Page) {
  * Assert the page shows a 404 or not found message.
  */
 export async function assertNotFound(page: Page) {
-  const body = await page.textContent("body");
+  const visible = page.locator("body");
   const is404 =
-    body!.includes("not found") ||
-    body!.includes("404") ||
-    body!.includes("does not exist");
+    (await visible.getByText(/not found|404|does not exist/i).first().isVisible().catch(() => false));
   expect(is404).toBeTruthy();
 }
 
