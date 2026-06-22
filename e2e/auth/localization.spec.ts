@@ -1,10 +1,10 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("Localization", () => {
-  test("/ redirects to /ar by default", async ({ page }) => {
+  test("/ redirects to /en by default", async ({ page }) => {
     await page.goto("/");
-    await page.waitForURL(/\/ar/, { timeout: 10000 });
-    await expect(page).toHaveURL(/\/ar/);
+    await page.waitForURL(/\/en/, { timeout: 10000 });
+    await expect(page).toHaveURL(/\/en/);
   });
 
   test("mobile navigation opens and closes in Arabic", async ({ page }) => {
