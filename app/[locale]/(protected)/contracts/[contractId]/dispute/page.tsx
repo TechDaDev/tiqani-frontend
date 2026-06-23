@@ -41,11 +41,11 @@ export default function ContractDisputePage() {
   if (error) return <div className="p-6 text-red-800">{error}</div>;
 
   return (
-    <div className="p-6 max-w-3xl mx-auto" dir="auto">
+    <div className="p-6 max-w-3xl mx-auto" dir="auto" data-testid="contract-dispute-page">
       <h1 className="text-2xl font-bold mb-4">{t("openDispute")}</h1>
 
       {activeDispute?.active && activeDispute.dispute ? (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6" data-testid="active-dispute-banner">
           <p className="font-semibold mb-2">{t("activeDisputeExists")}</p>
           <DisputeStatusBadge status={activeDispute.dispute.status} />
           <button onClick={() => router.push(`/disputes/${activeDispute.dispute!.id}`)}
@@ -54,7 +54,7 @@ export default function ContractDisputePage() {
           </button>
         </div>
       ) : eligibility && !eligibility.eligible ? (
-        <div className="bg-gray-50 border rounded-lg p-6 text-center">
+        <div className="bg-gray-50 border rounded-lg p-6 text-center" data-testid="dispute-ineligible">
           <p className="text-gray-600">{eligibility.reason || t("notEligible")}</p>
         </div>
       ) : (

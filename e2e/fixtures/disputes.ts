@@ -22,6 +22,7 @@ export const FIXTURE = {
   // ── Contract UUIDs ──
   CONTRACT: {
     ACTIVE_ELIGIBLE: "2d414efd-f003-5252-938a-71cdcb2c9d22",
+    OPEN_ELIGIBLE: "5a175d3e-75fe-5f52-ab36-ebb6ef4a90ed",
     COMPLETION_REQUESTED: "79024ade-500a-5fee-9123-609858dcd25e",
     PRE_SETTLEMENT: "067ad621-e8e2-5f3c-91c0-fba60aa686f1",
     SETTLED_RECOVERABLE: "d5bd4952-eb5d-5e20-b66c-177aa82239d4",

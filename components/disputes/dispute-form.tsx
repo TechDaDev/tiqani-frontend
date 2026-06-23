@@ -53,10 +53,10 @@ export function DisputeForm({ contractId, onCreated }: Props) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4" data-testid="dispute-form">
       <div>
-        <label className="block text-sm font-medium mb-1">{t("reason")}</label>
-        <select value={reason} onChange={(e) => setReason(e.target.value as DisputeReason)}
+        <label htmlFor="dispute-reason" className="block text-sm font-medium mb-1">{t("reason")}</label>
+        <select id="dispute-reason" value={reason} onChange={(e) => setReason(e.target.value as DisputeReason)}
           required className="w-full border rounded-lg p-2">
           <option value="">{t("selectReason")}</option>
           {REASONS.map((r) => (
@@ -66,16 +66,16 @@ export function DisputeForm({ contractId, onCreated }: Props) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">{t("claimedAmount")}</label>
-        <input type="text" inputMode="decimal" value={claimedAmount}
+        <label htmlFor="dispute-amount" className="block text-sm font-medium mb-1">{t("claimedAmount")}</label>
+        <input id="dispute-amount" type="text" inputMode="decimal" value={claimedAmount}
           onChange={(e) => setClaimedAmount(e.target.value)}
           required placeholder="0.00"
           className="w-full border rounded-lg p-2" />
       </div>
 
       <div>
-        <label className="block text-sm font-medium mb-1">{t("statement")}</label>
-        <textarea value={statement} onChange={(e) => setStatement(e.target.value)}
+        <label htmlFor="dispute-statement" className="block text-sm font-medium mb-1">{t("statement")}</label>
+        <textarea id="dispute-statement" value={statement} onChange={(e) => setStatement(e.target.value)}
           required minLength={20} maxLength={5000} rows={5}
           placeholder={t("statementPlaceholder")}
           className="w-full border rounded-lg p-2" />
@@ -84,7 +84,7 @@ export function DisputeForm({ contractId, onCreated }: Props) {
 
       {error && <div className="bg-red-100 p-3 rounded text-red-800 text-sm">{error}</div>}
 
-      <button type="submit" disabled={submitting}
+      <button type="submit" disabled={submitting} data-testid="dispute-submit"
         className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50">
         {submitting ? t("submitting") : t("submitDispute")}
       </button>

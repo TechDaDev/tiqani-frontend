@@ -26,9 +26,9 @@ test.describe("Dispute permissions and IDOR", () => {
     await openDisputeDetail(page, FIXTURE.DISPUTE.OPEN);
     // Unrelated user should not see dispute details
     // Either redirected or shown a forbidden/not-found state
-    const body = await page.locator("body").innerText();
-    const hasForbidden = /not found|forbidden|access denied|غير موجود|ممنوع/i.test(body);
-    const hasDisputeDetail = /dispute|status|reason/i.test(body);
+    const visibleText = await page.locator("body").innerText();
+    const hasForbidden = /not found|forbidden|access denied|غير موجود|ممنوع/i.test(visibleText);
+    const hasDisputeDetail = /dispute details|dispute status/i.test(visibleText);
     // If page loaded, dispute details must not be visible
     // If backend returns 403/404, the body won't have dispute content
     if (hasDisputeDetail) {

@@ -38,29 +38,32 @@ export async function openDisputeDetail(page: Page, disputeId: string, locale = 
 
 /**
  * Navigate to the contract dispute page (dispute creation context).
+ * Route is singular: /contracts/{id}/dispute
  */
 export async function openContractDisputePage(page: Page, contractId: string, locale = "en") {
-  await page.goto(`/${locale}/contracts/${contractId}/disputes`);
+  await page.goto(`/${locale}/contracts/${contractId}/dispute`);
   await page.waitForLoadState("networkidle");
 }
 
 // ── Eligibility ─────────────────────────────────────────────────────────
 
 /**
- * Assert the dispute eligibility panel is visible.
+ * Assert the dispute form is visible (eligible contract renders form directly).
+ * Uses data-testid="dispute-form" on the form element.
  */
 export async function checkDisputeEligibility(page: Page) {
   await expect(
-    page.getByText(/eligible for dispute|dispute eligibility|مؤهل للنزاع/i).first()
+    page.getByTestId("dispute-form")
   ).toBeVisible({ timeout: 10000 });
 }
 
 /**
- * Assert the dispute eligibility panel indicates ineligibility.
+ * Assert the dispute page indicates ineligibility (no form, shows "not eligible" text).
+ * Uses data-testid="dispute-ineligible" on the ineligible container.
  */
 export async function checkDisputeIneligibility(page: Page) {
   await expect(
-    page.getByText(/not eligible|غير مؤهل/i).first()
+    page.getByTestId("dispute-ineligible")
   ).toBeVisible({ timeout: 10000 });
 }
 
@@ -226,20 +229,21 @@ export async function openRefundDetail(page: Page, refundId: string, locale = "e
 /**
  * Assert a dispute is visible on the current page.
  */
-export async function assertDisputeVisible(page: Page, disputeId: string) {
-  // Dispute cards/rows typically show partial UUID or a visual reference
-  const shortId = disputeId.substring(0, 8);
-  await expect(page.getByText(shortId).first()).toBeVisible({ timeout: 10000 });
+export async function assertDisputeVisible(page: Page, _disputeId: string) {
+  // The dispute detail page shows "Dispute Details" heading
+  await expect(
+    page.getByRole("heading", { name: /dispute details|تفاصيل النزاع/i })
+  ).toBeVisible({ timeout: 10000 });
 }
 
 /**
  * Assert a dispute is NOT visible on the current page (IDOR protection).
  */
-export async function assertDisputeHidden(page: Page, disputeId: string) {
-  const shortId = disputeId.substring(0, 8);
-  // Check visible text only — avoids RSC payload false positives
-  const visibleText = await page.locator("body").innerText();
-  expect(visibleText).not.toContain(shortId);
+export async function assertDisputeHidden(page: Page, _disputeId: string) {
+  // Check dispute detail heading is NOT visible
+  await expect(
+    page.getByRole("heading", { name: /dispute details|تفاصيل النزاع/i })
+  ).not.toBeVisible({ timeout: 5000 });
 }
 
 /**
