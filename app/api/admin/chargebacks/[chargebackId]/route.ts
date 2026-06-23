@@ -2,11 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { backendGet } from "@/lib/api/backend-client";
 import { COOKIE_NAMES } from "@/lib/auth/cookies";
 
-export async function GET(request: NextRequest, { params }: { params: { chargebackId: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ chargebackId: string }> }) {
+  const { chargebackId } = await params;
   const accessToken = request.cookies.get(COOKIE_NAMES.ACCESS)?.value;
   try {
     const { data, status } = await backendGet<Record<string, unknown>>(
-      `/api/admin/chargebacks/${params.chargebackId}/`,
+      `/api/admin/chargebacks/${chargebackId}/`,
       { headers: { Authorization: `Bearer ${accessToken}` } }
     );
     return NextResponse.json(data, { status });

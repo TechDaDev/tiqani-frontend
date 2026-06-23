@@ -2,11 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { backendPost } from "@/lib/api/backend-client";
 import { COOKIE_NAMES } from "@/lib/auth/cookies";
 
-export async function POST(request: NextRequest, { params }: { params: { refundId: string } }) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ refundId: string }> }) {
+  const { refundId } = await params;
   const accessToken = request.cookies.get(COOKIE_NAMES.ACCESS)?.value;
   try {
     const { data, status } = await backendPost<Record<string, unknown>>(
-      `/api/admin/refunds/${params.refundId}/sandbox-confirm/`, {},
+      `/api/admin/refunds/${refundId}/sandbox-confirm/`, {},
       { headers: { Authorization: `Bearer ${accessToken}` } }
     );
     return NextResponse.json(data, { status });

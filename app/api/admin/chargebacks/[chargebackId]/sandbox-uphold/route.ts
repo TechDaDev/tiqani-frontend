@@ -2,13 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import { backendPost } from "@/lib/api/backend-client";
 import { COOKIE_NAMES } from "@/lib/auth/cookies";
 
-export async function POST(request: NextRequest, { params }: { params: { chargebackId: string } }) {
+export async function POST(request: NextRequest, { params }: { params: Promise<{ chargebackId: string }> }) {
+  const { chargebackId } = await params;
   const accessToken = request.cookies.get(COOKIE_NAMES.ACCESS)?.value;
   let body: Record<string, unknown> = {};
   try { body = await request.json(); } catch { /* empty */ }
   try {
     const { data, status } = await backendPost<Record<string, unknown>>(
-      `/api/admin/chargebacks/${params.chargebackId}/sandbox-uphold/`, body,
+      `/api/admin/chargebacks/${chargebackId}/sandbox-uphold/`, body,
       { headers: { Authorization: `Bearer ${accessToken}` } }
     );
     return NextResponse.json(data, { status });

@@ -2,11 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { backendGet } from "@/lib/api/backend-client";
 import { COOKIE_NAMES } from "@/lib/auth/cookies";
 
-export async function GET(request: NextRequest, { params }: { params: { refundId: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ refundId: string }> }) {
+  const { refundId } = await params;
   const accessToken = request.cookies.get(COOKIE_NAMES.ACCESS)?.value;
   try {
     const { data, status } = await backendGet<Record<string, unknown>>(
-      `/api/refunds/${params.refundId}/`,
+      `/api/refunds/${refundId}/`,
       { headers: { Authorization: `Bearer ${accessToken}` } }
     );
     return NextResponse.json(data, { status });

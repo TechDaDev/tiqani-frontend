@@ -17,7 +17,7 @@ export default defineConfig({
     command:
       "NEXT_DIST_DIR=.next-e2e npx next dev --port 3002",
     url: "http://127.0.0.1:3002/en/login",
-    reuseExistingServer: false,
+    reuseExistingServer: true,
     timeout: 120_000,
     cwd: ".",
   },
