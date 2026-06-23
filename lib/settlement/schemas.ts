@@ -3,6 +3,9 @@
  */
 import { z } from "zod";
 
+export const DecimalString = z.string().regex(/^-?\d+(\.\d{1,2})?$/, "Must be a valid decimal string");
+export const IsoDatetime = z.string().datetime({ offset: true }).or(z.string().regex(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/));
+
 export const SettlementSchema = z.object({
   id: z.string().uuid(),
   contract: z.string().uuid(),

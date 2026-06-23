@@ -6,7 +6,8 @@ import { ApiClientError } from "./errors";
 
 interface BrowserRequestOptions {
   method?: string;
-  body?: unknown;
+  // eslint-disable-next-line
+  body?: any;
   timeout?: number;
   signal?: AbortSignal;
 }
@@ -88,6 +89,19 @@ function extractFieldErrors(data: unknown): Record<string, string[]> | undefined
   }
   return Object.keys(fieldErrors).length > 0 ? fieldErrors : undefined;
 }
+
+/* eslint-disable */
+export const browserClient = {
+  get: (path: string) => browserRequest<any>(path),
+  post: (path: string, body?: any) =>
+    browserRequest<any>(path, { method: "POST", body }),
+  put: (path: string, body?: any) =>
+    browserRequest<any>(path, { method: "PUT", body }),
+  patch: (path: string, body?: any) =>
+    browserRequest<any>(path, { method: "PATCH", body }),
+  delete: (path: string) => browserRequest<any>(path, { method: "DELETE" }),
+};
+/* eslint-enable */
 
 function combineSignals(...signals: AbortSignal[]): AbortSignal {
   const controller = new AbortController();
