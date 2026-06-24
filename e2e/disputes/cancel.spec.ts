@@ -11,7 +11,7 @@ test.describe("Dispute cancellation", () => {
     await loginAsClient(page);
     await openDisputeDetail(page, FIXTURE.DISPUTE.OPEN);
     await cancelDispute(page);
-    await expect(page.getByText(/canceled|cancelled/i)).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText("Canceled", { exact: true })).toBeVisible({ timeout: 10000 });
   });
 
   test("respondent cannot cancel", async ({ page }) => {

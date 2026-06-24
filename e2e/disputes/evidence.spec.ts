@@ -10,7 +10,7 @@ test.describe("Dispute evidence", () => {
   test("evidence section visible on dispute detail", async ({ page }) => {
     await loginAsClient(page);
     await openDisputeDetail(page, FIXTURE.DISPUTE.OPEN);
-    await expect(page.getByText(/evidence|إثبات/i)).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole("heading", { name: /evidence|إثبات|disputes\.evidence/i })).toBeVisible({ timeout: 10000 });
   });
 
   test("evidence file input present", async ({ page }) => {

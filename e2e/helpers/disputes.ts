@@ -142,7 +142,7 @@ export async function cancelDispute(page: Page) {
   await expect(cancelBtn).toBeVisible({ timeout: 5000 });
   await cancelBtn.click();
   // Confirm cancellation dialog
-  const confirmBtn = page.getByRole("button", { name: /confirm|تأكيد|پشتڕاستکردن/i });
+  const confirmBtn = page.getByRole("button", { name: /confirm|yes.*cancel|تأكيد|پشتڕاستکردن/i });
   await confirmBtn.click();
   await page.waitForLoadState("networkidle");
 }
