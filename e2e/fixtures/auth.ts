@@ -113,6 +113,13 @@ export async function loginAsSecondTechnician(page: Page): Promise<void> {
 }
 
 /**
+ * Log in as staff (admin) for admin dispute management.
+ */
+export async function loginAsStaff(page: Page): Promise<void> {
+  await login(page, "vstaff_p19", "local-test-only");
+}
+
+/**
  * Core login flow: navigate to /ar/login, fill form, submit, wait for account.
  */
 async function login(

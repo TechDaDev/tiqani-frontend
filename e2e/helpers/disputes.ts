@@ -95,12 +95,14 @@ export async function fillDisputeForm(
 
 /**
  * Submit the dispute creation form.
+ * After clicking submit, waits for client-side redirect to the dispute detail page.
  */
 export async function submitDisputeForm(page: Page) {
   const submitBtn = page.getByRole("button", { name: /submit dispute|تقديم النزاع|ناردنی ناڕەزایەتی/i });
   await expect(submitBtn).toBeEnabled({ timeout: 5000 });
   await submitBtn.click();
-  await page.waitForLoadState("networkidle");
+  // Wait for client-side redirect to /disputes/{id} via router.push
+  await page.waitForURL(/\/disputes\//, { timeout: 30000 });
 }
 
 // ── Status ──

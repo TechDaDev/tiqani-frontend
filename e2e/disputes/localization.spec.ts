@@ -58,7 +58,8 @@ test.describe("Dispute localization", () => {
     await loginAsClient(page);
     await page.goto(`/ku/disputes/${FIXTURE.DISPUTE.OPEN}`);
     await page.waitForLoadState("networkidle");
-    await expect(page.getByRole("heading", { name: /ناڕەزایەتی/i })).toBeVisible({ timeout: 10000 });
+    // Check Kurdish heading: "وردەکاری ناکۆکی" = Dispute Details
+    await expect(page.getByRole("heading", { name: /وردەکاری ناکۆکی/i })).toBeVisible({ timeout: 10000 });
   });
 
   test("Kurdish page has RTL direction", async ({ page }) => {

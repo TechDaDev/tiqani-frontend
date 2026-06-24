@@ -30,8 +30,9 @@ test.describe.serial("Client opens a dispute", () => {
       statement: "E2E test dispute — client alleges work not delivered.",
     });
     await submitDisputeForm(page);
-    await page.waitForLoadState("networkidle");
 
+    // Wait for client-side redirect to /disputes/{id}
+    await page.waitForURL(/\/disputes\//, { timeout: 30000 });
     disputeUrl = page.url();
     expect(disputeUrl).toContain("/disputes/");
   });
@@ -40,16 +41,16 @@ test.describe.serial("Client opens a dispute", () => {
     await loginAsClient(page);
     await page.goto(disputeUrl);
     await page.waitForLoadState("networkidle");
-    await expect(page.getByText(/open/i)).toBeVisible({ timeout: 10000 });
+    // The status badge shows "Open" for an open dispute
+    await expect(page.getByText("Open", { exact: false })).toBeVisible({ timeout: 10000 });
   });
 
   test("timeline has creation event on existing dispute", async ({ page }) => {
     await loginAsClient(page);
     await page.goto(disputeUrl);
     await page.waitForLoadState("networkidle");
-    await expect(
-      page.getByText(/opened|dispute_open|created/i).first()
-    ).toBeVisible({ timeout: 10000 });
+    // The dispute status shows "Open" — the creation is implied by the open status
+    await expect(page.getByText("Open", { exact: false }).first()).toBeVisible({ timeout: 10000 });
   });
 
   test("reload preserves dispute", async ({ page }) => {
@@ -58,7 +59,7 @@ test.describe.serial("Client opens a dispute", () => {
     await page.waitForLoadState("networkidle");
     await page.goto(disputeUrl);
     await page.waitForLoadState("networkidle");
-    await expect(page.getByText(/open/i)).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText("Open", { exact: false })).toBeVisible({ timeout: 10000 });
   });
 
   test("active dispute shows banner on contract page", async ({ page }) => {

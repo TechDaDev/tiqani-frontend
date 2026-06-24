@@ -42,20 +42,20 @@ export const FIXTURE = {
 
   // ── Dispute UUIDs ──
   DISPUTE: {
-    OPEN: "4cd8052a-5896-5bdb-9f77-9aa886278ef1",
-    TECHNICIAN_OPENED: "9cdfc63e-83c1-595c-8d17-0bcc30ba44f8",
-    AWAITING_RESPONSE: "bb32ea51-7993-5176-9301-c4d9f3bdc55f",
-    UNDER_REVIEW: "8f4018f1-b7ca-5a35-afb5-1cd9ed0534b4",
-    MEDIATION: "1b2f3aca-438b-549b-b094-d5f0195125ef",
-    RESOLUTION_PROPOSED: "14236255-b681-5428-a3b0-c05a0b1503da",
+    OPEN: "d5f18282-be8f-591c-939a-86c7f7808491",
+    TECHNICIAN_OPENED: "ff841721-2ffd-59c2-ac0c-1c313eb8590b",
+    AWAITING_RESPONSE: "5d67c1ba-55fe-5903-b7cb-8d86893943ee",
+    UNDER_REVIEW: "05907aff-e96a-5dd2-88ff-cc2a33f0e59a",
+    MEDIATION: "f73c9033-7f2d-511d-b1eb-8b67ee2245a5",
+    RESOLUTION_PROPOSED: "0449a027-4655-55fc-b322-427a739fff2b",
     FULL_REFUND: "d85d32f8-9c2d-5f7a-9504-200bfdb3e3e1",
     PARTIAL_REFUND: "f88e97dc-e3ed-5f4a-ba27-f2a8592754fd",
     TECH_AWARD: "cdfbded7-dee8-5c7a-8047-d03f41d86226",
     SPLIT_RESOLUTION: "114ec373-f73f-5583-8059-2806b89721c1",
-    REJECTED: "a535ed3c-78b9-5ac8-9102-32d59af4888a",
-    CLOSED: "e212d797-45fd-5cad-8e96-6dabf0907e42",
-    POST_SETTLE_REFUND: "dd55f78d-99fd-57be-8348-9cadddb80166",
-    MANUAL_RECOVERY: "e13470a6-6ea8-5efa-94a1-9dca03a45aaa",
+    REJECTED: "693be793-18c4-5c49-a961-a0146bbbd366",
+    CLOSED: "c5fecedd-3dab-5caf-a849-0941af14ceca",
+    POST_SETTLE_REFUND: "224955c6-2119-5de5-862f-908359605b27",
+    MANUAL_RECOVERY: "eadeb194-ce2d-5f6f-8007-eda118076dcd",
     REFUND_FAIL: "696f2471-bd9b-52a4-84b3-4979eb1435b9",
   },
 
@@ -66,8 +66,8 @@ export const FIXTURE = {
 
   // ── Liability UUIDs ──
   LIABILITY: {
-    OPEN: "4e28c165-67ff-547e-a0cf-7073a2fd7a93",
-    PARTIAL: "ded1ee45-e49f-5819-bb9d-d044d9b01e86",
+    OPEN: "9520b69c-47e1-5106-b4e8-db83136c1a20",
+    PARTIAL: "32aba08d-133f-56c9-a5e5-c41992a32ad7",
   },
 
   // ── Expected statuses ──
