@@ -36,6 +36,7 @@ export function DisputeStatementForm({ disputeId, onAdded }: Props) {
       <textarea value={statement} onChange={(e) => setStatement(e.target.value)}
         required minLength={10} maxLength={5000} rows={4}
         placeholder={t("statementPlaceholder")}
+        aria-label={t("addStatement")}
         className="w-full border rounded-lg p-2" />
       {error && <p className="text-red-800 text-sm">{error}</p>}
       <button type="submit" disabled={submitting || !statement.trim()}

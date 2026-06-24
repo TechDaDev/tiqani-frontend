@@ -1,6 +1,7 @@
 /** Safe response mappers. Strips private fields, normalizes unknown values. */
 import type {
-  Dispute, DisputeEligibility, DisputeReconciliation,
+  Dispute, DisputeStatement, DisputeEvidence, DisputeResolution, DisputeAuditEvent,
+  DisputeEligibility, DisputeReconciliation,
 } from "./types";
 import { getDisputeStatusLabel, getResolutionLabel } from "./status";
 
@@ -15,6 +16,69 @@ function stripPrivate(data: Record<string, unknown>): Record<string, unknown> {
     delete result[field];
   }
   return result;
+}
+
+function mapStatements(raw: unknown): DisputeStatement[] {
+  if (!Array.isArray(raw)) return [];
+  return raw.map((s: Record<string, unknown>) => ({
+    id: String(s.id || ""),
+    dispute: String(s.dispute || ""),
+    submitted_by: String(s.submitted_by || ""),
+    submitted_by_name: String(s.submitted_by_name || ""),
+    statement: String(s.statement || ""),
+    created_at: String(s.created_at || ""),
+  }));
+}
+
+function mapEvidence(raw: unknown): DisputeEvidence[] {
+  if (!Array.isArray(raw)) return [];
+  return raw.map((e: Record<string, unknown>) => ({
+    id: String(e.id || ""),
+    dispute: String(e.dispute || ""),
+    submitted_by: String(e.submitted_by || ""),
+    submitted_by_name: String(e.submitted_by_name || ""),
+    evidence_type: String(e.evidence_type || "other") as DisputeEvidence["evidence_type"],
+    description: String(e.description || ""),
+    file: e.file ? String(e.file) : null,
+    mime_type: String(e.mime_type || ""),
+    file_size: Number(e.file_size) || 0,
+    created_at: String(e.created_at || ""),
+  }));
+}
+
+function mapResolution(raw: unknown): DisputeResolution | null {
+  if (!raw || typeof raw !== "object") return null;
+  const r = raw as Record<string, unknown>;
+  return {
+    id: String(r.id || ""),
+    dispute: String(r.dispute || ""),
+    resolved_by: String(r.resolved_by || ""),
+    resolved_by_name: String(r.resolved_by_name || ""),
+    resolution_type: String(r.resolution_type || "") as DisputeResolution["resolution_type"],
+    resolution_type_display: String(r.resolution_type_display || ""),
+    client_refund_amount: String(r.client_refund_amount || "0.00"),
+    technician_retained_amount: String(r.technician_retained_amount || "0.00"),
+    platform_fee_reversal_amount: String(r.platform_fee_reversal_amount || "0.00"),
+    escrow_released_amount: String(r.escrow_released_amount || "0.00"),
+    wallet_reversal_amount: String(r.wallet_reversal_amount || "0.00"),
+    unrecoverable_amount: String(r.unrecoverable_amount || "0.00"),
+    outstanding_liability_amount: String(r.outstanding_liability_amount || "0.00"),
+    resolution_reason: String(r.resolution_reason || ""),
+    resolved_at: String(r.resolved_at || ""),
+  };
+}
+
+function mapAuditEvents(raw: unknown): DisputeAuditEvent[] {
+  if (!Array.isArray(raw)) return [];
+  return raw.map((a: Record<string, unknown>) => ({
+    id: String(a.id || ""),
+    dispute: String(a.dispute || ""),
+    event_type: String(a.event_type || ""),
+    actor: a.actor ? String(a.actor) : null,
+    actor_name: a.actor_name ? String(a.actor_name) : null,
+    payload: (a.payload as Record<string, unknown>) || {},
+    created_at: String(a.created_at || ""),
+  }));
 }
 
 export function mapDispute(raw: Record<string, unknown>): Dispute {
@@ -43,6 +107,10 @@ export function mapDispute(raw: Record<string, unknown>): Dispute {
     resolved_at: safe.resolved_at ? String(safe.resolved_at) : null,
     closed_at: safe.closed_at ? String(safe.closed_at) : null,
     resolution_summary: String(safe.resolution_summary || ""),
+    statements: mapStatements(safe.statements),
+    evidence_items: mapEvidence(safe.evidence_items),
+    resolution: mapResolution(safe.resolution),
+    audit_events: mapAuditEvents(safe.audit_events),
   };
 }
 

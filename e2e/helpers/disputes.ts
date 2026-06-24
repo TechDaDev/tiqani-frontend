@@ -127,9 +127,11 @@ export async function addStatement(page: Page, text: string) {
   await expect(textarea).toBeVisible({ timeout: 5000 });
   await textarea.fill(text);
 
-  const submitBtn = page.getByRole("button", { name: /send|إرسال|ناردن/i });
+  const submitBtn = page.getByRole("button", { name: /add statement|إرسال|ناردن/i });
   await submitBtn.click();
   await page.waitForLoadState("networkidle");
+  // Verify the statement text appears on the page after submission
+  await expect(page.getByText(text, { exact: false })).toBeVisible({ timeout: 10000 });
 }
 
 /**
