@@ -10,7 +10,7 @@ test.describe("Manual recovery", () => {
   test("manual recovery dispute shows status", async ({ page }) => {
     await loginAsClient(page);
     await openDisputeDetail(page, FIXTURE.DISPUTE.MANUAL_RECOVERY);
-    await expect(page.getByText(/resolved|manual/i)).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText("Resolved", { exact: true })).toBeVisible({ timeout: 10000 });
   });
 
   test("recovery amount displayed", async ({ page }) => {

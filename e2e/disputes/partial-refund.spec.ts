@@ -10,7 +10,7 @@ test.describe("Partial refund", () => {
   test("partial refund shows resolved status", async ({ page }) => {
     await loginAsClient(page);
     await openDisputeDetail(page, FIXTURE.DISPUTE.PARTIAL_REFUND);
-    await expect(page.getByText(/resolved/i)).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText("Resolved", { exact: true })).toBeVisible({ timeout: 10000 });
   });
 
   test("partial refund amount displayed", async ({ page }) => {

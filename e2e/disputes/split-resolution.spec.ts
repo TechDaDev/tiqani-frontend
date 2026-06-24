@@ -10,7 +10,7 @@ test.describe("Split resolution", () => {
   test("split resolution shows resolved status", async ({ page }) => {
     await loginAsClient(page);
     await openDisputeDetail(page, FIXTURE.DISPUTE.SPLIT_RESOLUTION);
-    await expect(page.getByText(/resolved/i)).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText("Resolved", { exact: true })).toBeVisible({ timeout: 10000 });
   });
 
   test("split amounts displayed", async ({ page }) => {

@@ -10,7 +10,7 @@ test.describe("Pre-settlement refund", () => {
   test("pre-settlement refund shows resolved status", async ({ page }) => {
     await loginAsClient(page);
     await openDisputeDetail(page, FIXTURE.DISPUTE.FULL_REFUND);
-    await expect(page.getByText(/resolved/i)).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText("Resolved", { exact: true })).toBeVisible({ timeout: 10000 });
   });
 
   test("refund source shown as escrow", async ({ page }) => {

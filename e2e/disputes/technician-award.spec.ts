@@ -10,7 +10,7 @@ test.describe("Technician award", () => {
   test("tech award shows resolved status", async ({ page }) => {
     await loginAsApprovedTechnician(page);
     await openDisputeDetail(page, FIXTURE.DISPUTE.TECH_AWARD);
-    await expect(page.getByText(/resolved/i)).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText("Resolved", { exact: true })).toBeVisible({ timeout: 10000 });
   });
 
   test("no refund to client shown", async ({ page }) => {
