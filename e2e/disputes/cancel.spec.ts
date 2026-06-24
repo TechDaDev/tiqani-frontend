@@ -9,14 +9,14 @@ import { FIXTURE } from "../fixtures/disputes";
 test.describe("Dispute cancellation", () => {
   test("opener can cancel open dispute", async ({ page }) => {
     await loginAsClient(page);
-    await openDisputeDetail(page, FIXTURE.DISPUTE.OPEN);
+    await openDisputeDetail(page, FIXTURE.DISPUTE.CANCEL);
     await cancelDispute(page);
     await expect(page.getByText("Canceled", { exact: true })).toBeVisible({ timeout: 10000 });
   });
 
   test("respondent cannot cancel", async ({ page }) => {
     await loginAsApprovedTechnician(page);
-    await openDisputeDetail(page, FIXTURE.DISPUTE.OPEN);
+    await openDisputeDetail(page, FIXTURE.DISPUTE.CANCEL);
     const cancelBtn = page.getByRole("button", { name: /cancel dispute/i });
     await expect(cancelBtn).not.toBeVisible({ timeout: 5000 });
   });

@@ -26,7 +26,7 @@ test.describe("Responsive dispute page", () => {
     test(`dispute form usable at ${vp.name}`, async ({ page }) => {
       await page.setViewportSize({ width: vp.width, height: vp.height });
       await loginAsClient(page);
-      await page.goto(`/en/contracts/${FIXTURE.CONTRACT.OPEN_ELIGIBLE}/dispute`);
+      await page.goto(`/en/contracts/${FIXTURE.CONTRACT.RESPONSIVE_ELIGIBLE}/dispute`);
       await page.waitForLoadState("networkidle");
       const form = page.getByTestId("dispute-form");
       await expect(form).toBeVisible({ timeout: 10000 });

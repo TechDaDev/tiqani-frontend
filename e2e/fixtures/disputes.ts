@@ -23,6 +23,7 @@ export const FIXTURE = {
   CONTRACT: {
     ACTIVE_ELIGIBLE: "2d414efd-f003-5252-938a-71cdcb2c9d22",
     OPEN_ELIGIBLE: "5a175d3e-75fe-5f52-ab36-ebb6ef4a90ed",
+    TECHNICIAN_OPEN_ELIGIBLE: "f044e4bc-cef4-5d40-9343-2f3ab6e1b450",
     COMPLETION_REQUESTED: "79024ade-500a-5fee-9123-609858dcd25e",
     PRE_SETTLEMENT: "067ad621-e8e2-5f3c-91c0-fba60aa686f1",
     SETTLED_RECOVERABLE: "d5bd4952-eb5d-5e20-b66c-177aa82239d4",
@@ -37,7 +38,9 @@ export const FIXTURE = {
     SPLIT_RESOLUTION: "5826831e-daee-58fb-8812-239ee8c1210f",
     REJECTED_DISPUTE: "e2757c09-a886-5236-92a5-f1f7f0c1cc97",
     CLOSED_DISPUTE: "5e13df14-bebd-5132-8ceb-6c0641574705",
+    CANCEL_CONTRACT: "b08a5eda-9491-58ef-aa55-6377e785b5bc",
     REFUND_FAIL: "d630ff3a-496c-5cbf-a4dd-469461d286db",
+    RESPONSIVE_ELIGIBLE: "c6d6ad1f-de50-53b8-a6be-6e73acc5fa8b",
   },
 
   // ── Dispute UUIDs ──
@@ -57,6 +60,7 @@ export const FIXTURE = {
     POST_SETTLE_REFUND: "224955c6-2119-5de5-862f-908359605b27",
     MANUAL_RECOVERY: "eadeb194-ce2d-5f6f-8007-eda118076dcd",
     REFUND_FAIL: "696f2471-bd9b-52a4-84b3-4979eb1435b9",
+    CANCEL: "2725972d-9a7d-5f74-afda-b0db3e7e878f",
   },
 
   // ── Evidence UUID ──

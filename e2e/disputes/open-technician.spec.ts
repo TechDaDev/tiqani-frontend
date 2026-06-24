@@ -11,23 +11,24 @@ let disputeUrl = "";
 test.describe.serial("Technician opens a dispute", () => {
   test("sees dispute form on own eligible contract", async ({ page }) => {
     await loginAsApprovedTechnician(page);
-    // OPEN_ELIGIBLE contract (in_progress, no dispute) is owned by approved tech
-    await openContractDisputePage(page, FIXTURE.CONTRACT.OPEN_ELIGIBLE);
-    // Resilient: form visible if first run, active dispute banner if retried after test 2
+    // TECHNICIAN_OPEN_ELIGIBLE — dedicated contract, no other spec uses it
+    await openContractDisputePage(page, FIXTURE.CONTRACT.TECHNICIAN_OPEN_ELIGIBLE);
     await expect(page.getByTestId("contract-dispute-page")).toBeVisible({ timeout: 15000 });
   });
 
   test("submits dispute and redirects", async ({ page }) => {
     await loginAsApprovedTechnician(page);
-    await openContractDisputePage(page, FIXTURE.CONTRACT.OPEN_ELIGIBLE);
-    await page.waitForLoadState("networkidle");
-    // Resilient: if dispute already exists, navigate to it; else create new
+    await openContractDisputePage(page, FIXTURE.CONTRACT.TECHNICIAN_OPEN_ELIGIBLE);
+    // Wait for either form or active-banner before deciding path
+    const formOrBanner = page.locator(
+      '[data-testid="dispute-form"],[data-testid="active-dispute-banner"]'
+    );
+    await expect(formOrBanner.first()).toBeVisible({ timeout: 15000 });
     const banner = page.getByTestId("active-dispute-banner");
-    if (await banner.isVisible().catch(() => false)) {
+    if (await banner.isVisible()) {
       await banner.getByRole("button").first().click();
       await page.waitForURL(/\/disputes\//, { timeout: 30000 });
     } else {
-      await expect(page.getByTestId("dispute-form")).toBeVisible({ timeout: 10000 });
       await fillDisputeForm(page, {
         reason: "client_non_cooperation",
         amount: FIXTURE.AMOUNT.PRINCIPAL,
@@ -44,7 +45,7 @@ test.describe.serial("Technician opens a dispute", () => {
     await loginAsApprovedTechnician(page);
     await page.goto(disputeUrl);
     await page.waitForLoadState("networkidle");
-    await expect(page.getByText("Open", { exact: false })).toBeVisible({ timeout: 10000 });
+    await expect(page.getByText("Open", { exact: true })).toBeVisible({ timeout: 10000 });
   });
 
   test("unrelated technician cannot see dispute", async ({ page }) => {
