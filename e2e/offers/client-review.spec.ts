@@ -21,6 +21,7 @@ test.describe("Client Offer Review", () => {
 
   test("client can view offer detail", async ({ page }) => {
     await page.goto(OFFER_PAGES.clientDetail(OFFER_FIXTURES.submitted.uuid));
+    await expect(page.getByRole("heading", { name: "Offer Detail" })).toBeVisible({ timeout: 15_000 });
     await expect(page.locator("text=Submitted")).toBeVisible();
     await expect(page.locator("text=150,000")).toBeVisible();
   });
@@ -30,6 +31,7 @@ test.describe("Client Offer Review", () => {
     page.on("dialog", (dialog) => dialog.accept());
 
     await page.goto(OFFER_PAGES.clientDetail(OFFER_FIXTURES.forRejection.uuid));
+    await expect(page.getByRole("heading", { name: "Offer Detail" })).toBeVisible({ timeout: 15_000 });
     await expect(page.locator("text=Submitted")).toBeVisible();
 
     // Click reject

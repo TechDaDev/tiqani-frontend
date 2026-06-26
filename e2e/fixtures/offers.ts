@@ -45,6 +45,11 @@ export const OFFER_REQUEST_FIXTURES = {
     title: "Install Smart Lock",
     status: "ACCEPTED",
   },
+  offerCreate: {
+    uuid: "8a6fd0e2-2fac-532c-88da-54de24740872",
+    title: "Install Video Doorbell",
+    status: "ACCEPTED",
+  },
 } as const;
 
 export const OFFER_USER_FIXTURES = {

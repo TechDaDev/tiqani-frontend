@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { cancelDispute } from "@/lib/api/disputes";
 import { isDisputeCancelable } from "@/lib/disputes/status";
+import { useAuth } from "@/components/auth/auth-provider";
 import type { Dispute } from "@/lib/disputes/types";
 
 interface Props {
@@ -13,11 +14,14 @@ interface Props {
 
 export function DisputeCancelAction({ dispute, onCanceled }: Props) {
   const t = useTranslations("disputes");
+  const { user } = useAuth();
   const [confirming, setConfirming] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  if (!isDisputeCancelable(dispute.status)) return null;
+  // Only the opener can cancel
+  const isOpener = user?.id === dispute.opened_by;
+  if (!isDisputeCancelable(dispute.status) || !isOpener) return null;
 
   async function handleCancel() {
     setError(null);

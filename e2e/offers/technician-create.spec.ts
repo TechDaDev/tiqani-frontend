@@ -16,11 +16,11 @@ test.describe("Technician Offer Creation", () => {
 
   test("technician can create offer from accepted request", async ({ page }) => {
     // Navigate to the accepted request
-    await page.goto(OFFER_PAGES.createOffer(OFFER_REQUEST_FIXTURES.accepted.uuid));
+    await page.goto(OFFER_PAGES.createOffer(OFFER_REQUEST_FIXTURES.offerCreate.uuid));
     await page.waitForSelector('h1');
 
     // Verify request details are shown
-    await expect(page.locator("text=Install Smart Lock")).toBeVisible();
+    await expect(page.locator("text=Install Video Doorbell")).toBeVisible();
 
     // Fill offer form
     await page.fill('input[type="number"]', "150000");

@@ -4,7 +4,7 @@
  */
 
 import { test, expect } from "@playwright/test";
-import { loginAsClient } from "../fixtures/auth";
+import { loginAsClient, logout } from "../fixtures/auth";
 import { openConversationList } from "../fixtures/messages";
 
 test.describe("Messaging logout", () => {
@@ -12,10 +12,7 @@ test.describe("Messaging logout", () => {
     await loginAsClient(page);
     await openConversationList(page);
 
-    // Logout
-    // Click logout - the button is inside the sidebar nav with a LogOut SVG icon
-    await page.locator('nav:has(a[href*="/messages"]) button').click();
-    await page.waitForTimeout(1000);
+    await logout(page);
 
     // Try to access messages
     await page.goto("/ar/messages");
@@ -27,8 +24,7 @@ test.describe("Messaging logout", () => {
     await loginAsClient(page);
     await openConversationList(page);
 
-    await page.locator('nav:has(a[href*="/messages"]) button').click();
-    await page.waitForTimeout(1000);
+    await logout(page);
 
     await page.goto("/ar/messages/some-conversation-id");
     // Allow up to 15s for middleware compilation on fresh Next.js dev boot

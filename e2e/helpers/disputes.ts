@@ -5,7 +5,7 @@
  * No arbitrary sleeps. No direct database modifications.
  * Support English, Arabic, and Kurdish via translation-aware selectors.
  */
-import { type Page, expect } from "@playwright/test";
+import { type Page, type APIResponse, expect } from "@playwright/test";
 
 // ── Helpers ─────────────────────────────────────────────────────────────
 
@@ -135,16 +135,27 @@ export async function addStatement(page: Page, text: string) {
 }
 
 /**
- * Cancel an open dispute.
+ * Cancel an open dispute and return the exact cancellation response.
  */
-export async function cancelDispute(page: Page) {
-  const cancelBtn = page.getByRole("button", { name: /cancel dispute|إلغاء النزاع|پشکینیینی ناڕەزایەتی/i });
+export async function cancelDispute(page: Page, disputeId?: string): Promise<APIResponse> {
+  const cancelControls = page.getByRole("button", { name: /cancel dispute|إلغاء النزاع|پشکینیینی ناڕەزایەتی/i });
+  await expect(cancelControls).toHaveCount(1);
+
+  const cancelBtn = cancelControls.first();
   await expect(cancelBtn).toBeVisible({ timeout: 5000 });
+  await expect(cancelBtn).toBeEnabled();
   await cancelBtn.click();
-  // Confirm cancellation dialog
+
   const confirmBtn = page.getByRole("button", { name: /confirm|yes.*cancel|تأكيد|پشتڕاستکردن/i });
+  await expect(confirmBtn).toBeVisible({ timeout: 5000 });
+  await expect(confirmBtn).toBeEnabled();
+
+  const responsePromise = page.waitForResponse((response) =>
+    [200, 400].includes(response.status()) &&
+    response.url().includes(`/api/disputes/${disputeId ?? ""}/cancel`)
+  );
   await confirmBtn.click();
-  await page.waitForLoadState("networkidle");
+  return responsePromise;
 }
 
 // ── Admin ───────────────────────────────────────────────────────────────

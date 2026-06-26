@@ -31,7 +31,7 @@
 | Statement form | `<textarea>`, button `t("addStatement")` = "Add Statement" | `page.getByRole("button", { name: /add statement/i })` |
 | Evidence section | Heading "Evidence" | `page.getByRole("heading", { name: /evidence/i })` |
 | Timeline | `DisputeTimeline` component | `page.getByRole("heading", { name: /timeline/i })` - but rendered as event entries |
-| Cancel button | `t("cancelDispute")` = "Cancel Dispute" (only when status is open/awaiting_response) | `page.getByRole("button", { name: /cancel dispute/i })` |
+| Cancel button | `t("cancelDispute")` = "Cancel Dispute" (only for opener when status is open/awaiting_response) | `page.getByRole("button", { name: /cancel dispute/i })` |
 | Confirm cancel | `t("confirmCancel")` = "Yes, Cancel Dispute" | `page.getByRole("button", { name: /yes, cancel dispute/i })` |
 
 ## Admin Dispute Queue (`/admin/disputes`)
@@ -91,3 +91,4 @@
 4. **Use `innerText()`** not `textContent("body")` to avoid RSC payload data
 5. **Admin action buttons** are conditional on dispute status
 6. **URL** for contract dispute is `/contracts/{id}/dispute` (singular), not `/disputes` (plural)
+7. **Cancel tests** must wait for the `/api/disputes/{id}/cancel` response, assert exactly one visible cancel control before mutation, and verify repeated cancel leaves audit history unchanged.

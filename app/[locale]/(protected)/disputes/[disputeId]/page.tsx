@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import type { Dispute } from "@/lib/disputes/types";
 import { fetchDispute, addStatement, cancelDispute } from "@/lib/api/disputes";
 import { getDisputeStatusColor, isDisputeCancelable } from "@/lib/disputes/status";
@@ -16,7 +16,6 @@ import { DisputeCancelAction } from "@/components/disputes/dispute-cancel-action
 export default function DisputeDetailPage() {
   const t = useTranslations("disputes");
   const params = useParams();
-  const router = useRouter();
   const disputeId = params.disputeId as string;
   const [dispute, setDispute] = useState<Dispute | null>(null);
   const [loading, setLoading] = useState(true);
@@ -106,7 +105,7 @@ export default function DisputeDetailPage() {
       </div>
 
       {isDisputeCancelable(dispute.status) && (
-        <DisputeCancelAction dispute={dispute} onCanceled={() => { loadDispute(); router.push("/disputes"); }} />
+        <DisputeCancelAction dispute={dispute} onCanceled={loadDispute} />
       )}
     </div>
   );
