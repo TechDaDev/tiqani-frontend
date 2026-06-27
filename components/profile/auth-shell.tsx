@@ -18,6 +18,8 @@ import {
   MessageSquare,
   FileText,
   Handshake,
+  Bell,
+  Settings,
 } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/components/auth/auth-provider";
@@ -26,6 +28,7 @@ import { PublicFooter } from "@/components/layout/public-footer";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useUnreadCount } from "@/lib/messages/query";
+import { fetchNotificationUnreadCount } from "@/lib/api/notifications";
 import type { Locale } from "@/lib/i18n/routing";
 
 type ShellProps = {
@@ -46,6 +49,7 @@ export function AuthShell({ children }: ShellProps) {
   const isRtl = locale === "ar" || locale === "ku";
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [notificationUnread, setNotificationUnread] = useState(0);
   const { data: unreadData, startPolling, stopPolling } = useUnreadCount();
 
   // Start/stop unread polling based on user session
@@ -55,6 +59,22 @@ export function AuthShell({ children }: ShellProps) {
     }
     return () => stopPolling();
   }, [user, startPolling, stopPolling]);
+
+  useEffect(() => {
+    if (!user) return;
+    let active = true;
+    const refresh = () => {
+      fetchNotificationUnreadCount().then((count) => {
+        if (active) setNotificationUnread(count);
+      }).catch(() => undefined);
+    };
+    refresh();
+    const id = window.setInterval(refresh, 60_000);
+    return () => {
+      active = false;
+      window.clearInterval(id);
+    };
+  }, [user]);
 
   if (!user) return null;
 
@@ -97,6 +117,19 @@ export function AuthShell({ children }: ShellProps) {
       icon: <MessageSquare className="h-4 w-4" />,
       showFor: ["client", "technician"],
       badge: unreadTotal,
+    },
+    {
+      label: tNav("notifications"),
+      href: `/${locale}/notifications`,
+      icon: <Bell className="h-4 w-4" />,
+      showFor: ["client", "technician"],
+      badge: notificationUnread,
+    },
+    {
+      label: tNav("notificationSettings"),
+      href: `/${locale}/settings/notifications`,
+      icon: <Settings className="h-4 w-4" />,
+      showFor: ["client", "technician"],
     },
     {
       label: tNav("myRequests"),

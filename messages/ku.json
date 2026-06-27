@@ -34,7 +34,45 @@
     "createAccount": "دروستکردنی هەژمار",
     "myRequests": "داواکارییەکانم",
     "incomingRequests": "داواکارییە هاتووەکان",
-    "messages": "پەیامەکان"
+    "messages": "پەیامەکان",
+    "notifications": "ئاگادارکردنەوەکان",
+    "notificationSettings": "ڕێکخستنی ئاگادارکردنەوەکان"
+  },
+  "reviews": {
+    "title": "هەڵسەنگاندنەکان",
+    "leaveReview": "هەڵسەنگاندن بنووسە",
+    "submit": "ناردنی هەڵسەنگاندن"
+  },
+  "reviewEligibility": {
+    "eligible": "هەڵسەنگاندن بەردەستە",
+    "ineligible": "هەڵسەنگاندن بەردەست نییە"
+  },
+  "reviewStatus": {
+    "published": "بڵاوکراوە",
+    "under_review": "لە پێداچوونەوەدایە",
+    "hidden": "شاراوە",
+    "removed": "لابراو"
+  },
+  "reputation": {
+    "title": "ناوبانگ",
+    "averageRating": "تێکڕای هەڵسەنگاندن",
+    "completedContracts": "پەیمانە تەواوبووەکان"
+  },
+  "notifications": {
+    "title": "ئاگادارکردنەوەکان",
+    "empty": "هیچ ئاگادارکردنەوەیەک نییە.",
+    "markAllRead": "هەمووی وەک خوێندراو نیشان بدە"
+  },
+  "notificationPreferences": {
+    "title": "ڕێکخستنی ئاگادارکردنەوەکان"
+  },
+  "reviewModeration": {
+    "title": "ڕاپۆرتی هەڵسەنگاندنەکان",
+    "hide": "شاردنەوە",
+    "restore": "گەڕاندنەوە"
+  },
+  "reviewErrors": {
+    "failed": "ناردنی هەڵسەنگاندن سەرکەوتوو نەبوو."
   },
   "hero": {
     "badge": "پلاتفۆرمی ڕازیکراوەی خزمەتگوزارییە تەکنیکییەکان",

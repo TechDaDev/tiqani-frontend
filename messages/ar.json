@@ -34,7 +34,45 @@
     "createAccount": "إنشاء حساب",
     "myRequests": "طلباتي",
     "incomingRequests": "الطلبات الواردة",
-    "messages": "الرسائل"
+    "messages": "الرسائل",
+    "notifications": "الإشعارات",
+    "notificationSettings": "إعدادات الإشعارات"
+  },
+  "reviews": {
+    "title": "التقييمات",
+    "leaveReview": "اترك تقييماً",
+    "submit": "إرسال التقييم"
+  },
+  "reviewEligibility": {
+    "eligible": "التقييم متاح",
+    "ineligible": "التقييم غير متاح"
+  },
+  "reviewStatus": {
+    "published": "منشور",
+    "under_review": "قيد المراجعة",
+    "hidden": "مخفي",
+    "removed": "محذوف"
+  },
+  "reputation": {
+    "title": "السمعة",
+    "averageRating": "متوسط التقييم",
+    "completedContracts": "العقود المكتملة"
+  },
+  "notifications": {
+    "title": "الإشعارات",
+    "empty": "لا توجد إشعارات.",
+    "markAllRead": "تحديد الكل كمقروء"
+  },
+  "notificationPreferences": {
+    "title": "إعدادات الإشعارات"
+  },
+  "reviewModeration": {
+    "title": "بلاغات التقييمات",
+    "hide": "إخفاء",
+    "restore": "استعادة"
+  },
+  "reviewErrors": {
+    "failed": "فشل إرسال التقييم."
   },
   "hero": {
     "badge": "منصة خدمات تقنية آمنة",

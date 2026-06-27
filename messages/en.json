@@ -34,7 +34,45 @@
     "createAccount": "Create Account",
     "myRequests": "My Requests",
     "incomingRequests": "Incoming Requests",
-    "messages": "Messages"
+    "messages": "Messages",
+    "notifications": "Notifications",
+    "notificationSettings": "Notification Settings"
+  },
+  "reviews": {
+    "title": "Reviews",
+    "leaveReview": "Leave Review",
+    "submit": "Submit review"
+  },
+  "reviewEligibility": {
+    "eligible": "Review available",
+    "ineligible": "Review unavailable"
+  },
+  "reviewStatus": {
+    "published": "Published",
+    "under_review": "Under review",
+    "hidden": "Hidden",
+    "removed": "Removed"
+  },
+  "reputation": {
+    "title": "Reputation",
+    "averageRating": "Average rating",
+    "completedContracts": "Completed contracts"
+  },
+  "notifications": {
+    "title": "Notifications",
+    "empty": "No notifications.",
+    "markAllRead": "Mark all read"
+  },
+  "notificationPreferences": {
+    "title": "Notification Preferences"
+  },
+  "reviewModeration": {
+    "title": "Review Reports",
+    "hide": "Hide",
+    "restore": "Restore"
+  },
+  "reviewErrors": {
+    "failed": "Review failed."
   },
   "hero": {
     "badge": "Secure technical services platform",
