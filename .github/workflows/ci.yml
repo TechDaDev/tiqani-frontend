@@ -1,0 +1,45 @@
+name: Frontend CI
+
+on:
+  push:
+    branches: [dev, main, frontend/phase-12-production-release]
+  pull_request:
+    branches: [dev, main, frontend/phase-12-production-release]
+
+jobs:
+  validate:
+    runs-on: ubuntu-22.04
+
+    env:
+      NEXT_TELEMETRY_DISABLED: "1"
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+      SERVER_API_URL: http://localhost:8000
+      INTERNAL_API_URL: http://localhost:8000
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: Dependency audit
+        run: npm audit --audit-level=high

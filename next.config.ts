@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
+import { buildSecurityHeaders } from "./lib/security/headers";
 
 const withNextIntl = createNextIntlPlugin("./lib/i18n/request.ts");
 
@@ -24,6 +25,14 @@ const nextConfig: NextConfig = {
     ],
   },
   distDir: process.env.NEXT_DIST_DIR || ".next",
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: buildSecurityHeaders(process.env.NODE_ENV === "production"),
+      },
+    ];
+  },
 };
 
 export default withNextIntl(nextConfig);

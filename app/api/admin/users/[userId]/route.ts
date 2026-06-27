@@ -1,0 +1,10 @@
+import { NextRequest } from "next/server";
+import { proxyAdminGet } from "@/lib/api/admin-proxy";
+import { UuidParam } from "@/lib/api/proxy-utils";
+
+export async function GET(request: NextRequest, { params }: { params: Promise<{ userId: string }> }) {
+  const { userId } = await params;
+  const parsed = UuidParam.safeParse(userId);
+  if (!parsed.success) return Response.json({ detail: "Invalid user id." }, { status: 400 });
+  return proxyAdminGet(request, `/api/admin/users/${parsed.data}/`);
+}

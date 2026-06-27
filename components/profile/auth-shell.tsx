@@ -20,6 +20,10 @@ import {
   Handshake,
   Bell,
   Settings,
+  LayoutDashboard,
+  Users,
+  Activity,
+  Server,
 } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/components/auth/auth-provider";
@@ -79,6 +83,9 @@ export function AuthShell({ children }: ShellProps) {
   if (!user) return null;
 
   const unreadTotal = unreadData?.total_unread ?? 0;
+  const adminRoles = ["system_admin", "finance_admin", "account_manager", "content_moderator"];
+  const accountManagerRoles = ["system_admin", "account_manager"];
+  const systemAdminRoles = ["system_admin"];
 
   const navItems: Array<{
     label: string;
@@ -132,6 +139,36 @@ export function AuthShell({ children }: ShellProps) {
       showFor: ["client", "technician"],
     },
     {
+      label: "Admin Dashboard",
+      href: `/${locale}/admin/dashboard`,
+      icon: <LayoutDashboard className="h-4 w-4" />,
+      showFor: adminRoles,
+    },
+    {
+      label: "Users",
+      href: `/${locale}/admin/users`,
+      icon: <Users className="h-4 w-4" />,
+      showFor: accountManagerRoles,
+    },
+    {
+      label: "Technicians",
+      href: `/${locale}/admin/technicians`,
+      icon: <Briefcase className="h-4 w-4" />,
+      showFor: accountManagerRoles,
+    },
+    {
+      label: "Audit",
+      href: `/${locale}/admin/audit`,
+      icon: <Activity className="h-4 w-4" />,
+      showFor: adminRoles,
+    },
+    {
+      label: "System",
+      href: `/${locale}/admin/system`,
+      icon: <Server className="h-4 w-4" />,
+      showFor: systemAdminRoles,
+    },
+    {
       label: tNav("myRequests"),
       href: `/${locale}/client/requests`,
       icon: <Send className="h-4 w-4" />,
@@ -157,7 +194,7 @@ export function AuthShell({ children }: ShellProps) {
     },
   ];
 
-  const visibleNav = navItems.filter((item) => item.showFor.includes(user.role));
+  const visibleNav = navItems.filter((item) => user.isStaff || item.showFor.includes(user.role));
 
   const isActive = (href: string) => {
     if (href === pathname) return true;

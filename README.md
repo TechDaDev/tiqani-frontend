@@ -122,6 +122,27 @@ This is the foundational phase. See [docs/FRONTEND_PHASE_0.md](docs/FRONTEND_PHA
 ### Documentation
 - [docs/PHASE_11_FRONTEND.md](docs/PHASE_11_FRONTEND.md) — Complete Phase 11 frontend documentation
 
+## Phase 12 — Administration, Security Hardening, Production Readiness
+
+- **Branch:** `frontend/phase-12-production-release`
+- **Backend:** `backend/phase-12-production-release`
+
+### Key additions
+- Admin dashboard, user operations, technician operations, audit event, and system health pages
+- Admin-only route guard and admin navigation visibility
+- Reason-required admin action dialog for sensitive operations
+- Production security headers through Next.js config
+- Frontend CI workflow and production environment template
+
+### Documentation
+- [docs/PHASE_12_FRONTEND.md](docs/PHASE_12_FRONTEND.md) — Phase 12 frontend summary
+- [docs/PHASE_12_DISCOVERY.md](docs/PHASE_12_DISCOVERY.md) — Discovery notes and gap closure
+- [docs/ADMINISTRATION.md](docs/ADMINISTRATION.md) — Admin workflow reference
+- [docs/SECURITY_HARDENING.md](docs/SECURITY_HARDENING.md) — Header, auth, and proxy hardening
+- [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) — Production deployment guide
+- [docs/PRODUCTION_CHECKLIST.md](docs/PRODUCTION_CHECKLIST.md) — Release checklist
+- [docs/OBSERVABILITY.md](docs/OBSERVABILITY.md) — Health, logs, and browser-side signals
+
 ## License
 
 Private — Tiqani

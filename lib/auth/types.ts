@@ -24,6 +24,7 @@ export interface AuthUser {
   isAvailable?: boolean;
   rating?: number;
   totalReviews?: number;
+  isStaff?: boolean;
 }
 
 export type AuthStatus = "loading" | "authenticated" | "unauthenticated" | "expired" | "blocked";
@@ -49,6 +50,7 @@ export interface LoginUserData {
   is_available?: boolean;
   rating?: number;
   total_reviews?: number;
+  is_staff?: boolean;
 }
 
 export interface RegisterRequest {
@@ -118,6 +120,7 @@ export interface CurrentUserResponse {
   is_available?: boolean;
   rating?: number;
   total_reviews?: number;
+  is_staff?: boolean;
 }
 
 export function mapCurrentUserData(data: CurrentUserResponse): AuthUser {
@@ -137,6 +140,7 @@ export function mapCurrentUserData(data: CurrentUserResponse): AuthUser {
     isAvailable: data.is_available,
     rating: data.rating,
     totalReviews: data.total_reviews,
+    isStaff: data.is_staff === true,
   };
 }
 
@@ -158,5 +162,6 @@ export function mapLoginUserData(data: Record<string, unknown>): AuthUser {
     isAvailable: data.is_available as boolean | undefined,
     rating: data.rating as number | undefined,
     totalReviews: data.total_reviews as number | undefined,
+    isStaff: data.is_staff === true,
   };
 }
