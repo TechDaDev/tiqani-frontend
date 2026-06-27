@@ -17,14 +17,30 @@ Validation:
 - `npx vitest run`: 559 passed.
 - `npm run lint`: passed with existing warnings.
 - `npm run build`: passed with existing warnings.
-- Focused Playwright review/notification gate: 11 passed across 5 spec files.
+- `npm audit`: passed with 0 vulnerabilities.
+- Full Playwright regression: 371 passed.
 
-Focused Playwright command:
+Final Playwright command:
 
-`CI=1 PLAYWRIGHT_HTML_OPEN=never NEXT_DIST_DIR=.next-e2e npx playwright test e2e/reviews e2e/notifications --workers=2 --retries=0 --reporter=line`
+`CI=1 PLAYWRIGHT_HTML_OPEN=never NEXT_DIST_DIR=.next-e2e npx playwright test --retries=0 --reporter=line`
+
+Result:
+- 371 passed in 27.2m.
+- `PLAYWRIGHT_EXIT=0`.
+
+Dependency remediation:
+- `next-intl` upgraded to 4.13.0.
+- `vitest` upgraded to 4.1.9.
+- Next transitive `postcss` overridden to 8.5.15.
+- Playwright browser cache refreshed for matching Chromium after package update.
 
 Known warnings:
 - `next lint` deprecation.
 - Existing hook dependency warnings in admin/dispute/funding pages.
 - Existing unused eslint-disable warnings in `lib/api/browser-client.ts`.
-- Full Playwright regression remains deferred; Phase 11 focused vertical workflow is covered.
+- Node logs `NO_COLOR` ignored because `FORCE_COLOR` is set during Playwright runs.
+- Vitest/jsdom logs navigation-not-implemented warnings in existing tests.
+
+Deferred:
+- Production email, SMS, and push provider UI wiring beyond inactive preference flags.
+- Large admin redesign.

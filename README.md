@@ -99,6 +99,29 @@ This is the foundational phase. See [docs/FRONTEND_PHASE_0.md](docs/FRONTEND_PHA
 - [docs/PROTECTED_ROUTES.md](docs/PROTECTED_ROUTES.md) — Route protection architecture
 - [docs/PHASE_2_BACKEND_FINDINGS.md](docs/PHASE_2_BACKEND_FINDINGS.md) — Backend integration findings
 
+## Phase 11 — Reviews, Reputation, Notifications, Trust
+
+- **Branch:** `frontend/phase-11-reviews-notifications-trust`
+- **Backend:** `backend/phase-11-reviews-notifications-trust`
+
+### Key additions
+- Contract review creation and eligibility UI
+- Public user reputation and review display
+- In-app notification center, unread state, and preferences
+- Staff review report moderation screens
+- Same-origin proxy routes for review, reputation, notification, and moderation APIs
+
+### Final validation
+- `npm run lint`: passed with existing warnings
+- `npx tsc --noEmit`: passed
+- `npx vitest run`: 559 passed
+- `npm run build`: passed, 47 static pages generated
+- `npm audit`: passed, 0 vulnerabilities
+- Full Playwright regression: 371 passed in 27.2m
+
+### Documentation
+- [docs/PHASE_11_FRONTEND.md](docs/PHASE_11_FRONTEND.md) — Complete Phase 11 frontend documentation
+
 ## License
 
 Private — Tiqani
