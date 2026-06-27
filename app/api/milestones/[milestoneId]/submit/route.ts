@@ -8,7 +8,7 @@ export async function POST(
 ) {
   const { milestoneId } = await params;
   const accessToken = request.cookies.get(COOKIE_NAMES.ACCESS)?.value;
-  const body = await request.json();
+  const body = await request.json().catch(() => ({}));
   try {
     const { data, status } = await backendPost<Record<string, unknown>>(
       `/api/contracts/milestones/${milestoneId}/submit/`,
