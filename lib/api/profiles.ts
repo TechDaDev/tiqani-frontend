@@ -83,6 +83,15 @@ export interface ClientProfileUpdate {
   profile_image?: string;
 }
 
+export interface AccountProfileUpdate {
+  phone_number?: string;
+  governorate?: string;
+  address?: string;
+  gender?: "male" | "female";
+  date_of_birth?: string;
+  profile_image?: string;
+}
+
 export interface TechnicianProfileUpdate {
   job_title?: string;
   about?: string;
@@ -113,6 +122,40 @@ export async function updateClientProfile(
   });
 }
 
+export async function updateClientProfileFormData(
+  data: FormData
+): Promise<ClientProfileData> {
+  const response = await fetch("/api/client/me", {
+    method: "PATCH",
+    body: data,
+    credentials: "same-origin",
+  });
+  return readFormDataResponse(response);
+}
+
+/**
+ * Update shared user profile fields (PATCH /api/accounts/me/)
+ */
+export async function updateAccountProfile(
+  data: AccountProfileUpdate
+): Promise<Record<string, unknown>> {
+  return browserRequest<Record<string, unknown>>("/api/auth/me", {
+    method: "PATCH",
+    body: data,
+  });
+}
+
+export async function updateAccountProfileFormData(
+  data: FormData
+): Promise<Record<string, unknown>> {
+  const response = await fetch("/api/auth/me", {
+    method: "PATCH",
+    body: data,
+    credentials: "same-origin",
+  });
+  return readFormDataResponse(response);
+}
+
 /**
  * Fetch technician profile (GET /api/technicians/me/)
  */
@@ -132,6 +175,34 @@ export async function updateTechnicianProfile(
     method: "PATCH",
     body: data,
   });
+}
+
+export async function updateTechnicianProfileFormData(
+  data: FormData
+): Promise<TechnicianProfileData> {
+  const response = await fetch("/api/technicians/me", {
+    method: "PATCH",
+    body: data,
+    credentials: "same-origin",
+  });
+  return readFormDataResponse(response);
+}
+
+async function readFormDataResponse<T>(response: Response): Promise<T> {
+  const contentType = response.headers.get("content-type") || "";
+  const data = contentType.includes("application/json")
+    ? await response.json()
+    : { detail: await response.text() };
+
+  if (!response.ok) {
+    const detail =
+      typeof data === "object" && data !== null && "detail" in data
+        ? String((data as Record<string, unknown>).detail)
+        : `Request failed: ${response.status}`;
+    throw new Error(detail);
+  }
+
+  return data as T;
 }
 
 /**

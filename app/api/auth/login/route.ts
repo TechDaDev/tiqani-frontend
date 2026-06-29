@@ -27,6 +27,7 @@ export async function POST(request: NextRequest) {
 
     response.cookies.set(COOKIE_NAMES.ACCESS, data.access, COOKIE_OPTIONS.ACCESS);
     response.cookies.set(COOKIE_NAMES.REFRESH, data.refresh, COOKIE_OPTIONS.REFRESH);
+    response.cookies.set(COOKIE_NAMES.SESSION, "1", COOKIE_OPTIONS.SESSION);
 
     return response;
   } catch (error: unknown) {

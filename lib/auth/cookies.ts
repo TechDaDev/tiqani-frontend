@@ -8,6 +8,7 @@
 export const COOKIE_NAMES = {
   ACCESS: "tiqani_access",
   REFRESH: "tiqani_refresh",
+  SESSION: "tiqani_session",
 } as const;
 
 /** Access token: 120 minutes (matches Django SIMPLE_JWT default) */
@@ -25,6 +26,13 @@ export const COOKIE_OPTIONS = {
   },
   REFRESH: {
     httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax" as const,
+    path: "/",
+    maxAge: REFRESH_MAX_AGE_SEC,
+  },
+  SESSION: {
+    httpOnly: false,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax" as const,
     path: "/",

@@ -328,9 +328,18 @@
     "github": "GitHub Profile",
     "linkedin": "LinkedIn Profile",
     "isAvailable": "Available for Work",
+    "onboarding": "Technician Onboarding",
+    "gender": "Gender",
+    "dateOfBirth": "Date of Birth",
+    "selectGender": "Select gender",
+    "genders": {
+      "male": "Male",
+      "female": "Female"
+    },
     "saveChanges": "Save Changes",
     "saving": "Saving...",
     "saved": "Changes saved successfully.",
+    "uploaded": "Uploaded",
     "saveError": "Failed to save changes. Please try again.",
     "loadError": "Failed to load profile data.",
     "tryAgain": "Try Again",

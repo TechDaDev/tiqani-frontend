@@ -11,6 +11,7 @@ import { ApiClientError } from "@/lib/api/errors";
 import {
   fetchClientProfile,
   updateClientProfile,
+  updateClientProfileFormData,
   fetchIncompleteFields,
   type ClientProfileData,
   type IncompleteFieldsData,
@@ -40,6 +41,9 @@ export default function ClientProfilePage() {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [governorate, setGovernorate] = useState("");
   const [address, setAddress] = useState("");
+  const [gender, setGender] = useState<"" | "male" | "female">("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
 
   const loadProfile = useCallback(async () => {
     try {
@@ -52,7 +56,9 @@ export default function ClientProfilePage() {
       setIncomplete(incompleteData);
       setPhoneNumber(profileData.phone_number || "");
       setGovernorate(profileData.governorate || "");
-      setAddress(profileData.phone_number || "");
+      setAddress(profileData.address || "");
+      setGender((profileData.gender as "male" | "female" | null) || "");
+      setDateOfBirth(profileData.date_of_birth || "");
     } catch (err) {
       setError(err instanceof Error ? err.message : t("loadError"));
     } finally {
@@ -74,8 +80,17 @@ export default function ClientProfilePage() {
         phone_number: phoneNumber || undefined,
         governorate: governorate || undefined,
         address: address || undefined,
+        gender: gender || undefined,
+        date_of_birth: dateOfBirth || undefined,
       });
-      setProfile(updated);
+      let refreshed = updated;
+      if (profileImageFile) {
+        const data = new FormData();
+        data.append("profile_image", profileImageFile);
+        refreshed = await updateClientProfileFormData(data);
+        setProfileImageFile(null);
+      }
+      setProfile(refreshed);
       setSuccess(t("saved"));
       // Reload incomplete fields
       const incompleteData = await fetchIncompleteFields();
@@ -235,6 +250,62 @@ export default function ClientProfilePage() {
                 rows={3}
                 className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
               />
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label
+                  htmlFor="gender"
+                  className="mb-1 block text-sm font-medium text-foreground-muted"
+                >
+                  {t("gender")}
+                </label>
+                <select
+                  id="gender"
+                  value={gender}
+                  onChange={(e) => setGender(e.target.value as "" | "male" | "female")}
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  <option value="">{t("selectGender")}</option>
+                  <option value="male">{t("genders.male")}</option>
+                  <option value="female">{t("genders.female")}</option>
+                </select>
+              </div>
+
+              <div>
+                <label
+                  htmlFor="dateOfBirth"
+                  className="mb-1 block text-sm font-medium text-foreground-muted"
+                >
+                  {t("dateOfBirth")}
+                </label>
+                <input
+                  id="dateOfBirth"
+                  type="date"
+                  value={dateOfBirth}
+                  onChange={(e) => setDateOfBirth(e.target.value)}
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label
+                htmlFor="profileImage"
+                className="mb-1 block text-sm font-medium text-foreground-muted"
+              >
+                {t("fields.profile_image")}
+              </label>
+              <input
+                id="profileImage"
+                type="file"
+                accept="image/*"
+                onChange={(e) => setProfileImageFile(e.target.files?.[0] ?? null)}
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+              {profile?.profile_image && (
+                <p className="mt-1 text-xs text-foreground-muted">{t("uploaded")}</p>
+              )}
             </div>
 
             <Button type="submit" disabled={saving} className="w-full">

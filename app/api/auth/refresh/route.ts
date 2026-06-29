@@ -21,6 +21,7 @@ export async function POST(request: NextRequest) {
     const response = NextResponse.json({ refreshed: true }, { status });
 
     response.cookies.set(COOKIE_NAMES.ACCESS, data.access, COOKIE_OPTIONS.ACCESS);
+    response.cookies.set(COOKIE_NAMES.SESSION, "1", COOKIE_OPTIONS.SESSION);
 
     return response;
   } catch (error: unknown) {
@@ -31,6 +32,7 @@ export async function POST(request: NextRequest) {
       );
       response.cookies.set(COOKIE_NAMES.ACCESS, "", { ...COOKIE_OPTIONS.ACCESS, maxAge: 0 });
       response.cookies.set(COOKIE_NAMES.REFRESH, "", { ...COOKIE_OPTIONS.REFRESH, maxAge: 0 });
+      response.cookies.set(COOKIE_NAMES.SESSION, "", { ...COOKIE_OPTIONS.SESSION, maxAge: 0 });
       return response;
     }
     return NextResponse.json(

@@ -328,9 +328,18 @@
     "github": "رابط GitHub",
     "linkedin": "رابط LinkedIn",
     "isAvailable": "متاح للعمل",
+    "onboarding": "إعداد الفني",
+    "gender": "الجنس",
+    "dateOfBirth": "تاريخ الميلاد",
+    "selectGender": "اختر الجنس",
+    "genders": {
+      "male": "ذكر",
+      "female": "أنثى"
+    },
     "saveChanges": "حفظ التغييرات",
     "saving": "جار الحفظ...",
     "saved": "تم حفظ التغييرات بنجاح.",
+    "uploaded": "تم الرفع",
     "saveError": "فشل حفظ التغييرات. حاول مرة أخرى.",
     "loadError": "فشل تحميل بيانات الملف الشخصي.",
     "tryAgain": "حاول مرة أخرى",

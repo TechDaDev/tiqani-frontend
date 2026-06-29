@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from "react";
 import type { AuthUser, AuthStatus } from "@/lib/auth/types";
 import * as authService from "@/lib/auth/service";
+import { COOKIE_NAMES } from "@/lib/auth/cookies";
 
 interface AuthContextValue {
   user: AuthUser | null;
@@ -21,6 +22,13 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
+function hasSessionMarker() {
+  if (typeof document === "undefined") return false;
+  return document.cookie
+    .split(";")
+    .some((cookie) => cookie.trim().startsWith(`${COOKIE_NAMES.SESSION}=`));
+}
+
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [status, setStatus] = useState<AuthStatus>("loading");
@@ -31,6 +39,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const refreshSession = useCallback(async (): Promise<boolean> => {
+    if (!hasSessionMarker()) {
+      clearSession();
+      return false;
+    }
+
     try {
       // Try refreshing the access token using the HTTP-only refresh cookie
       const refreshed = await authService.refreshToken();
@@ -55,6 +68,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   // Restore session on mount — server checks HTTP-only cookies
   useEffect(() => {
     const init = async () => {
+      if (!hasSessionMarker()) {
+        setStatus("unauthenticated");
+        return;
+      }
+
       const currentUser = await authService.fetchCurrentUser();
       if (currentUser) {
         setUser(currentUser);

@@ -33,6 +33,7 @@ export async function register(request: RegisterRequest): Promise<RegisterRespon
   return browserRequest<RegisterResponse>("/api/auth/register", {
     method: "POST",
     body: request,
+    timeout: 40_000,
   });
 }
 

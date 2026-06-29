@@ -4,10 +4,12 @@ import { useTheme } from "next-themes";
 import { useTranslations } from "next-intl";
 import { Sun, Moon, Monitor } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useMounted } from "@/hooks/use-mounted";
 
 export function ThemeSwitcher() {
   const { theme, setTheme } = useTheme();
   const t = useTranslations("common");
+  const mounted = useMounted();
 
   const themes = [
     { value: "light", label: t("lightMode"), icon: Sun },
@@ -31,8 +33,10 @@ export function ThemeSwitcher() {
       onClick={cycleTheme}
       aria-label={`${t("theme")} — ${currentTheme.label}`}
       title={currentTheme.label}
+      disabled={!mounted}
+      suppressHydrationWarning
     >
-      <Icon className="h-4 w-4" />
+      {mounted ? <Icon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
     </Button>
   );
 }

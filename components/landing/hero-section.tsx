@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { ArrowRight, ArrowLeft, Shield, MessageSquare, FileText, Wallet, CheckCircle, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ResponsiveContainer } from "@/components/shared/responsive-container";
-import { Link } from "@/lib/i18n/navigation";
+import { LocaleLink } from "@/components/shared/locale-link";
 import { cn } from "@/lib/utils";
 import { type Locale } from "@/lib/i18n/routing";
 
@@ -45,17 +45,17 @@ export function HeroSection() {
           </p>
 
           <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
-            <Link href="/marketplace">
+            <LocaleLink href="/marketplace">
               <Button variant="primary" size="lg">
                 {t("primaryAction")}
                 <Arrow className="h-5 w-5" />
               </Button>
-            </Link>
-            <Link href="/register?role=technician">
+            </LocaleLink>
+            <LocaleLink href="/register?role=technician">
               <Button variant="outline" size="lg">
                 {t("secondaryAction")}
               </Button>
-            </Link>
+            </LocaleLink>
           </div>
         </div>
 

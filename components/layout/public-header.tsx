@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
 import { Menu } from "lucide-react";
-import { Link } from "@/lib/i18n/navigation";
+import { LocaleLink } from "@/components/shared/locale-link";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/shared/logo";
@@ -59,13 +59,13 @@ export function PublicHeader() {
 
           <nav className="hidden md:flex items-center gap-1" aria-label={t("home")}>
             {navItems.map((item) => (
-              <Link
+              <LocaleLink
                 key={item.href}
                 href={item.href}
                 className="rounded-lg px-3 py-2 text-sm font-medium text-foreground-muted transition-colors hover:bg-surface-subtle hover:text-foreground"
               >
                 {item.label}
-              </Link>
+              </LocaleLink>
             ))}
           </nav>
 
@@ -76,24 +76,24 @@ export function PublicHeader() {
             <div className="hidden md:flex items-center gap-2 ms-2">
               {isLoading ? null : isAuthenticated && user ? (
                 <>
-                  <Link href="/account">
+                  <LocaleLink href="/account">
                     <Button variant="ghost" size="sm">
                       {user.fullName || user.username}
                     </Button>
-                  </Link>
+                  </LocaleLink>
                 </>
               ) : (
                 <>
-                  <Link href="/login">
+                  <LocaleLink href="/login">
                     <Button variant="ghost" size="sm">
                       {t("login")}
                     </Button>
-                  </Link>
-                  <Link href="/register">
+                  </LocaleLink>
+                  <LocaleLink href="/register">
                     <Button variant="primary" size="sm">
                       {t("createAccount")}
                     </Button>
-                  </Link>
+                  </LocaleLink>
                 </>
               )}
             </div>

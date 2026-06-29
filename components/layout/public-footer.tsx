@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
-import { Link } from "@/lib/i18n/navigation";
+import { LocaleLink } from "@/components/shared/locale-link";
 import { Logo } from "@/components/shared/logo";
 import { ResponsiveContainer } from "@/components/shared/responsive-container";
 import { LanguageSwitcher } from "@/components/controls/language-switcher";
@@ -46,13 +46,13 @@ export function PublicFooter() {
 
   const renderLinks = (links: FooterLink[]) =>
     links.map((link) => (
-      <Link
+      <LocaleLink
         key={link.label}
         href={link.href}
         className="text-sm text-foreground-muted transition-colors hover:text-foreground"
       >
         {link.label}
-      </Link>
+      </LocaleLink>
     ));
 
   return (

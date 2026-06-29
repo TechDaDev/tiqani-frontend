@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { ArrowRight, ArrowLeft, Briefcase, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ResponsiveContainer } from "@/components/shared/responsive-container";
-import { Link } from "@/lib/i18n/navigation";
+import { LocaleLink } from "@/components/shared/locale-link";
 import { type Locale } from "@/lib/i18n/routing";
 
 export function AudienceCta() {
@@ -27,12 +27,12 @@ export function AudienceCta() {
             <h2 className="text-2xl font-bold">{t("clientTitle")}</h2>
             <p className="mt-3 text-foreground-muted">{t("clientDesc")}</p>
             <div className="mt-6">
-              <Link href="/marketplace">
+              <LocaleLink href="/marketplace">
                 <Button variant="primary" size="lg">
                   {t("clientAction")}
                   <Arrow className="h-5 w-5" />
                 </Button>
-              </Link>
+              </LocaleLink>
             </div>
           </div>
 
@@ -44,12 +44,12 @@ export function AudienceCta() {
             <h2 className="text-2xl font-bold">{t("technicianTitle")}</h2>
             <p className="mt-3 text-foreground-muted">{t("technicianDesc")}</p>
             <div className="mt-6">
-              <Link href="/register?role=technician">
+              <LocaleLink href="/register?role=technician">
                 <Button variant="outline" size="lg">
                   {t("technicianAction")}
                   <Arrow className="h-5 w-5" />
                 </Button>
-              </Link>
+              </LocaleLink>
             </div>
           </div>
         </div>

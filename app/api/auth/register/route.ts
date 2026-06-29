@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { backendPost } from "@/lib/api/backend-client";
 
+const REGISTER_BACKEND_TIMEOUT_MS = 35_000;
+
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -15,7 +17,8 @@ export async function POST(request: NextRequest) {
 
     const { data, status } = await backendPost<{ detail: string; email: string }>(
       "/api/auth/register/",
-      { username, email, password, first_name, last_name, role, phone_number, governorate, address, gender, date_of_birth, job_title, about, years_of_expertise }
+      { username, email, password, first_name, last_name, role, phone_number, governorate, address, gender, date_of_birth, job_title, about, years_of_expertise },
+      { timeout: REGISTER_BACKEND_TIMEOUT_MS }
     );
 
     return NextResponse.json(data, { status });

@@ -17,11 +17,21 @@ import { Badge } from "@/components/ui/badge";
 import { ApiClientError } from "@/lib/api/errors";
 import {
   fetchTechnicianProfile,
+  updateAccountProfile,
+  updateAccountProfileFormData,
   updateTechnicianProfile,
+  updateTechnicianProfileFormData,
   fetchIncompleteFields,
   type TechnicianProfileData,
   type IncompleteFieldsData,
 } from "@/lib/api/profiles";
+
+const IRAQI_GOVERNORATES = [
+  "Baghdad", "Basra", "Nineveh", "Erbil", "Sulaymaniyah",
+  "Kirkuk", "Duhok", "Najaf", "Karbala", "Anbar", "Babil",
+  "Maysan", "Wasit", "Dhi Qar", "Muthanna", "Qadisiyyah",
+  "Salah al-Din", "Diyala", "Halabja",
+] as const;
 
 export default function TechnicianProfilePage() {
   const t = useTranslations("profile");
@@ -33,12 +43,21 @@ export default function TechnicianProfilePage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  // Editable fields
+  // Shared account fields
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [governorate, setGovernorate] = useState("");
+  const [address, setAddress] = useState("");
+  const [gender, setGender] = useState<"" | "male" | "female">("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
+
+  // Technician profile fields
   const [jobTitle, setJobTitle] = useState("");
   const [about, setAbout] = useState("");
   const [yearsOfExpertise, setYearsOfExpertise] = useState(0);
   const [github, setGithub] = useState("");
   const [linkedin, setLinkedin] = useState("");
+  const [idDocumentFile, setIdDocumentFile] = useState<File | null>(null);
 
   const loadProfile = useCallback(async () => {
     try {
@@ -49,11 +68,16 @@ export default function TechnicianProfilePage() {
       ]);
       setProfile(profileData);
       setIncomplete(incompleteData);
+      setPhoneNumber(profileData.phone_number || "");
+      setGovernorate(profileData.governorate || "");
+      setAddress(profileData.address || "");
+      setGender((profileData.gender as "male" | "female" | null) || "");
+      setDateOfBirth(profileData.date_of_birth || "");
       setJobTitle(profileData.job_title || "");
       setAbout(profileData.about || "");
       setYearsOfExpertise(profileData.years_of_expertise || 0);
-      setGithub(profileData.skill_sets?.github_url as string || "");
-      setLinkedin(profileData.skill_sets?.linkedin_url as string || "");
+      setGithub(profileData.url1 || "");
+      setLinkedin(profileData.url2 || "");
     } catch (err) {
       setError(err instanceof Error ? err.message : t("loadError"));
     } finally {
@@ -71,13 +95,35 @@ export default function TechnicianProfilePage() {
     setSuccess("");
     setSaving(true);
     try {
-      const updated = await updateTechnicianProfile({
-        job_title: jobTitle || undefined,
-        about: about || undefined,
-        years_of_expertise: yearsOfExpertise || undefined,
-        github: github || undefined,
-        linkedin: linkedin || undefined,
-      });
+      await Promise.all([
+        updateAccountProfile({
+          phone_number: phoneNumber || undefined,
+          governorate: governorate || undefined,
+          address: address || undefined,
+          gender: gender || undefined,
+          date_of_birth: dateOfBirth || undefined,
+        }),
+        updateTechnicianProfile({
+          job_title: jobTitle || undefined,
+          about: about || undefined,
+          years_of_expertise: yearsOfExpertise,
+          github: github || undefined,
+          linkedin: linkedin || undefined,
+        }),
+      ]);
+      if (profileImageFile) {
+        const data = new FormData();
+        data.append("profile_image", profileImageFile);
+        await updateAccountProfileFormData(data);
+        setProfileImageFile(null);
+      }
+      if (idDocumentFile) {
+        const data = new FormData();
+        data.append("identification_documents", idDocumentFile);
+        await updateTechnicianProfileFormData(data);
+        setIdDocumentFile(null);
+      }
+      const updated = await fetchTechnicianProfile();
       setProfile(updated);
       setSuccess(t("saved"));
       const incompleteData = await fetchIncompleteFields();
@@ -174,7 +220,7 @@ export default function TechnicianProfilePage() {
       {/* Profile form */}
       <Card>
         <CardHeader>
-          <CardTitle>{t("professionalInfo")}</CardTitle>
+          <CardTitle>{t("personalInfo")}</CardTitle>
         </CardHeader>
         <CardContent>
           {success && (
@@ -191,6 +237,141 @@ export default function TechnicianProfilePage() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label className="mb-1 block text-sm font-medium text-foreground-muted">
+                  {t("fullName")}
+                </label>
+                <p className="rounded-lg border border-border bg-muted px-3 py-2 text-sm">
+                  {profile?.full_name}
+                </p>
+              </div>
+              <div>
+                <label className="mb-1 block text-sm font-medium text-foreground-muted">
+                  {t("email")}
+                </label>
+                <p className="rounded-lg border border-border bg-muted px-3 py-2 text-sm">
+                  {profile?.email || "-"}
+                </p>
+              </div>
+            </div>
+
+            <div>
+              <label
+                htmlFor="phone"
+                className="mb-1 block text-sm font-medium text-foreground-muted"
+              >
+                {t("phoneNumber")}
+              </label>
+              <input
+                id="phone"
+                type="tel"
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                placeholder="0770XXXXXXX"
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                dir="ltr"
+              />
+            </div>
+
+            <div>
+              <label
+                htmlFor="governorate"
+                className="mb-1 block text-sm font-medium text-foreground-muted"
+              >
+                {t("governorate")}
+              </label>
+              <select
+                id="governorate"
+                value={governorate}
+                onChange={(e) => setGovernorate(e.target.value)}
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              >
+                <option value="">{t("selectGovernorate")}</option>
+                {IRAQI_GOVERNORATES.map((gov) => (
+                  <option key={gov} value={gov}>
+                    {gov}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div>
+              <label
+                htmlFor="address"
+                className="mb-1 block text-sm font-medium text-foreground-muted"
+              >
+                {t("address")}
+              </label>
+              <textarea
+                id="address"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                rows={3}
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div>
+                <label
+                  htmlFor="gender"
+                  className="mb-1 block text-sm font-medium text-foreground-muted"
+                >
+                  {t("gender")}
+                </label>
+                <select
+                  id="gender"
+                  value={gender}
+                  onChange={(e) => setGender(e.target.value as "" | "male" | "female")}
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                >
+                  <option value="">{t("selectGender")}</option>
+                  <option value="male">{t("genders.male")}</option>
+                  <option value="female">{t("genders.female")}</option>
+                </select>
+              </div>
+
+              <div>
+                <label
+                  htmlFor="dateOfBirth"
+                  className="mb-1 block text-sm font-medium text-foreground-muted"
+                >
+                  {t("dateOfBirth")}
+                </label>
+                <input
+                  id="dateOfBirth"
+                  type="date"
+                  value={dateOfBirth}
+                  onChange={(e) => setDateOfBirth(e.target.value)}
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label
+                htmlFor="profileImage"
+                className="mb-1 block text-sm font-medium text-foreground-muted"
+              >
+                {t("fields.profile_image")}
+              </label>
+              <input
+                id="profileImage"
+                type="file"
+                accept="image/*"
+                onChange={(e) => setProfileImageFile(e.target.files?.[0] ?? null)}
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+              {profile?.profile_image && (
+                <p className="mt-1 text-xs text-foreground-muted">{t("uploaded")}</p>
+              )}
+            </div>
+
+            <div className="border-t border-border pt-4">
+              <h2 className="text-base font-semibold">{t("professionalInfo")}</h2>
+            </div>
+
             <div>
               <label
                 htmlFor="jobTitle"
@@ -277,6 +458,25 @@ export default function TechnicianProfilePage() {
                 className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                 dir="ltr"
               />
+            </div>
+
+            <div>
+              <label
+                htmlFor="idDocument"
+                className="mb-1 block text-sm font-medium text-foreground-muted"
+              >
+                {t("fields.identification_documents")}
+              </label>
+              <input
+                id="idDocument"
+                type="file"
+                accept="image/*,.pdf"
+                onChange={(e) => setIdDocumentFile(e.target.files?.[0] ?? null)}
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+              />
+              {profile?.identification_documents && (
+                <p className="mt-1 text-xs text-foreground-muted">{t("uploaded")}</p>
+              )}
             </div>
 
             <Button type="submit" disabled={saving} className="w-full">

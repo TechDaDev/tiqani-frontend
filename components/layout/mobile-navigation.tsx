@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { useParams, usePathname } from "next/navigation";
 import { useAuth } from "@/components/auth/auth-provider";
 import { X } from "lucide-react";
-import { Link } from "@/lib/i18n/navigation";
+import { LocaleLink } from "@/components/shared/locale-link";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/shared/logo";
 import { type Locale } from "@/lib/i18n/routing";
@@ -131,7 +131,7 @@ export function MobileNavigation({
         </div>
         <nav className="flex flex-col p-4 gap-1">
           {navItems.map((item) => (
-            <Link
+            <LocaleLink
               key={item.href}
               href={item.href}
               onClick={handleClose}
@@ -143,36 +143,36 @@ export function MobileNavigation({
               )}
             >
               {item.label}
-            </Link>
+            </LocaleLink>
           ))}
         </nav>
 
         {/* Auth buttons for mobile */}
         <div className="mt-auto border-t border-border pt-4">
           {isLoading ? null : isAuthenticated && user ? (
-            <Link
+            <LocaleLink
               href="/account"
               onClick={handleClose}
               className="flex w-full items-center justify-center rounded-lg px-3 py-2.5 text-sm font-medium text-primary transition-colors hover:bg-primary-soft"
             >
               {user.fullName || user.username}
-            </Link>
+            </LocaleLink>
           ) : (
             <>
-              <Link
+              <LocaleLink
                 href="/login"
                 onClick={handleClose}
                 className="flex w-full items-center justify-center rounded-lg px-3 py-2.5 text-sm font-medium text-primary transition-colors hover:bg-primary-soft"
               >
                 {tNav("login")}
-              </Link>
-              <Link
+              </LocaleLink>
+              <LocaleLink
                 href="/register"
                 onClick={handleClose}
                 className="mt-2 flex w-full items-center justify-center rounded-lg bg-primary px-3 py-2.5 text-sm font-medium text-white transition-colors hover:bg-primary-hover"
               >
                 {tNav("createAccount")}
-              </Link>
+              </LocaleLink>
             </>
           )}
         </div>

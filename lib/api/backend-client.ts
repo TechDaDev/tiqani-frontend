@@ -48,10 +48,7 @@ export async function backendRequest<T>(
     }
 
     if (!response.ok) {
-      const message =
-        typeof data === "object" && data !== null
-          ? (data as Record<string, unknown>).detail as string || `Backend error: ${response.status}`
-          : `Backend error: ${response.status}`;
+      const message = extractErrorMessage(data) || `Backend error: ${response.status}`;
       throw new ApiClientError(response.status, message, {
         fieldErrors: extractFieldErrors(data),
         backendData: data,
@@ -67,6 +64,26 @@ export async function backendRequest<T>(
     }
     throw new ApiClientError(502, "Backend unavailable");
   }
+}
+
+function extractErrorMessage(data: unknown): string | undefined {
+  if (typeof data === "string" && data.trim()) return data;
+  if (Array.isArray(data)) {
+    const messages = data.map((value) => String(value)).filter(Boolean);
+    return messages.length > 0 ? messages.join(", ") : undefined;
+  }
+  if (typeof data !== "object" || data === null) return undefined;
+
+  const d = data as Record<string, unknown>;
+  for (const key of ["detail", "non_field_errors", "message", "error"]) {
+    const value = d[key];
+    if (typeof value === "string" && value.trim()) return value;
+    if (Array.isArray(value) && value.length > 0) {
+      return value.map((item) => String(item)).join(", ");
+    }
+  }
+
+  return undefined;
 }
 
 function extractFieldErrors(data: unknown): Record<string, string[]> | undefined {
