@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, type FormEvent } from "react";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 import {
   Loader2,
   Save,
@@ -364,7 +365,19 @@ export default function TechnicianProfilePage() {
                 className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
               />
               {profile?.profile_image && (
-                <p className="mt-1 text-xs text-foreground-muted">{t("uploaded")}</p>
+                <div className="mt-3 flex items-center gap-3">
+                  <div className="relative h-16 w-16 overflow-hidden rounded-full border border-border bg-muted">
+                    <Image
+                      src={profile.profile_image}
+                      alt={profile.full_name || t("fields.profile_image")}
+                      fill
+                      className="object-cover"
+                      sizes="64px"
+                      unoptimized
+                    />
+                  </div>
+                  <p className="text-xs text-foreground-muted">{t("uploaded")}</p>
+                </div>
               )}
             </div>
 
