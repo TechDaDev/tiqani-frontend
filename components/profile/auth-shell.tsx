@@ -194,7 +194,7 @@ export function AuthShell({ children }: ShellProps) {
     },
   ];
 
-  const visibleNav = navItems.filter((item) => user.isStaff || item.showFor.includes(user.role));
+  const visibleNav = navItems.filter((item) => item.showFor.includes(user.role));
 
   const isActive = (href: string) => {
     if (href === pathname) return true;

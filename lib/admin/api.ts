@@ -2,12 +2,13 @@ import { browserClient } from "@/lib/api/browser-client";
 import {
   mapAdminDashboard,
   mapAdminTechnician,
+  mapAdminTechnicianDetail,
   mapAdminUser,
   mapAuditEvent,
   mapPaginated,
   mapPlatformHealth,
 } from "./mappers";
-import type { AdminAuditEvent, AdminDashboard, AdminTechnician, AdminUser, Paginated, PlatformHealth } from "./types";
+import type { AdminAuditEvent, AdminDashboard, AdminTechnician, AdminTechnicianDetail, AdminUser, Paginated, PlatformHealth } from "./types";
 
 export async function fetchAdminDashboard(): Promise<AdminDashboard> {
   return mapAdminDashboard(await browserClient.get("/api/admin/dashboard/"));
@@ -33,6 +34,10 @@ export async function restoreAdminUser(userId: string, reason: string) {
 export async function fetchAdminTechnicians(query = ""): Promise<Paginated<AdminTechnician>> {
   const suffix = query ? `?${query}` : "";
   return mapPaginated(await browserClient.get(`/api/admin/technicians/${suffix}`), mapAdminTechnician);
+}
+
+export async function fetchAdminTechnician(technicianId: string): Promise<AdminTechnicianDetail> {
+  return mapAdminTechnicianDetail(await browserClient.get(`/api/admin/technicians/${technicianId}/`));
 }
 
 export async function approveTechnician(technicianId: string, reason: string) {

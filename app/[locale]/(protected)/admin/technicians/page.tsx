@@ -1,11 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useParams } from "next/navigation";
 import { AdminReasonDialog } from "@/components/admin/admin-reason-dialog";
-import { approveTechnician, fetchAdminTechnicians, suspendTechnician } from "@/lib/admin/api";
+import { fetchAdminTechnicians, suspendTechnician } from "@/lib/admin/api";
 import type { AdminTechnician } from "@/lib/admin/types";
 
 export default function AdminTechniciansPage() {
+  const params = useParams<{ locale: string }>();
   const [technicians, setTechnicians] = useState<AdminTechnician[]>([]);
 
   async function load() {
@@ -26,6 +29,7 @@ export default function AdminTechniciansPage() {
             <tr>
               <th className="p-3 text-start">Technician</th>
               <th className="p-3 text-start">Job</th>
+              <th className="p-3 text-start">Profile</th>
               <th className="p-3 text-start">Approval</th>
               <th className="p-3 text-start">Actions</th>
             </tr>
@@ -38,8 +42,21 @@ export default function AdminTechniciansPage() {
                   <div className="text-foreground-muted">{tech.email}</div>
                 </td>
                 <td className="p-3">{tech.jobTitle || "-"}</td>
-                <td className="p-3">{tech.approved ? "Approved" : "Pending"}</td>
                 <td className="p-3">
+                  {tech.isComplete ? (
+                    <span className="text-green-600">Complete</span>
+                  ) : (
+                    <span className="text-amber-600">Missing {tech.incompleteFields.length || "fields"}</span>
+                  )}
+                </td>
+                <td className="p-3">{tech.approved ? "Approved" : "Pending"}</td>
+                <td className="flex flex-wrap gap-2 p-3">
+                  <Link
+                    href={`/${params.locale}/admin/technicians/${tech.id}`}
+                    className="rounded-md border border-border px-3 py-2 text-sm font-medium hover:bg-muted"
+                  >
+                    Review
+                  </Link>
                   {tech.approved ? (
                     <AdminReasonDialog
                       label="Suspend"
@@ -48,14 +65,7 @@ export default function AdminTechniciansPage() {
                       variant="danger"
                       onConfirm={(reason) => suspendTechnician(tech.id, reason).then(load)}
                     />
-                  ) : (
-                    <AdminReasonDialog
-                      label="Approve"
-                      title={`Approve ${tech.username}`}
-                      confirmLabel="Approve"
-                      onConfirm={(reason) => approveTechnician(tech.id, reason).then(load)}
-                    />
-                  )}
+                  ) : null}
                 </td>
               </tr>
             ))}

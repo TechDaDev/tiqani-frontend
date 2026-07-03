@@ -2,6 +2,7 @@ import type {
   AdminAuditEvent,
   AdminDashboard,
   AdminTechnician,
+  AdminTechnicianDetail,
   AdminUser,
   Paginated,
   PlatformHealth,
@@ -13,6 +14,19 @@ function text(value: unknown): string {
 
 function bool(value: unknown): boolean {
   return value === true;
+}
+
+function number(value: unknown): number {
+  const parsed = Number(value ?? 0);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function stringList(value: unknown): string[] {
+  return Array.isArray(value) ? value.map((item) => String(item)) : [];
+}
+
+function objectList(value: unknown): Array<Record<string, unknown>> {
+  return Array.isArray(value) ? value.filter((item): item is Record<string, unknown> => Boolean(item) && typeof item === "object") : [];
 }
 
 function objectRecord(value: unknown): Record<string, number> {
@@ -63,8 +77,15 @@ export function mapAdminUser(data: unknown): AdminUser {
     lastName: text(record.last_name),
     phoneNumber: text(record.phone_number),
     governorate: text(record.governorate),
+    address: text(record.address),
+    gender: text(record.gender),
+    dateOfBirth: text(record.date_of_birth),
+    profileImage: text(record.profile_image),
     isActive: bool(record.is_active),
+    isStaff: bool(record.is_staff),
+    isSuperuser: bool(record.is_superuser),
     dateJoined: text(record.date_joined),
+    lastLogin: text(record.last_login),
   };
 }
 
@@ -80,7 +101,47 @@ export function mapAdminTechnician(data: unknown): AdminTechnician {
     approved: bool(record.approved),
     isAvailable: bool(record.is_available),
     governorate: text(record.governorate),
+    yearsOfExpertise: number(record.years_of_expertise),
+    isComplete: bool(record.is_complete),
+    incompleteFields: stringList(record.incomplete_fields),
     createdAt: text(record.created_at),
+  };
+}
+
+export function mapAdminTechnicianDetail(data: unknown): AdminTechnicianDetail {
+  const record = (data ?? {}) as Record<string, unknown>;
+  const user = mapAdminUser(record.user);
+  const skillSets = (record.skill_sets ?? {}) as Record<string, unknown>;
+  return {
+    ...mapAdminTechnician({
+      ...record,
+      username: user.username,
+      email: user.email,
+      phone_number: user.phoneNumber,
+      governorate: user.governorate,
+    }),
+    user,
+    about: text(record.about),
+    address: user.address,
+    dateOfBirth: user.dateOfBirth,
+    gender: user.gender,
+    profileImage: text(record.profile_image || user.profileImage),
+    identificationDocuments: text(record.identification_documents),
+    github: text(record.github || record.url1),
+    linkedin: text(record.linkedin || record.url2),
+    balance: text(record.balance),
+    walletId: text(record.wallet_id),
+    lastActive: text(record.last_active),
+    images: objectList(record.images).map((image) => ({
+      id: text(image.id),
+      image: text(image.image),
+      description: text(image.description),
+    })),
+    skillSets: {
+      categoriesDetail: objectList(skillSets.categories_detail).map((item) => ({ id: text(item.id), name: text(item.name) })),
+      skillsDetail: objectList(skillSets.skills_detail).map((item) => ({ id: text(item.id), name: text(item.name) })),
+      subSkillsDetail: objectList(skillSets.sub_skills_detail).map((item) => ({ id: text(item.id), name: text(item.name) })),
+    },
   };
 }
 

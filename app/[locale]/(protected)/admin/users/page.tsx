@@ -2,11 +2,13 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
+import { useParams } from "next/navigation";
 import { AdminReasonDialog } from "@/components/admin/admin-reason-dialog";
 import { fetchAdminUsers, restoreAdminUser, suspendAdminUser } from "@/lib/admin/api";
 import type { AdminUser } from "@/lib/admin/types";
 
 export default function AdminUsersPage() {
+  const params = useParams<{ locale: string }>();
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [query, setQuery] = useState("");
   const [error, setError] = useState("");
@@ -60,7 +62,7 @@ export default function AdminUsersPage() {
             {users.map((user) => (
               <tr key={user.id} className="border-t border-border">
                 <td className="p-3">
-                  <Link href={`/admin/users/${user.id}`} className="font-medium text-blue-600 hover:underline">
+                  <Link href={`/${params.locale}/admin/users/${user.id}`} className="font-medium text-blue-600 hover:underline">
                     {user.username}
                   </Link>
                   <div className="text-foreground-muted">{user.email}</div>

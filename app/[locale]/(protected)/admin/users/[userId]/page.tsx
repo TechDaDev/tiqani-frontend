@@ -6,6 +6,15 @@ import { AdminReasonDialog } from "@/components/admin/admin-reason-dialog";
 import { fetchAdminUser, restoreAdminUser, suspendAdminUser } from "@/lib/admin/api";
 import type { AdminUser } from "@/lib/admin/types";
 
+function Field({ label, value }: { label: string; value?: string | boolean }) {
+  return (
+    <div className="rounded-lg border border-border p-4">
+      <dt className="text-sm text-foreground-muted">{label}</dt>
+      <dd className="mt-1 break-words font-medium">{value === "" || value == null ? "-" : String(value)}</dd>
+    </div>
+  );
+}
+
 export default function AdminUserDetailPage() {
   const params = useParams<{ userId: string }>();
   const [user, setUser] = useState<AdminUser | null>(null);
@@ -24,18 +33,19 @@ export default function AdminUserDetailPage() {
     <div className="space-y-5" data-testid="admin-user-detail-page">
       <h1 className="text-2xl font-semibold">{user.username}</h1>
       <dl className="grid gap-3 sm:grid-cols-2">
-        <div className="rounded-lg border border-border p-4">
-          <dt className="text-sm text-foreground-muted">Email</dt>
-          <dd className="mt-1 font-medium">{user.email}</dd>
-        </div>
-        <div className="rounded-lg border border-border p-4">
-          <dt className="text-sm text-foreground-muted">Role</dt>
-          <dd className="mt-1 font-medium">{user.roleDisplay || user.role}</dd>
-        </div>
-        <div className="rounded-lg border border-border p-4">
-          <dt className="text-sm text-foreground-muted">Status</dt>
-          <dd className="mt-1 font-medium">{user.isActive ? "Active" : "Suspended"}</dd>
-        </div>
+        <Field label="Email" value={user.email} />
+        <Field label="Role" value={user.roleDisplay || user.role} />
+        <Field label="Status" value={user.isActive ? "Active" : "Suspended"} />
+        <Field label="Full Name" value={[user.firstName, user.lastName].filter(Boolean).join(" ")} />
+        <Field label="Phone" value={user.phoneNumber} />
+        <Field label="Governorate" value={user.governorate} />
+        <Field label="Address" value={user.address} />
+        <Field label="Gender" value={user.gender} />
+        <Field label="Date of Birth" value={user.dateOfBirth} />
+        <Field label="Staff" value={user.isStaff ? "Yes" : "No"} />
+        <Field label="Superuser" value={user.isSuperuser ? "Yes" : "No"} />
+        <Field label="Joined" value={user.dateJoined} />
+        <Field label="Last Login" value={user.lastLogin} />
       </dl>
       {user.isActive ? (
         <AdminReasonDialog
