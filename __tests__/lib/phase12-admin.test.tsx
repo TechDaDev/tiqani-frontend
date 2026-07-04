@@ -1,4 +1,13 @@
 import { describe, expect, it } from "vitest";
+import { render, screen } from "@testing-library/react";
+import { PaymentsTable } from "@/components/admin/financial/payments-table";
+import { FinancialStatusBadge } from "@/components/admin/financial/financial-status-badge";
+import { formatMoney, maskReference } from "@/lib/admin/financial/format";
+import {
+  mapFinancialOverview,
+  mapFinancialPayment,
+  mapFinancialLedgerEntry,
+} from "@/lib/admin/financial/mappers";
 import {
   mapAdminDashboard,
   mapAdminTechnicianDetail,
@@ -139,5 +148,84 @@ describe("Phase 12 admin mappers", () => {
     const health = mapPlatformHealth({ status: "ok", database: "ok", redis: "configured", debug: false });
     expect(health.status).toBe("ok");
     expect(health.debug).toBe(false);
+  });
+
+  it("maps financial overview money strings and empty charts", () => {
+    const overview = mapFinancialOverview({
+      summary: {
+        grossPayments: "10.00",
+        netPlatformFees: "1.00",
+        pendingWithdrawals: "2.00",
+        completedWithdrawals: "3.00",
+        refundsIssued: "4.00",
+        escrowHeld: "5.00",
+        openLiabilities: "0.00",
+        walletBalanceTotal: "20.00",
+      },
+      counts: {},
+      charts: {},
+      recentActivity: [],
+    });
+    expect(overview.summary.grossPayments).toBe("10.00");
+    expect(overview.charts.paymentsByStatus).toEqual([]);
+  });
+
+  it("formats money and masks references", () => {
+    expect(formatMoney("1200.00", "IQD", "en")).toContain("IQD");
+    expect(maskReference("provider-reference-1234")).toBe("prov...1234");
+  });
+
+  it("maps financial payments without raw provider metadata", () => {
+    const payment = mapFinancialPayment({
+      id: "pay-1",
+      amount: "25.00",
+      provider_reference_masked: "prov...1234",
+      metadata: { secret: "no" },
+      payer: { id: "u1", name: "Client" },
+    });
+    expect(payment.providerReferenceMasked).toBe("prov...1234");
+    expect(JSON.stringify(payment)).not.toContain("secret");
+  });
+
+  it("maps read-only ledger rows", () => {
+    const entry = mapFinancialLedgerEntry({
+      id: "l1",
+      transaction_type: "escrow",
+      direction: "debit",
+      amount: "50.00",
+      source_object: { type: "contract", id: "c1" },
+    });
+    expect(entry.transactionType).toBe("escrow");
+    expect(entry.direction).toBe("debit");
+  });
+
+  it("renders financial status badges", () => {
+    render(<FinancialStatusBadge status="paid" />);
+    expect(screen.getByText("Paid")).toBeInTheDocument();
+  });
+
+  it("renders payment table safe values", () => {
+    render(
+      <PaymentsTable
+        locale="en"
+        items={[{
+          id: "payment-id-1",
+          contract: "contract-id",
+          contractReference: "CTR-1",
+          payer: { id: "u1", name: "Client" },
+          amount: "100.00",
+          currency: "IQD",
+          purpose: "contract_funding",
+          provider: "manual",
+          providerReferenceMasked: "prov...1234",
+          status: "paid",
+          paidAt: "",
+          createdAt: "2026-01-01T00:00:00Z",
+          updatedAt: "2026-01-01T00:00:00Z",
+        }]}
+      />
+    );
+    expect(screen.getByText("Client")).toBeInTheDocument();
+    expect(screen.getByText(/manual\s+prov\.\.\.1234/)).toBeInTheDocument();
   });
 });
