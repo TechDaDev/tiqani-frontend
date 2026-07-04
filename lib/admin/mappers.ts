@@ -67,6 +67,10 @@ export function mapAdminDashboard(data: unknown): AdminDashboard {
 
 export function mapAdminUser(data: unknown): AdminUser {
   const record = (data ?? {}) as Record<string, unknown>;
+  const profiles = record.profiles as Record<string, unknown> | undefined;
+  const clientProfile = (profiles?.client ?? {}) as Record<string, unknown>;
+  const technicianProfile = (profiles?.technician ?? {}) as Record<string, unknown>;
+  const financialSummary = (record.financial_summary ?? {}) as Record<string, unknown>;
   return {
     id: text(record.id),
     username: text(record.username),
@@ -86,6 +90,33 @@ export function mapAdminUser(data: unknown): AdminUser {
     isSuperuser: bool(record.is_superuser),
     dateJoined: text(record.date_joined),
     lastLogin: text(record.last_login),
+    profiles: {
+      client: {
+        exists: bool(clientProfile.exists),
+        isComplete: bool(clientProfile.is_complete),
+      },
+      technician: {
+        exists: bool(technicianProfile.exists),
+        isComplete: bool(technicianProfile.is_complete),
+        approved: bool(technicianProfile.approved),
+        jobTitle: text(technicianProfile.job_title),
+        missingFields: stringList(technicianProfile.missing_fields),
+      },
+    },
+    activity: objectRecord(record.activity),
+    financialSummary: {
+      walletExists: bool(financialSummary.wallet_exists),
+      walletBalance: text(financialSummary.wallet_balance),
+      paymentIntents: number(financialSummary.payment_intents),
+      withdrawals: number(financialSummary.withdrawals),
+    },
+    recentAuditEvents: objectList(record.recent_audit_events).map((event) => ({
+      id: text(event.id),
+      verb: text(event.verb),
+      targetType: text(event.target_type),
+      targetId: text(event.target_id),
+      createdAt: text(event.created_at),
+    })),
   };
 }
 
@@ -104,6 +135,9 @@ export function mapAdminTechnician(data: unknown): AdminTechnician {
     yearsOfExpertise: number(record.years_of_expertise),
     isComplete: bool(record.is_complete),
     incompleteFields: stringList(record.incomplete_fields),
+    hasDocuments: bool(record.has_documents),
+    hasGithub: bool(record.has_github),
+    hasLinkedin: bool(record.has_linkedin),
     createdAt: text(record.created_at),
   };
 }
@@ -112,6 +146,7 @@ export function mapAdminTechnicianDetail(data: unknown): AdminTechnicianDetail {
   const record = (data ?? {}) as Record<string, unknown>;
   const user = mapAdminUser(record.user);
   const skillSets = (record.skill_sets ?? {}) as Record<string, unknown>;
+  const approvalRequirements = record.approval_requirements as Record<string, unknown> | undefined;
   return {
     ...mapAdminTechnician({
       ...record,
@@ -119,6 +154,10 @@ export function mapAdminTechnicianDetail(data: unknown): AdminTechnicianDetail {
       email: user.email,
       phone_number: user.phoneNumber,
       governorate: user.governorate,
+      incomplete_fields: record.incomplete_fields,
+      has_documents: Boolean(record.identification_documents),
+      has_github: Boolean(record.github || record.url1),
+      has_linkedin: Boolean(record.linkedin || record.url2),
     }),
     user,
     about: text(record.about),
@@ -132,6 +171,10 @@ export function mapAdminTechnicianDetail(data: unknown): AdminTechnicianDetail {
     balance: text(record.balance),
     walletId: text(record.wallet_id),
     lastActive: text(record.last_active),
+    approvalRequirements: {
+      canApprove: bool(approvalRequirements?.can_approve),
+      missing: stringList(approvalRequirements?.missing),
+    },
     images: objectList(record.images).map((image) => ({
       id: text(image.id),
       image: text(image.image),

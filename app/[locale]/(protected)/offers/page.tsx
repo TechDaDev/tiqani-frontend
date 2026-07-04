@@ -12,6 +12,7 @@ export default function ClientOfferListPage() {
   const params = useParams();
   const locale = (params.locale as Locale) || "ar";
   const t = useTranslations("offers");
+  const tOfferErrors = useTranslations("offerErrors");
   const tCommon = useTranslations("common");
 
   const { data: offers, isLoading, error, refetch } = useClientOffers();
@@ -27,7 +28,7 @@ export default function ClientOfferListPage() {
   if (error) {
     return (
       <div className="py-12 text-center">
-        <p className="text-red-500">{t("offerErrors.loadFailed")}</p>
+        <p className="text-red-500">{tOfferErrors("loadFailed")}</p>
         <Button onClick={refetch} variant="outline" className="mt-4">
           {tCommon("tryAgain")}
         </Button>

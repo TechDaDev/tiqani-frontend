@@ -39,6 +39,7 @@ export default function TechnicianProfilePage() {
   const [yearsOfExpertise, setYearsOfExpertise] = useState(0);
   const [github, setGithub] = useState("");
   const [linkedin, setLinkedin] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   const loadProfile = useCallback(async () => {
     try {
@@ -52,8 +53,8 @@ export default function TechnicianProfilePage() {
       setJobTitle(profileData.job_title || "");
       setAbout(profileData.about || "");
       setYearsOfExpertise(profileData.years_of_expertise || 0);
-      setGithub(profileData.skill_sets?.github_url as string || "");
-      setLinkedin(profileData.skill_sets?.linkedin_url as string || "");
+      setGithub(profileData.github || profileData.url1 || "");
+      setLinkedin(profileData.linkedin || profileData.url2 || "");
     } catch (err) {
       setError(err instanceof Error ? err.message : t("loadError"));
     } finally {
@@ -68,7 +69,21 @@ export default function TechnicianProfilePage() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
+    setFieldErrors({});
     setSuccess("");
+    const nextFieldErrors: Record<string, string> = {};
+    if (!github.trim()) nextFieldErrors.github = t("requiredField");
+    if (!linkedin.trim()) nextFieldErrors.linkedin = t("requiredField");
+    if (github.trim() && !/^https?:\/\/(www\.)?github\.com\/[A-Za-z0-9_-]+\/?$/.test(github.trim())) {
+      nextFieldErrors.github = t("invalidGithub");
+    }
+    if (linkedin.trim() && !/^https?:\/\/(www\.)?linkedin\.com\/in\/[A-Za-z0-9_-]+\/?$/.test(linkedin.trim())) {
+      nextFieldErrors.linkedin = t("invalidLinkedin");
+    }
+    if (Object.keys(nextFieldErrors).length) {
+      setFieldErrors(nextFieldErrors);
+      return;
+    }
     setSaving(true);
     try {
       const updated = await updateTechnicianProfile({
@@ -248,7 +263,7 @@ export default function TechnicianProfilePage() {
                 htmlFor="github"
                 className="mb-1 block text-sm font-medium text-foreground-muted"
               >
-                {t("github")}
+                {t("github")} <span className="text-red-500">*</span>
               </label>
               <input
                 id="github"
@@ -258,7 +273,10 @@ export default function TechnicianProfilePage() {
                 placeholder="https://github.com/username"
                 className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                 dir="ltr"
+                required
+                aria-invalid={Boolean(fieldErrors.github)}
               />
+              {fieldErrors.github && <p className="mt-1 text-sm text-red-600">{fieldErrors.github}</p>}
             </div>
 
             <div>
@@ -266,7 +284,7 @@ export default function TechnicianProfilePage() {
                 htmlFor="linkedin"
                 className="mb-1 block text-sm font-medium text-foreground-muted"
               >
-                {t("linkedin")}
+                {t("linkedin")} <span className="text-red-500">*</span>
               </label>
               <input
                 id="linkedin"
@@ -276,7 +294,10 @@ export default function TechnicianProfilePage() {
                 placeholder="https://linkedin.com/in/username"
                 className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                 dir="ltr"
+                required
+                aria-invalid={Boolean(fieldErrors.linkedin)}
               />
+              {fieldErrors.linkedin && <p className="mt-1 text-sm text-red-600">{fieldErrors.linkedin}</p>}
             </div>
 
             <Button type="submit" disabled={saving} className="w-full">

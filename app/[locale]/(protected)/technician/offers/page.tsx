@@ -13,6 +13,7 @@ export default function TechnicianOfferListPage() {
   const router = useRouter();
   const locale = (params.locale as Locale) || "ar";
   const t = useTranslations("offers");
+  const tOfferErrors = useTranslations("offerErrors");
   const tCommon = useTranslations("common");
 
   const { data: offers, isLoading, error, refetch } = useTechnicianOffers();
@@ -28,7 +29,7 @@ export default function TechnicianOfferListPage() {
   if (error) {
     return (
       <div className="py-12 text-center">
-        <p className="text-red-500">{t("offerErrors.loadFailed")}</p>
+        <p className="text-red-500">{tOfferErrors("loadFailed")}</p>
         <Button onClick={refetch} variant="outline" className="mt-4">
           {tCommon("tryAgain")}
         </Button>

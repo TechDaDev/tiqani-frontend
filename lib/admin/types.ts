@@ -26,6 +26,30 @@ export type AdminUser = {
   isSuperuser: boolean;
   dateJoined: string;
   lastLogin: string;
+  profiles: {
+    client: { exists: boolean; isComplete: boolean };
+    technician: {
+      exists: boolean;
+      isComplete: boolean;
+      approved: boolean;
+      jobTitle: string;
+      missingFields: string[];
+    };
+  };
+  activity: Record<string, number>;
+  financialSummary: {
+    walletExists: boolean;
+    walletBalance: string;
+    paymentIntents: number;
+    withdrawals: number;
+  };
+  recentAuditEvents: Array<{
+    id: string;
+    verb: string;
+    targetType: string;
+    targetId: string;
+    createdAt: string;
+  }>;
 };
 
 export type AdminTechnician = {
@@ -41,6 +65,9 @@ export type AdminTechnician = {
   yearsOfExpertise: number;
   isComplete: boolean;
   incompleteFields: string[];
+  hasDocuments: boolean;
+  hasGithub: boolean;
+  hasLinkedin: boolean;
   createdAt: string;
 };
 
@@ -57,6 +84,10 @@ export type AdminTechnicianDetail = AdminTechnician & {
   balance: string;
   walletId: string;
   lastActive: string;
+  approvalRequirements: {
+    canApprove: boolean;
+    missing: string[];
+  };
   images: Array<{ id: string; image: string; description: string }>;
   skillSets: {
     categoriesDetail: Array<{ id: string | number; name: string }>;

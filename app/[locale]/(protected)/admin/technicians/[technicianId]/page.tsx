@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { AdminReasonDialog } from "@/components/admin/admin-reason-dialog";
+import { Button } from "@/components/ui/button";
 import { approveTechnician, fetchAdminTechnician, suspendTechnician } from "@/lib/admin/api";
 import type { AdminTechnicianDetail } from "@/lib/admin/types";
 
@@ -56,6 +57,7 @@ export default function AdminTechnicianDetailPage() {
   if (!technician) return <p className="p-4 text-sm text-foreground-muted">Loading...</p>;
 
   const missing = technician.incompleteFields.length ? technician.incompleteFields.join(", ") : "-";
+  const approvalMissing = technician.approvalRequirements.missing;
 
   return (
     <div className="space-y-5" data-testid="admin-technician-detail-page">
@@ -76,16 +78,47 @@ export default function AdminTechnicianDetailPage() {
               variant="danger"
               onConfirm={(reason) => suspendTechnician(technician.id, reason).then(load)}
             />
-          ) : (
+          ) : technician.approvalRequirements.canApprove ? (
             <AdminReasonDialog
               label="Approve"
               title={`Approve ${technician.username}`}
               confirmLabel="Approve"
               onConfirm={(reason) => approveTechnician(technician.id, reason).then(load)}
             />
+          ) : (
+            <Button type="button" variant="outline" disabled>
+              Approve
+            </Button>
           )}
         </div>
       </div>
+
+      {!technician.approved && (
+        <section className="rounded-lg border border-border p-4">
+          <h2 className="text-sm font-semibold">Approval Checklist</h2>
+          <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              ["Profile complete", technician.isComplete],
+              ["Documents uploaded", technician.hasDocuments],
+              ["GitHub URL", technician.hasGithub],
+              ["LinkedIn URL", technician.hasLinkedin],
+              ["Active account", !approvalMissing.includes("active_account")],
+            ].map(([label, done]) => (
+              <div key={String(label)} className="rounded-md border border-border px-3 py-2 text-sm">
+                <span className={done ? "text-green-600" : "text-amber-600"}>
+                  {done ? "Complete" : "Missing"}
+                </span>
+                <span className="ms-2">{label}</span>
+              </div>
+            ))}
+          </div>
+          {approvalMissing.length > 0 && (
+            <p className="mt-3 text-sm text-foreground-muted">
+              Missing requirements: {approvalMissing.join(", ")}
+            </p>
+          )}
+        </section>
+      )}
 
       <dl className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
         <Field label="Email" value={technician.email} />

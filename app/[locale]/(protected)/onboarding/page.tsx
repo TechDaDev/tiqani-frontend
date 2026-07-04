@@ -45,6 +45,8 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
   { key: "jobTitle", icon: Briefcase, field: "job_title" },
   { key: "about", icon: Briefcase, field: "about" },
   { key: "experience", icon: Star, field: "years_of_expertise" },
+  { key: "github", icon: Briefcase, field: "github" },
+  { key: "linkedin", icon: Briefcase, field: "linkedin" },
   { key: "idDocs", icon: Upload, field: "identification_documents" },
 ];
 

@@ -43,6 +43,8 @@ export interface TechnicianProfileData {
   is_complete: boolean;
   rate: string;
   last_active: string | null;
+  github: string | null;
+  linkedin: string | null;
   url1: string | null;
   url2: string | null;
   identification_documents: string | null;

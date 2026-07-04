@@ -325,6 +325,9 @@
     "yearsOfExpertise": "ساڵانی ئەزموون",
     "github": "پڕۆفایلی GitHub",
     "linkedin": "پڕۆفایلی LinkedIn",
+    "requiredField": "ئەم خانەیە پێویستە.",
+    "invalidGithub": "بەستەری دروستی پڕۆفایلی GitHub بنووسە.",
+    "invalidLinkedin": "بەستەری دروستی پڕۆفایلی LinkedIn بنووسە.",
     "isAvailable": "بەردەستە بۆ کار",
     "saveChanges": "پاشەکەوتکردنی گۆڕانکاری",
     "saving": "پاشەکەوت دەکرێت...",
@@ -348,6 +351,8 @@
       "job_title": "ناونیشانی کار",
       "about": "دەربارە",
       "years_of_expertise": "ساڵانی ئەزموون",
+      "github": "پڕۆفایلی GitHub",
+      "linkedin": "پڕۆفایلی LinkedIn",
       "identification_documents": "بەڵگەنامەکانی ناسنامە"
     }
   },
@@ -380,6 +385,8 @@
       "jobTitle": "دانانی ناونیشانی کار",
       "about": "نووسینی دەربارەی خۆت",
       "experience": "زیادکردنی ساڵانی ئەزموون",
+      "github": "زیادکردنی بەستەری GitHub",
+      "linkedin": "زیادکردنی بەستەری LinkedIn",
       "idDocs": "بارکردنی بەڵگەنامەکانی ناسنامە"
     }
   },

@@ -327,6 +327,9 @@
     "yearsOfExpertise": "سنوات الخبرة",
     "github": "رابط GitHub",
     "linkedin": "رابط LinkedIn",
+    "requiredField": "هذا الحقل مطلوب.",
+    "invalidGithub": "أدخل رابط ملف GitHub صحيحاً.",
+    "invalidLinkedin": "أدخل رابط ملف LinkedIn صحيحاً.",
     "isAvailable": "متاح للعمل",
     "saveChanges": "حفظ التغييرات",
     "saving": "جار الحفظ...",
@@ -350,6 +353,8 @@
       "job_title": "المسمى الوظيفي",
       "about": "نبذة عني",
       "years_of_expertise": "سنوات الخبرة",
+      "github": "رابط GitHub",
+      "linkedin": "رابط LinkedIn",
       "identification_documents": "وثائق الهوية"
     }
   },
@@ -382,6 +387,8 @@
       "jobTitle": "تعيين المسمى الوظيفي",
       "about": "كتابة نبذة عنك",
       "experience": "إضافة سنوات الخبرة",
+      "github": "إضافة رابط GitHub",
+      "linkedin": "إضافة رابط LinkedIn",
       "idDocs": "رفع وثائق الهوية"
     }
   },

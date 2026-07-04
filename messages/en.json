@@ -327,6 +327,9 @@
     "yearsOfExpertise": "Years of Experience",
     "github": "GitHub Profile",
     "linkedin": "LinkedIn Profile",
+    "requiredField": "This field is required.",
+    "invalidGithub": "Enter a valid GitHub profile URL.",
+    "invalidLinkedin": "Enter a valid LinkedIn profile URL.",
     "isAvailable": "Available for Work",
     "saveChanges": "Save Changes",
     "saving": "Saving...",
@@ -350,6 +353,8 @@
       "job_title": "Job Title",
       "about": "About",
       "years_of_expertise": "Years of Experience",
+      "github": "GitHub Profile",
+      "linkedin": "LinkedIn Profile",
       "identification_documents": "ID Documents"
     }
   },
@@ -382,6 +387,8 @@
       "jobTitle": "Set job title",
       "about": "Write about yourself",
       "experience": "Add years of experience",
+      "github": "Add GitHub profile URL",
+      "linkedin": "Add LinkedIn profile URL",
       "idDocs": "Upload identification documents"
     }
   },
