@@ -113,7 +113,7 @@ export function AuthShell({ children }: ShellProps) {
       showFor: ["technician"],
     },
     {
-      label: t("onboarding"),
+      label: tAccount("onboarding"),
       href: `/${locale}/onboarding`,
       icon: <ClipboardList className="h-4 w-4" />,
       showFor: ["technician"],
