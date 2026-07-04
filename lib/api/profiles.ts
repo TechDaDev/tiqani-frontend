@@ -136,6 +136,24 @@ export async function updateTechnicianProfile(
   });
 }
 
+export async function uploadTechnicianDocument(file: File): Promise<TechnicianProfileData> {
+  const formData = new FormData();
+  formData.append("identification_documents", file);
+
+  const response = await fetch("/api/technicians/me", {
+    method: "PATCH",
+    body: formData,
+    credentials: "same-origin",
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({ detail: "Upload failed." }));
+    throw new Error(err.detail || "Upload failed.");
+  }
+
+  return response.json();
+}
+
 /**
  * Fetch incomplete profile fields (GET /api/profile/incomplete-fields/)
  */
@@ -203,7 +221,7 @@ export interface TechnicianImageData {
   id: string;
   image: string;
   description: string;
-  uploaded_at: string;
+  uploaded_at?: string;
 }
 
 /**
@@ -242,6 +260,28 @@ export async function uploadTechnicianImage(
   }
 
   return response.json();
+}
+
+export async function updateTechnicianImageDescription(
+  imageId: string,
+  description: string
+): Promise<TechnicianImageData> {
+  return browserRequest<TechnicianImageData>(`/api/technicians/me/images/${imageId}`, {
+    method: "PATCH",
+    body: { description },
+  });
+}
+
+export async function deleteTechnicianImage(imageId: string): Promise<void> {
+  const response = await fetch(`/api/technicians/me/images/${imageId}`, {
+    method: "DELETE",
+    credentials: "same-origin",
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({ detail: "Delete failed." }));
+    throw new Error(err.detail || "Delete failed.");
+  }
 }
 
 // ── Ratings ────────────────────────────────────────────────────

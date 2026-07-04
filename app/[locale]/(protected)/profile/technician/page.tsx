@@ -23,9 +23,15 @@ import {
   fetchTechnicianProfile,
   updateTechnicianProfile,
   fetchIncompleteFields,
+  updateTechnicianSkills,
+  uploadTechnicianDocument,
+  uploadTechnicianImage,
+  deleteTechnicianImage,
   type TechnicianProfileData,
   type IncompleteFieldsData,
 } from "@/lib/api/profiles";
+import { fetchCategories, fetchSkills, fetchSubSkills } from "@/lib/marketplace/api";
+import type { CategoryItem, SkillItem, SubSkillItem } from "@/lib/marketplace/types";
 
 export default function TechnicianProfilePage() {
   const t = useTranslations("profile");
@@ -35,8 +41,12 @@ export default function TechnicianProfilePage() {
   const [incomplete, setIncomplete] = useState<IncompleteFieldsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [skillsSaving, setSkillsSaving] = useState(false);
+  const [documentUploading, setDocumentUploading] = useState(false);
+  const [imageUploading, setImageUploading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [referenceError, setReferenceError] = useState("");
 
   // Editable fields
   const [jobTitle, setJobTitle] = useState("");
@@ -45,6 +55,13 @@ export default function TechnicianProfilePage() {
   const [github, setGithub] = useState("");
   const [linkedin, setLinkedin] = useState("");
   const [isAvailable, setIsAvailable] = useState(false);
+  const [categories, setCategories] = useState<CategoryItem[]>([]);
+  const [skills, setSkills] = useState<SkillItem[]>([]);
+  const [subSkills, setSubSkills] = useState<SubSkillItem[]>([]);
+  const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
+  const [selectedSkillIds, setSelectedSkillIds] = useState<string[]>([]);
+  const [selectedSubSkillIds, setSelectedSubSkillIds] = useState<string[]>([]);
+  const [portfolioDescription, setPortfolioDescription] = useState("");
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   const loadProfile = useCallback(async () => {
@@ -62,6 +79,9 @@ export default function TechnicianProfilePage() {
       setGithub(profileData.github || profileData.url1 || "");
       setLinkedin(profileData.linkedin || profileData.url2 || "");
       setIsAvailable(profileData.is_available);
+      setSelectedCategoryIds(getSelectedIds(profileData.skill_sets, "categories", "categories_detail"));
+      setSelectedSkillIds(getSelectedIds(profileData.skill_sets, "skills", "skills_detail"));
+      setSelectedSubSkillIds(getSelectedIds(profileData.skill_sets, "sub_skills", "sub_skills_detail"));
     } catch (err) {
       setError(err instanceof Error ? err.message : t("loadError"));
     } finally {
@@ -72,6 +92,30 @@ export default function TechnicianProfilePage() {
   useEffect(() => {
     loadProfile();
   }, [loadProfile]);
+
+  useEffect(() => {
+    let mounted = true;
+    async function loadReferences() {
+      try {
+        const [categoryData, skillData, subSkillData] = await Promise.all([
+          fetchCategories({ page_size: 100 }),
+          fetchSkills(),
+          fetchSubSkills(),
+        ]);
+        if (!mounted) return;
+        setCategories(categoryData.results);
+        setSkills(skillData);
+        setSubSkills(subSkillData);
+      } catch (err) {
+        if (!mounted) return;
+        setReferenceError(err instanceof Error ? err.message : t("referenceLoadError"));
+      }
+    }
+    loadReferences();
+    return () => {
+      mounted = false;
+    };
+  }, [t]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -115,6 +159,73 @@ export default function TechnicianProfilePage() {
       }
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleSkillsSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+    setSkillsSaving(true);
+    try {
+      const updatedSkills = await updateTechnicianSkills({
+        categories: selectedCategoryIds,
+        skills: selectedSkillIds,
+        sub_skills: selectedSubSkillIds,
+      });
+      setProfile((current) => current ? { ...current, skill_sets: { ...updatedSkills } } : current);
+      setSuccess(t("saved"));
+      setIncomplete(await fetchIncompleteFields());
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t("saveError"));
+    } finally {
+      setSkillsSaving(false);
+    }
+  };
+
+  const handleDocumentUpload = async (file: File | null) => {
+    if (!file) return;
+    setError("");
+    setSuccess("");
+    setDocumentUploading(true);
+    try {
+      const updated = await uploadTechnicianDocument(file);
+      setProfile(updated);
+      setIncomplete(await fetchIncompleteFields());
+      setSuccess(t("saved"));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t("saveError"));
+    } finally {
+      setDocumentUploading(false);
+    }
+  };
+
+  const handleImageUpload = async (file: File | null) => {
+    if (!file) return;
+    setError("");
+    setSuccess("");
+    setImageUploading(true);
+    try {
+      await uploadTechnicianImage(file, portfolioDescription || undefined);
+      setPortfolioDescription("");
+      await loadProfile();
+      setSuccess(t("saved"));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t("saveError"));
+    } finally {
+      setImageUploading(false);
+    }
+  };
+
+  const handleImageDelete = async (imageId: string) => {
+    setError("");
+    setSuccess("");
+    try {
+      await deleteTechnicianImage(imageId);
+      await loadProfile();
+      setSuccess(t("saved"));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t("saveError"));
     }
   };
 
@@ -419,14 +530,70 @@ export default function TechnicianProfilePage() {
                 href={profile?.identification_documents}
                 fallback={t("notProvided")}
               />
+              <div className="grid gap-2 text-sm">
+                <label htmlFor="identificationDocuments" className="text-foreground-muted">
+                  {t("replaceDocument")}
+                </label>
+                <input
+                  id="identificationDocuments"
+                  type="file"
+                  onChange={(event) => handleDocumentUpload(event.target.files?.[0] || null)}
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm file:mr-3 file:rounded-md file:border-0 file:bg-primary file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-primary-foreground"
+                />
+                {documentUploading && (
+                  <p className="flex items-center gap-2 text-xs text-foreground-muted">
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    {t("uploading")}
+                  </p>
+                )}
+              </div>
               <LinkRow label={t("github")} href={profile?.github || profile?.url1} fallback={t("notProvided")} />
               <LinkRow label={t("linkedin")} href={profile?.linkedin || profile?.url2} fallback={t("notProvided")} />
             </div>
-            <div className="space-y-4">
-              <ChipGroup label={t("categories")} items={skillCategories} emptyLabel={t("notProvided")} />
-              <ChipGroup label={t("skills")} items={skillItems} emptyLabel={t("notProvided")} />
-              <ChipGroup label={t("subSkills")} items={subSkillItems} emptyLabel={t("notProvided")} />
-            </div>
+            <form className="space-y-4" onSubmit={handleSkillsSubmit}>
+              {referenceError && (
+                <p className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-950/30 dark:text-red-300">
+                  {referenceError}
+                </p>
+              )}
+              <MultiSelectField
+                id="categories"
+                label={t("categories")}
+                items={categories}
+                selectedIds={selectedCategoryIds}
+                onChange={setSelectedCategoryIds}
+              />
+              <MultiSelectField
+                id="skills"
+                label={t("skills")}
+                items={skills}
+                selectedIds={selectedSkillIds}
+                onChange={setSelectedSkillIds}
+              />
+              <MultiSelectField
+                id="subSkills"
+                label={t("subSkills")}
+                items={subSkills}
+                selectedIds={selectedSubSkillIds}
+                onChange={setSelectedSubSkillIds}
+              />
+              <div className="flex flex-wrap gap-2">
+                <ChipGroup label={t("currentSelection")} items={[...skillCategories, ...skillItems, ...subSkillItems]} emptyLabel={t("notProvided")} />
+              </div>
+              <Button type="submit" disabled={skillsSaving}>
+                {skillsSaving ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    {t("saving")}
+                  </>
+                ) : (
+                  <>
+                    <Save className="mr-2 h-4 w-4" />
+                    {t("saveSkills")}
+                  </>
+                )}
+              </Button>
+            </form>
           </CardContent>
         </Card>
 
@@ -434,32 +601,77 @@ export default function TechnicianProfilePage() {
           <CardHeader>
             <CardTitle>{t("portfolioImages")}</CardTitle>
           </CardHeader>
-          <CardContent>
+          <CardContent className="space-y-5">
+            <div className="grid gap-3 rounded-lg border border-border p-4 md:grid-cols-[1fr_1fr_auto]">
+              <div className="grid gap-2">
+                <label htmlFor="portfolioDescription" className="text-sm text-foreground-muted">
+                  {t("imageDescription")}
+                </label>
+                <input
+                  id="portfolioDescription"
+                  type="text"
+                  value={portfolioDescription}
+                  onChange={(event) => setPortfolioDescription(event.target.value)}
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+              <div className="grid gap-2">
+                <label htmlFor="portfolioImage" className="text-sm text-foreground-muted">
+                  {t("addPortfolioImage")}
+                </label>
+                <input
+                  id="portfolioImage"
+                  type="file"
+                  accept="image/*"
+                  onChange={(event) => handleImageUpload(event.target.files?.[0] || null)}
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm file:mr-3 file:rounded-md file:border-0 file:bg-primary file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-primary-foreground"
+                />
+              </div>
+              <div className="flex items-end">
+                <Button type="button" disabled={imageUploading}>
+                  {imageUploading ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <ImageIcon className="h-4 w-4" />
+                  )}
+                </Button>
+              </div>
+            </div>
             {portfolioImages.length ? (
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {portfolioImages.map((image) => (
-                  <a
+                  <div
                     key={image.id || image.image}
-                    href={image.image}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="group block overflow-hidden rounded-lg border border-border bg-background"
+                    className="overflow-hidden rounded-lg border border-border bg-background"
                   >
-                    <div className="relative aspect-video bg-muted">
-                      <Image
-                        src={image.image}
-                        alt={image.description || t("portfolioImage")}
-                        fill
-                        sizes="(min-width: 1024px) 300px, (min-width: 640px) 50vw, 100vw"
-                        className="object-cover"
-                        unoptimized={image.image.startsWith("http")}
-                      />
-                    </div>
+                    <a href={image.image} target="_blank" rel="noreferrer" className="block">
+                      <div className="relative aspect-video bg-muted">
+                        <Image
+                          src={image.image}
+                          alt={image.description || t("portfolioImage")}
+                          fill
+                          sizes="(min-width: 1024px) 300px, (min-width: 640px) 50vw, 100vw"
+                          className="object-cover"
+                          unoptimized={image.image.startsWith("http")}
+                        />
+                      </div>
+                    </a>
                     <div className="space-y-1 p-3">
                       <p className="line-clamp-2 text-sm">{image.description || t("portfolioImage")}</p>
                       <p className="text-xs text-foreground-muted">{formatDate(image.uploaded_at, locale)}</p>
+                      {image.id && (
+                        <Button
+                          type="button"
+                          variant="outline"
+                          size="sm"
+                          className="mt-2"
+                          onClick={() => handleImageDelete(image.id)}
+                        >
+                          {t("deleteImage")}
+                        </Button>
+                      )}
                     </div>
-                  </a>
+                  </div>
                 ))}
               </div>
             ) : (
@@ -549,6 +761,43 @@ function ChipGroup({
   );
 }
 
+function MultiSelectField({
+  id,
+  label,
+  items,
+  selectedIds,
+  onChange,
+}: {
+  id: string;
+  label: string;
+  items: Array<{ id: string; name: string }>;
+  selectedIds: string[];
+  onChange: (ids: string[]) => void;
+}) {
+  return (
+    <div className="grid gap-2 text-sm">
+      <label htmlFor={id} className="text-foreground-muted">
+        {label}
+      </label>
+      <select
+        id={id}
+        multiple
+        value={selectedIds}
+        onChange={(event) => {
+          onChange(Array.from(event.currentTarget.selectedOptions, (option) => option.value));
+        }}
+        className="min-h-28 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+      >
+        {items.map((item) => (
+          <option key={item.id} value={item.id}>
+            {item.name}
+          </option>
+        ))}
+      </select>
+    </div>
+  );
+}
+
 function formatDate(value: string | null | undefined, locale: string) {
   if (!value) return null;
   const date = new Date(value);
@@ -581,6 +830,29 @@ function getNamedItems(
   }
   const fallback = source[fallbackKey];
   if (Array.isArray(fallback)) return fallback.map(String).filter(Boolean);
+  return [];
+}
+
+function getSelectedIds(
+  source: Record<string, unknown> | null | undefined,
+  idKey: string,
+  detailKey: string
+) {
+  if (!source) return [];
+  const ids = source[idKey];
+  if (Array.isArray(ids)) return ids.map(String).filter(Boolean);
+  const detail = source[detailKey];
+  if (Array.isArray(detail)) {
+    return detail
+      .map((item) => {
+        if (typeof item === "string") return item;
+        if (item && typeof item === "object" && "id" in item) {
+          return String((item as { id?: unknown }).id || "");
+        }
+        return "";
+      })
+      .filter(Boolean);
+  }
   return [];
 }
 

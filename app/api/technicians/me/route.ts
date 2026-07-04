@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { backendGet, backendPatch } from "@/lib/api/backend-client";
+import { serverConfig } from "@/lib/api/server-config";
 import { COOKIE_NAMES } from "@/lib/auth/cookies";
 import { requireRole } from "@/lib/api/role-guard";
 
@@ -37,6 +38,25 @@ export async function PATCH(request: NextRequest) {
 
   try {
     const accessToken = request.cookies.get(COOKIE_NAMES.ACCESS)?.value;
+    const contentType = request.headers.get("content-type") || "";
+
+    if (contentType.includes("multipart/form-data")) {
+      const formData = await request.formData();
+      const response = await fetch(`${serverConfig.backendInternalUrl}/api/technicians/me/`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: formData,
+      });
+      const responseContentType = response.headers.get("content-type") || "";
+      const data = responseContentType.includes("application/json")
+        ? await response.json()
+        : { detail: await response.text() };
+
+      return NextResponse.json(data, { status: response.status });
+    }
+
     const body = await request.json();
 
     const { data, status } = await backendPatch<Record<string, unknown>>(
