@@ -71,6 +71,21 @@ export type AdminTechnician = {
   createdAt: string;
 };
 
+export type AdminTechnicianDocument = {
+  id: string;
+  name: string;
+  type: string;
+  status: string;
+  uploadedAt: string;
+  size: number | null;
+  downloadUrl: string;
+};
+
+export type AdminTechnicianApprovalChecklistItem = {
+  key: string;
+  passed: boolean;
+};
+
 export type AdminTechnicianDetail = AdminTechnician & {
   user: AdminUser;
   about: string;
@@ -87,7 +102,9 @@ export type AdminTechnicianDetail = AdminTechnician & {
   approvalRequirements: {
     canApprove: boolean;
     missing: string[];
+    checklist: AdminTechnicianApprovalChecklistItem[];
   };
+  documents: AdminTechnicianDocument[];
   images: Array<{ id: string; image: string; description: string }>;
   skillSets: {
     categoriesDetail: Array<{ id: string | number; name: string }>;

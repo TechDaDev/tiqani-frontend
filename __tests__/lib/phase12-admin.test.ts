@@ -1,12 +1,14 @@
 import { describe, expect, it } from "vitest";
 import {
   mapAdminDashboard,
+  mapAdminTechnicianDetail,
   mapAdminTechnician,
   mapAdminUser,
   mapAuditEvent,
   mapPaginated,
   mapPlatformHealth,
 } from "@/lib/admin/mappers";
+import { getTechnicianApprovalReasonKey, technicianDocumentHref } from "@/lib/admin/technician-review";
 
 describe("Phase 12 admin mappers", () => {
   it("maps dashboard aggregates with numeric fallback", () => {
@@ -57,6 +59,69 @@ describe("Phase 12 admin mappers", () => {
     });
     expect(tech.approved).toBe(true);
     expect(tech.isAvailable).toBe(false);
+  });
+
+  it("maps technician review documents and checklist safely", () => {
+    const tech = mapAdminTechnicianDetail({
+      id: "t1",
+      user: {
+        id: "u1",
+        username: "tech",
+        email: "tech@example.com",
+        is_active: true,
+      },
+      job_title: "Network",
+      approved: false,
+      is_available: true,
+      github: "https://github.com/testtech",
+      linkedin: "https://linkedin.com/in/testtech",
+      has_documents: true,
+      documents: [{
+        id: "identification_documents",
+        name: "id.pdf",
+        type: "application/pdf",
+        status: "uploaded",
+        size: 1024,
+        download_url: "/api/admin/technicians/t1/documents/identification_documents/",
+      }],
+      approval_requirements: {
+        can_approve: true,
+        missing: [],
+        checklist: [{ key: "documents", passed: true }],
+      },
+    });
+
+    expect(tech.documents[0].name).toBe("id.pdf");
+    expect(tech.documents[0].downloadUrl).toBe("/api/admin/technicians/t1/documents/identification_documents/");
+    expect(tech.approvalRequirements.checklist[0]).toEqual({ key: "documents", passed: true });
+    expect(JSON.stringify(tech)).not.toContain("technicians/docs/id.pdf");
+  });
+
+  it("returns approval block reasons for missing requirements", () => {
+    const base = mapAdminTechnicianDetail({
+      id: "t1",
+      user: { id: "u1", username: "tech", email: "tech@example.com", is_active: true },
+      approval_requirements: {
+        can_approve: false,
+        missing: ["documents"],
+        checklist: [{ key: "documents", passed: false }],
+      },
+    });
+
+    expect(getTechnicianApprovalReasonKey(base)).toBe("missingDocuments");
+    expect(getTechnicianApprovalReasonKey({
+      ...base,
+      approvalRequirements: { ...base.approvalRequirements, missing: ["github_url"] },
+    })).toBe("missingGithub");
+    expect(getTechnicianApprovalReasonKey({
+      ...base,
+      approvalRequirements: { ...base.approvalRequirements, missing: ["linkedin_url"] },
+    })).toBe("missingLinkedin");
+  });
+
+  it("builds safe same-origin document links", () => {
+    expect(technicianDocumentHref("tech-id", "identification_documents"))
+      .toBe("/api/admin/technicians/tech-id/documents/identification_documents");
   });
 
   it("maps audit metadata safely", () => {

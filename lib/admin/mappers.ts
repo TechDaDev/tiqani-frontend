@@ -147,6 +147,19 @@ export function mapAdminTechnicianDetail(data: unknown): AdminTechnicianDetail {
   const user = mapAdminUser(record.user);
   const skillSets = (record.skill_sets ?? {}) as Record<string, unknown>;
   const approvalRequirements = record.approval_requirements as Record<string, unknown> | undefined;
+  const documents = objectList(record.documents).map((document) => ({
+    id: text(document.id),
+    name: text(document.name),
+    type: text(document.type),
+    status: text(document.status),
+    uploadedAt: text(document.uploaded_at ?? document.uploadedAt),
+    size: document.size == null ? null : number(document.size),
+    downloadUrl: text(document.download_url ?? document.downloadUrl),
+  }));
+  const checklist = objectList(approvalRequirements?.checklist).map((item) => ({
+    key: text(item.key),
+    passed: bool(item.passed),
+  }));
   return {
     ...mapAdminTechnician({
       ...record,
@@ -155,7 +168,7 @@ export function mapAdminTechnicianDetail(data: unknown): AdminTechnicianDetail {
       phone_number: user.phoneNumber,
       governorate: user.governorate,
       incomplete_fields: record.incomplete_fields,
-      has_documents: Boolean(record.identification_documents),
+      has_documents: Boolean(record.has_documents ?? documents.length > 0),
       has_github: Boolean(record.github || record.url1),
       has_linkedin: Boolean(record.linkedin || record.url2),
     }),
@@ -174,7 +187,9 @@ export function mapAdminTechnicianDetail(data: unknown): AdminTechnicianDetail {
     approvalRequirements: {
       canApprove: bool(approvalRequirements?.can_approve),
       missing: stringList(approvalRequirements?.missing),
+      checklist,
     },
+    documents,
     images: objectList(record.images).map((image) => ({
       id: text(image.id),
       image: text(image.image),

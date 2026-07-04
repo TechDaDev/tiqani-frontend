@@ -53,8 +53,16 @@ export async function browserRequest<T>(
           : `Request failed: ${response.status}`;
 
       const fieldErrors = extractFieldErrors(data);
+      const code =
+        typeof data === "object" && data !== null
+          ? String((data as Record<string, unknown>).code ?? "")
+          : undefined;
 
-      throw new ApiClientError(response.status, message, { fieldErrors });
+      throw new ApiClientError(response.status, message, {
+        code: code || undefined,
+        fieldErrors,
+        backendData: data,
+      });
     }
 
     return data;
