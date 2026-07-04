@@ -4,6 +4,30 @@ import { buildSecurityHeaders } from "./lib/security/headers";
 
 const withNextIntl = createNextIntlPlugin("./lib/i18n/request.ts");
 
+function backendOrigin() {
+  const value = process.env.NEXT_PUBLIC_API_BASE_URL || process.env.BACKEND_INTERNAL_URL;
+  if (!value) return undefined;
+  try {
+    return new URL(value).origin;
+  } catch {
+    return undefined;
+  }
+}
+
+function backendImagePatterns() {
+  const origin = backendOrigin();
+  if (!origin) return [];
+  const url = new URL(origin);
+  return [
+    {
+      protocol: url.protocol.replace(":", "") as "http" | "https",
+      hostname: url.hostname,
+      port: url.port,
+      pathname: "/**",
+    },
+  ];
+}
+
 const nextConfig: NextConfig = {
   eslint: {
     dirs: ["app", "components", "lib", "hooks", "types"],
@@ -22,6 +46,7 @@ const nextConfig: NextConfig = {
         port: "8000",
         pathname: "/**",
       },
+      ...backendImagePatterns(),
     ],
   },
   distDir: process.env.NEXT_DIST_DIR || ".next",
@@ -29,7 +54,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/(.*)",
-        headers: buildSecurityHeaders(process.env.NODE_ENV === "production"),
+        headers: buildSecurityHeaders(process.env.NODE_ENV === "production", backendOrigin()),
       },
     ];
   },

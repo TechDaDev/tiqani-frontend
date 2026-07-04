@@ -1,11 +1,17 @@
-export function buildSecurityHeaders(isProduction: boolean) {
+export function buildSecurityHeaders(isProduction: boolean, backendOrigin?: string) {
+  const backendSources = [
+    "http://127.0.0.1:8000",
+    "http://localhost:8000",
+    backendOrigin,
+  ].filter(Boolean);
+
   const csp = [
     "default-src 'self'",
     "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
     "style-src 'self' 'unsafe-inline'",
-    "img-src 'self' data: blob: http://127.0.0.1:8000 http://localhost:8000",
+    `img-src 'self' data: blob: ${backendSources.join(" ")}`,
     "font-src 'self' data:",
-    "connect-src 'self' http://127.0.0.1:8000 http://localhost:8000",
+    `connect-src 'self' ${backendSources.join(" ")}`,
     "frame-ancestors 'none'",
     "base-uri 'self'",
     "form-action 'self'",
