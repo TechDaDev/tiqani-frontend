@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { FinancialAuditTable } from "@/components/admin/financial/financial-audit-table";
+import { FinancialPageShell } from "@/components/admin/financial/financial-theme";
 import { fetchFinancialAudit } from "@/lib/api/admin-financial";
 import type { AdminFinancialAuditEvent } from "@/lib/admin/financial/types";
 
@@ -15,10 +16,8 @@ export default function FinancialAuditPage() {
     fetchFinancialAudit().then((data) => setItems(data.results)).catch(() => setItems([]));
   }, []);
   return (
-    <div className="space-y-4" data-testid="admin-financial-audit">
-      <h1 className="text-2xl font-semibold">{t("audit")}</h1>
-      <p className="text-sm text-gray-500">{t("readOnly")}</p>
+    <FinancialPageShell title={t("audit")} description={t("readOnly")} testId="admin-financial-audit">
       <FinancialAuditTable items={items} locale={params.locale || "en"} />
-    </div>
+    </FinancialPageShell>
   );
 }

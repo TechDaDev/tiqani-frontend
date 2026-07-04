@@ -1,12 +1,12 @@
 "use client";
 
-import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import { FinancialChartCard } from "@/components/admin/financial/financial-chart-card";
 import { FinancialSummaryCards } from "@/components/admin/financial/financial-summary-cards";
 import { FinancialAuditTable } from "@/components/admin/financial/financial-audit-table";
+import { FinancialPageShell, FinancialTabLink } from "@/components/admin/financial/financial-theme";
 import { fetchFinancialOverview } from "@/lib/api/admin-financial";
 import type { AdminFinancialOverview } from "@/lib/admin/financial/types";
 
@@ -24,19 +24,15 @@ export default function AdminFinancialOverviewPage() {
   const links = ["payments", "refunds", "withdrawals", "ledger", "escrow", "audit"];
 
   return (
-    <div className="space-y-6" data-testid="admin-financial-overview">
-      <div>
-        <h1 className="text-2xl font-semibold text-gray-950">{t("overview")}</h1>
-        <p className="text-sm text-gray-500">{t("readOnly")}</p>
-      </div>
+    <FinancialPageShell title={t("overview")} description={t("readOnly")} testId="admin-financial-overview">
       <div className="flex flex-wrap gap-2">
         {links.map((link) => (
-          <Link key={link} href={`/${locale}/admin/financial/${link}`} className="rounded bg-gray-100 px-3 py-1 text-sm text-gray-700 hover:bg-gray-200">
+          <FinancialTabLink key={link} href={`/${locale}/admin/financial/${link}`}>
             {t(link)}
-          </Link>
+          </FinancialTabLink>
         ))}
       </div>
-      {error ? <p className="text-sm text-red-600">{error}</p> : null}
+      {error ? <p className="rounded-lg border border-red-400/40 bg-red-500/10 p-3 text-sm text-red-200">{error}</p> : null}
       {data ? (
         <>
           <FinancialSummaryCards
@@ -59,13 +55,13 @@ export default function AdminFinancialOverviewPage() {
             <FinancialChartCard title={t("ledgerByType")} items={data.charts.ledgerByType} />
           </div>
           <section className="space-y-3">
-            <h2 className="text-lg font-semibold text-gray-950">{t("recentActivity")}</h2>
+            <h2 className="text-lg font-semibold text-foreground">{t("recentActivity")}</h2>
             <FinancialAuditTable items={data.recentActivity} locale={locale} />
           </section>
         </>
       ) : !error ? (
-        <p className="text-sm text-gray-500">{t("loading")}</p>
+        <p className="text-sm text-foreground-muted">{t("loading")}</p>
       ) : null}
-    </div>
+    </FinancialPageShell>
   );
 }

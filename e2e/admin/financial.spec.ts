@@ -23,6 +23,17 @@ test.describe("Admin financial oversight", () => {
     await expect(page.getByText("Payments by status")).toBeVisible();
     await expect(page.getByText("Withdrawals by status")).toBeVisible();
     await expect(page.getByText("Ledger by type")).toBeVisible();
+    await expect(page.getByTestId("financial-summary-card").first()).toHaveClass(/bg-surface/);
+    await expect(page.getByTestId("financial-chart-card").first()).toHaveClass(/bg-surface/);
+  });
+
+  test("financial tabs use dark admin styling", async ({ page }) => {
+    await loginAsStaff(page);
+    await page.goto("/en/admin/financial");
+    const paymentsTab = page.getByRole("link", { name: "Payments" });
+    await expect(paymentsTab).toBeVisible();
+    await expect(paymentsTab).toHaveClass(/bg-surface/);
+    await expect(paymentsTab).not.toHaveClass(/bg-gray-100|bg-white|text-gray-700/);
   });
 
   test("payments page handles current state", async ({ page }) => {

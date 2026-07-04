@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { FinancialFilters } from "@/components/admin/financial/financial-filters";
+import { FinancialPageShell } from "@/components/admin/financial/financial-theme";
 import { PaymentsTable } from "@/components/admin/financial/payments-table";
 import { fetchFinancialPayments } from "@/lib/api/admin-financial";
 import type { AdminFinancialPayment } from "@/lib/admin/financial/types";
@@ -18,10 +19,9 @@ export default function FinancialPaymentsPage() {
     fetchFinancialPayments(query).then((data) => setItems(data.results)).catch(() => setItems([]));
   }, [status]);
   return (
-    <div className="space-y-4" data-testid="admin-financial-payments">
-      <h1 className="text-2xl font-semibold">{t("payments")}</h1>
+    <FinancialPageShell title={t("payments")} testId="admin-financial-payments">
       <FinancialFilters status={status} onStatus={setStatus} statuses={["pending", "requires_action", "paid", "failed", "canceled"]} />
       <PaymentsTable items={items} locale={params.locale || "en"} />
-    </div>
+    </FinancialPageShell>
   );
 }

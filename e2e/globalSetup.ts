@@ -10,6 +10,7 @@ import { execSync } from "child_process";
 
 const BACKEND_URL = process.env.BACKEND_INTERNAL_URL || "http://127.0.0.1:8000";
 const BACKEND_DIR = process.env.BACKEND_DIR || "/home/zeus3000/PycharmProjects/tiqani_V3";
+const FIXTURE_RESET_TIMEOUT_MS = Number(process.env.E2E_FIXTURE_RESET_TIMEOUT_MS || 180_000);
 
 async function globalSetup(config: FullConfig) {
   // 1. Verify backend is reachable — fail if unreachable
@@ -32,7 +33,7 @@ async function globalSetup(config: FullConfig) {
       `cd ${BACKEND_DIR} && .venv/bin/python manage.py seed_e2e_fixtures --reset 2>&1`,
       {
         env: { ...process.env, E2E_FIXTURE_PASSWORD: password },
-        timeout: 60_000,
+        timeout: FIXTURE_RESET_TIMEOUT_MS,
       }
     );
     console.log("Phase 10 fixture reset completed");

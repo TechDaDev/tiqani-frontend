@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { FinancialFilters } from "@/components/admin/financial/financial-filters";
+import { FinancialPageShell } from "@/components/admin/financial/financial-theme";
 import { LedgerTable } from "@/components/admin/financial/ledger-table";
 import { fetchFinancialLedger } from "@/lib/api/admin-financial";
 import type { AdminFinancialLedgerEntry } from "@/lib/admin/financial/types";
@@ -18,11 +19,9 @@ export default function FinancialLedgerPage() {
     fetchFinancialLedger(query).then((data) => setItems(data.results)).catch(() => setItems([]));
   }, [type]);
   return (
-    <div className="space-y-4" data-testid="admin-financial-ledger">
-      <h1 className="text-2xl font-semibold">{t("ledger")}</h1>
-      <p className="text-sm text-gray-500">{t("cannotDeleteFinancialHistory")}</p>
+    <FinancialPageShell title={t("ledger")} description={t("cannotDeleteFinancialHistory")} testId="admin-financial-ledger">
       <FinancialFilters status={type} onStatus={setType} statuses={["deposit", "withdrawal", "payment", "refund", "escrow", "release", "platform_fee"]} />
       <LedgerTable items={items} locale={params.locale || "en"} />
-    </div>
+    </FinancialPageShell>
   );
 }

@@ -1,5 +1,7 @@
 "use client";
 
+import { cn } from "@/lib/utils";
+
 export function FinancialFilters({
   status,
   onStatus,
@@ -16,7 +18,12 @@ export function FinancialFilters({
           key={item || "all"}
           type="button"
           onClick={() => onStatus(item)}
-          className={`rounded px-3 py-1 text-xs font-medium ${status === item ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
+          className={cn(
+            "rounded-md border px-3 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+            status === item
+              ? "border-primary bg-primary text-background shadow-sm shadow-primary/20"
+              : "border-border bg-surface text-foreground-muted hover:border-primary hover:bg-primary-soft hover:text-foreground",
+          )}
         >
           {item || "All"}
         </button>

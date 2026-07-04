@@ -1,5 +1,8 @@
-import { describe, expect, it } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { FinancialChartCard } from "@/components/admin/financial/financial-chart-card";
+import { FinancialFilters } from "@/components/admin/financial/financial-filters";
+import { FinancialSummaryCards } from "@/components/admin/financial/financial-summary-cards";
 import { PaymentsTable } from "@/components/admin/financial/payments-table";
 import { FinancialStatusBadge } from "@/components/admin/financial/financial-status-badge";
 import { formatMoney, maskReference } from "@/lib/admin/financial/format";
@@ -202,6 +205,37 @@ describe("Phase 12 admin mappers", () => {
   it("renders financial status badges", () => {
     render(<FinancialStatusBadge status="paid" />);
     expect(screen.getByText("Paid")).toBeInTheDocument();
+  });
+
+  it("renders financial summary cards with dark theme classes", () => {
+    render(<FinancialSummaryCards locale="en" items={[{ label: "Gross payments", amount: "0" }]} />);
+    const card = screen.getByTestId("financial-summary-card");
+    expect(card).toHaveClass("bg-surface");
+    expect(card).toHaveClass("border-border");
+    expect(card).not.toHaveClass("bg-white");
+  });
+
+  it("renders financial chart empty state with dark theme classes", () => {
+    render(<FinancialChartCard title="Payments by status" items={[]} />);
+    const chart = screen.getByTestId("financial-chart-card");
+    expect(chart).toHaveClass("bg-surface");
+    expect(screen.getByText("No financial activity yet.")).toHaveClass("text-foreground-muted");
+  });
+
+  it("renders financial filters with active and inactive dark states", () => {
+    const onStatus = vi.fn();
+    render(<FinancialFilters status="paid" onStatus={onStatus} statuses={["paid", "failed"]} />);
+    expect(screen.getByRole("button", { name: "paid" })).toHaveClass("bg-primary");
+    expect(screen.getByRole("button", { name: "failed" })).toHaveClass("bg-surface");
+    fireEvent.click(screen.getByRole("button", { name: "failed" }));
+    expect(onStatus).toHaveBeenCalledWith("failed");
+  });
+
+  it("renders financial table empty state without light surface classes", () => {
+    render(<PaymentsTable locale="en" items={[]} />);
+    const emptyState = screen.getByText("No financial activity yet.");
+    expect(emptyState).toHaveClass("text-foreground-muted");
+    expect(emptyState).not.toHaveClass("text-gray-500");
   });
 
   it("renders payment table safe values", () => {
