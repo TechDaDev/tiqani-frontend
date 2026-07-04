@@ -7,6 +7,10 @@ test.describe("Phase 12 admin dashboard", () => {
     await page.goto("/en/admin/dashboard");
     await expect(page.getByTestId("admin-dashboard-page")).toBeVisible();
     await expect(page.getByRole("heading", { name: "Admin Dashboard" })).toBeVisible();
+    await expect(page.getByText("Users", { exact: true })).toBeVisible();
+    await expect(page.getByTestId("admin-dashboard-charts")).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Users by Role" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "Platform Workflow" })).toBeVisible();
   });
 
   test("participant cannot access admin dashboard API", async ({ page }) => {

@@ -24,6 +24,57 @@
     "logout": "تسجيل الخروج",
     "remove": "إزالة"
   },
+  "admin": {
+    "dashboard": {
+      "title": "لوحة تحكم المشرف",
+      "loading": "جار التحميل...",
+      "error": "لوحة تحكم المشرف غير متاحة.",
+      "stats": {
+        "users": "المستخدمون",
+        "activeUsers": "المستخدمون النشطون",
+        "techniciansPending": "الفنيون بانتظار الموافقة",
+        "contracts": "العقود",
+        "pendingPayments": "المدفوعات المعلقة",
+        "pendingWithdrawals": "السحوبات المعلقة",
+        "reviews": "التقييمات",
+        "unreadNotifications": "الإشعارات غير المقروءة"
+      },
+      "charts": {
+        "usersByRole": {
+          "title": "المستخدمون حسب الدور",
+          "description": "توزيع حسابات العملاء والفنيين وفريق الإدارة."
+        },
+        "userActivity": {
+          "title": "نشاط المستخدمين",
+          "description": "مقارنة المستخدمين النشطين بغير النشطين أو الموقوفين."
+        },
+        "technicianApproval": {
+          "title": "اعتماد الفنيين",
+          "description": "حالة طلبات اعتماد الفنيين والملفات المعتمدة."
+        },
+        "platformWorkflow": {
+          "title": "ملخص سير العمل",
+          "description": "العناصر التشغيلية المفتوحة في العقود والمدفوعات والتقييمات والإشعارات."
+        },
+        "noData": "لا توجد بيانات بعد",
+        "total": "الإجمالي",
+        "clients": "العملاء",
+        "technicians": "الفنيون",
+        "staff": "المشرفون والفريق",
+        "dealerships": "الوكلاء",
+        "active": "نشط",
+        "inactive": "غير نشط",
+        "pending": "معلق",
+        "approved": "معتمد",
+        "suspended": "موقوف أو مرفوض",
+        "contracts": "العقود",
+        "pendingPayments": "المدفوعات المعلقة",
+        "pendingWithdrawals": "السحوبات المعلقة",
+        "reviews": "التقييمات",
+        "unreadNotifications": "الإشعارات غير المقروءة"
+      }
+    }
+  },
   "navigation": {
     "home": "الرئيسية",
     "howItWorks": "كيف يعمل",

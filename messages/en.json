@@ -24,6 +24,57 @@
     "logout": "Log out",
     "remove": "Remove"
   },
+  "admin": {
+    "dashboard": {
+      "title": "Admin Dashboard",
+      "loading": "Loading...",
+      "error": "Admin dashboard unavailable.",
+      "stats": {
+        "users": "Users",
+        "activeUsers": "Active Users",
+        "techniciansPending": "Technicians Pending",
+        "contracts": "Contracts",
+        "pendingPayments": "Pending Payments",
+        "pendingWithdrawals": "Pending Withdrawals",
+        "reviews": "Reviews",
+        "unreadNotifications": "Unread Notifications"
+      },
+      "charts": {
+        "usersByRole": {
+          "title": "Users by Role",
+          "description": "Distribution across client, technician, and staff accounts."
+        },
+        "userActivity": {
+          "title": "User Activity",
+          "description": "Active users compared with inactive or suspended users."
+        },
+        "technicianApproval": {
+          "title": "Technician Approval",
+          "description": "Technician approval queue and approved profiles."
+        },
+        "platformWorkflow": {
+          "title": "Platform Workflow",
+          "description": "Open operational items across contracts, payments, reviews, and notifications."
+        },
+        "noData": "No data yet",
+        "total": "Total",
+        "clients": "Clients",
+        "technicians": "Technicians",
+        "staff": "Admin/Staff",
+        "dealerships": "Dealerships",
+        "active": "Active",
+        "inactive": "Inactive",
+        "pending": "Pending",
+        "approved": "Approved",
+        "suspended": "Suspended/Rejected",
+        "contracts": "Contracts",
+        "pendingPayments": "Pending payments",
+        "pendingWithdrawals": "Pending withdrawals",
+        "reviews": "Reviews",
+        "unreadNotifications": "Unread notifications"
+      }
+    }
+  },
   "navigation": {
     "home": "Home",
     "howItWorks": "How It Works",
