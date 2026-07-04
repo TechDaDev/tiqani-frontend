@@ -60,6 +60,8 @@ export default function TechnicianProfilePage() {
   const [categories, setCategories] = useState<CategoryItem[]>([]);
   const [skills, setSkills] = useState<SkillItem[]>([]);
   const [subSkills, setSubSkills] = useState<SubSkillItem[]>([]);
+  const [skillsLoading, setSkillsLoading] = useState(false);
+  const [subSkillsLoading, setSubSkillsLoading] = useState(false);
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<string[]>([]);
   const [selectedSkillIds, setSelectedSkillIds] = useState<string[]>([]);
   const [selectedSubSkillIds, setSelectedSubSkillIds] = useState<string[]>([]);
@@ -99,15 +101,9 @@ export default function TechnicianProfilePage() {
     let mounted = true;
     async function loadReferences() {
       try {
-        const [categoryData, skillData, subSkillData] = await Promise.all([
-          fetchCategories({ page_size: 100 }),
-          fetchSkills(),
-          fetchSubSkills(),
-        ]);
+        const categoryData = await fetchCategories({ page_size: 100 });
         if (!mounted) return;
         setCategories(categoryData.results);
-        setSkills(skillData);
-        setSubSkills(subSkillData);
       } catch (err) {
         if (!mounted) return;
         setReferenceError(err instanceof Error ? err.message : t("referenceLoadError"));
@@ -118,6 +114,74 @@ export default function TechnicianProfilePage() {
       mounted = false;
     };
   }, [t]);
+
+  useEffect(() => {
+    let mounted = true;
+    async function loadSkillsForCategories() {
+      setReferenceError("");
+      if (!selectedCategoryIds.length) {
+        setSkills([]);
+        setSubSkills([]);
+        setSelectedSkillIds([]);
+        setSelectedSubSkillIds([]);
+        return;
+      }
+      setSkillsLoading(true);
+      try {
+        const skillGroups = await Promise.all(
+          selectedCategoryIds.map((categoryId) =>
+            fetchSkills({ category_id: categoryId, page_size: 100, fields: "basic" })
+          )
+        );
+        if (!mounted) return;
+        const nextSkills = uniqueById(skillGroups.flat());
+        const nextSkillIds = new Set(nextSkills.map((skill) => skill.id));
+        setSkills(nextSkills);
+        setSelectedSkillIds((current) => current.filter((id) => nextSkillIds.has(id)));
+      } catch (err) {
+        if (!mounted) return;
+        setReferenceError(err instanceof Error ? err.message : t("referenceLoadError"));
+      } finally {
+        if (mounted) setSkillsLoading(false);
+      }
+    }
+    loadSkillsForCategories();
+    return () => {
+      mounted = false;
+    };
+  }, [selectedCategoryIds, t]);
+
+  useEffect(() => {
+    let mounted = true;
+    async function loadSubSkillsForSkills() {
+      setReferenceError("");
+      if (!selectedSkillIds.length) {
+        setSubSkills([]);
+        setSelectedSubSkillIds([]);
+        return;
+      }
+      setSubSkillsLoading(true);
+      try {
+        const subSkillGroups = await Promise.all(
+          selectedSkillIds.map((skillId) => fetchSubSkills({ skill_id: skillId, page_size: 100 }))
+        );
+        if (!mounted) return;
+        const nextSubSkills = uniqueById(subSkillGroups.flat());
+        const nextSubSkillIds = new Set(nextSubSkills.map((subSkill) => subSkill.id));
+        setSubSkills(nextSubSkills);
+        setSelectedSubSkillIds((current) => current.filter((id) => nextSubSkillIds.has(id)));
+      } catch (err) {
+        if (!mounted) return;
+        setReferenceError(err instanceof Error ? err.message : t("referenceLoadError"));
+      } finally {
+        if (mounted) setSubSkillsLoading(false);
+      }
+    }
+    loadSubSkillsForSkills();
+    return () => {
+      mounted = false;
+    };
+  }, [selectedSkillIds, t]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -606,6 +670,8 @@ export default function TechnicianProfilePage() {
                 items={skills}
                 selectedIds={selectedSkillIds}
                 onChange={setSelectedSkillIds}
+                disabled={!selectedCategoryIds.length || skillsLoading}
+                loading={skillsLoading}
               />
               <MultiSelectField
                 id="subSkills"
@@ -613,6 +679,8 @@ export default function TechnicianProfilePage() {
                 items={subSkills}
                 selectedIds={selectedSubSkillIds}
                 onChange={setSelectedSubSkillIds}
+                disabled={!selectedSkillIds.length || subSkillsLoading}
+                loading={subSkillsLoading}
               />
               <div className="flex flex-wrap gap-2">
                 <ChipGroup label={t("currentSelection")} items={[...skillCategories, ...skillItems, ...subSkillItems]} emptyLabel={t("notProvided")} />
@@ -804,26 +872,34 @@ function MultiSelectField({
   items,
   selectedIds,
   onChange,
+  disabled = false,
+  loading = false,
 }: {
   id: string;
   label: string;
   items: Array<{ id: string; name: string }>;
   selectedIds: string[];
   onChange: (ids: string[]) => void;
+  disabled?: boolean;
+  loading?: boolean;
 }) {
   return (
     <div className="grid gap-2 text-sm">
-      <label htmlFor={id} className="text-foreground-muted">
-        {label}
-      </label>
+      <div className="flex items-center justify-between gap-3">
+        <label htmlFor={id} className="text-foreground-muted">
+          {label}
+        </label>
+        {loading && <Loader2 className="h-3.5 w-3.5 animate-spin text-foreground-muted" />}
+      </div>
       <select
         id={id}
         multiple
         value={selectedIds}
+        disabled={disabled}
         onChange={(event) => {
           onChange(Array.from(event.currentTarget.selectedOptions, (option) => option.value));
         }}
-        className="min-h-28 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+        className="min-h-28 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary disabled:cursor-not-allowed disabled:opacity-60"
       >
         {items.map((item) => (
           <option key={item.id} value={item.id}>
@@ -833,6 +909,15 @@ function MultiSelectField({
       </select>
     </div>
   );
+}
+
+function uniqueById<T extends { id: string }>(items: T[]) {
+  const seen = new Set<string>();
+  return items.filter((item) => {
+    if (seen.has(item.id)) return false;
+    seen.add(item.id);
+    return true;
+  });
 }
 
 function formatDate(value: string | null | undefined, locale: string) {

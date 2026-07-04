@@ -236,13 +236,28 @@ describe("GET /api/reference/skills", () => {
     mockBackendGet.mockResolvedValueOnce({ data: MOCK_SKILLS, status: 200 });
 
     const { GET } = await import("@/app/api/reference/skills/route");
-    const response = await GET();
+    const request = createReferenceRequest("/api/reference/skills");
+    const response = await GET(request);
     const body = await response.json();
 
     expect(response.status).toBe(200);
     expect(body).toHaveLength(2);
     expect(body[0].name).toBe("Wiring");
     expect(mockBackendGet).toHaveBeenCalledWith("/api/categories/skills/");
+  });
+
+  it("forwards skill query params", async () => {
+    mockBackendGet.mockResolvedValueOnce({ data: MOCK_SKILLS, status: 200 });
+
+    const { GET } = await import("@/app/api/reference/skills/route");
+    const request = createReferenceRequest(
+      "/api/reference/skills?category_id=cat-1&page_size=100&fields=basic"
+    );
+    await GET(request);
+
+    expect(mockBackendGet).toHaveBeenCalledWith(
+      "/api/categories/skills/?category_id=cat-1&page_size=100&fields=basic"
+    );
   });
 });
 
@@ -255,7 +270,8 @@ describe("GET /api/reference/sub-skills", () => {
     mockBackendGet.mockResolvedValueOnce({ data: MOCK_SUB_SKILLS, status: 200 });
 
     const { GET } = await import("@/app/api/reference/sub-skills/route");
-    const response = await GET();
+    const request = createReferenceRequest("/api/reference/sub-skills");
+    const response = await GET(request);
     const body = await response.json();
 
     expect(response.status).toBe(200);
@@ -263,4 +279,22 @@ describe("GET /api/reference/sub-skills", () => {
     expect(body[0].name).toBe("Residential Wiring");
     expect(mockBackendGet).toHaveBeenCalledWith("/api/categories/sub-skills/");
   });
+
+  it("forwards sub-skill query params", async () => {
+    mockBackendGet.mockResolvedValueOnce({ data: MOCK_SUB_SKILLS, status: 200 });
+
+    const { GET } = await import("@/app/api/reference/sub-skills/route");
+    const request = createReferenceRequest("/api/reference/sub-skills?skill_id=skill-1&page_size=100");
+    await GET(request);
+
+    expect(mockBackendGet).toHaveBeenCalledWith(
+      "/api/categories/sub-skills/?skill_id=skill-1&page_size=100"
+    );
+  });
 });
+
+function createReferenceRequest(path: string): NextRequest {
+  return {
+    nextUrl: new URL(path, "http://localhost:3000"),
+  } as NextRequest;
+}

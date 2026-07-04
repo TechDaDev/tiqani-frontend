@@ -6,10 +6,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { backendGet } from "@/lib/api/backend-client";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const qs = request.nextUrl.searchParams.toString();
     const { data, status } = await backendGet<Record<string, unknown>>(
-      "/api/categories/sub-skills/"
+      `/api/categories/sub-skills/${qs ? `?${qs}` : ""}`
     );
 
     return NextResponse.json(data, { status });

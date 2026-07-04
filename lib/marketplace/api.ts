@@ -87,10 +87,19 @@ export async function fetchCategories(
 }
 
 /**
- * Fetch all skills.
+ * Fetch skills, optionally scoped to one category.
  */
-export async function fetchSkills(): Promise<SkillItem[]> {
-  const raw = await browserRequest<unknown>("/api/reference/skills", {
+export async function fetchSkills(
+  params: { category_id?: string; page?: number; page_size?: number; fields?: "basic" } = {}
+): Promise<SkillItem[]> {
+  const searchParams = new URLSearchParams();
+  if (params.category_id) searchParams.set("category_id", params.category_id);
+  if (params.page) searchParams.set("page", String(params.page));
+  if (params.page_size) searchParams.set("page_size", String(params.page_size));
+  if (params.fields) searchParams.set("fields", params.fields);
+  const qs = searchParams.toString();
+
+  const raw = await browserRequest<unknown>(`/api/reference/skills${qs ? `?${qs}` : ""}`, {
     method: "GET",
   });
   const parsed = Array.isArray(raw)
@@ -100,10 +109,18 @@ export async function fetchSkills(): Promise<SkillItem[]> {
 }
 
 /**
- * Fetch all sub-skills.
+ * Fetch sub-skills, optionally scoped to one skill.
  */
-export async function fetchSubSkills(): Promise<SubSkillItem[]> {
-  const raw = await browserRequest<unknown>("/api/reference/sub-skills", {
+export async function fetchSubSkills(
+  params: { skill_id?: string; page?: number; page_size?: number } = {}
+): Promise<SubSkillItem[]> {
+  const searchParams = new URLSearchParams();
+  if (params.skill_id) searchParams.set("skill_id", params.skill_id);
+  if (params.page) searchParams.set("page", String(params.page));
+  if (params.page_size) searchParams.set("page_size", String(params.page_size));
+  const qs = searchParams.toString();
+
+  const raw = await browserRequest<unknown>(`/api/reference/sub-skills${qs ? `?${qs}` : ""}`, {
     method: "GET",
   });
   const parsed = Array.isArray(raw)
