@@ -154,6 +154,24 @@ export async function uploadTechnicianDocument(file: File): Promise<TechnicianPr
   return response.json();
 }
 
+export async function uploadTechnicianProfileImage(file: File): Promise<TechnicianProfileData> {
+  const formData = new FormData();
+  formData.append("profile_image", file);
+
+  const response = await fetch("/api/technicians/me", {
+    method: "PATCH",
+    body: formData,
+    credentials: "same-origin",
+  });
+
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({ detail: "Upload failed." }));
+    throw new Error(err.detail || "Upload failed.");
+  }
+
+  return response.json();
+}
+
 /**
  * Fetch incomplete profile fields (GET /api/profile/incomplete-fields/)
  */

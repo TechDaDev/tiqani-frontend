@@ -102,6 +102,8 @@ const BackendSkillSchema = z.object({
 });
 
 export const BackendSkillListResponseSchema = z.array(BackendSkillSchema);
+export const BackendSkillPaginatedResponseSchema =
+  BackendPaginatedResponseSchema(BackendSkillSchema);
 
 // ── Sub-skill schema (raw backend) ─────────────────────────────
 
@@ -112,6 +114,8 @@ const BackendSubSkillSchema = z.object({
 });
 
 export const BackendSubSkillListResponseSchema = z.array(BackendSubSkillSchema);
+export const BackendSubSkillPaginatedResponseSchema =
+  BackendPaginatedResponseSchema(BackendSubSkillSchema);
 
 // ── Error response ─────────────────────────────────────────────
 

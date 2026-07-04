@@ -15,7 +15,9 @@ import {
   BackendTechnicianListResponseSchema,
   BackendTechnicianDetailResponseSchema,
   BackendCategoryListResponseSchema,
+  BackendSkillPaginatedResponseSchema,
   BackendSkillListResponseSchema,
+  BackendSubSkillPaginatedResponseSchema,
   BackendSubSkillListResponseSchema,
 } from "./schemas";
 import {
@@ -91,7 +93,9 @@ export async function fetchSkills(): Promise<SkillItem[]> {
   const raw = await browserRequest<unknown>("/api/reference/skills", {
     method: "GET",
   });
-  const parsed = BackendSkillListResponseSchema.parse(raw);
+  const parsed = Array.isArray(raw)
+    ? BackendSkillListResponseSchema.parse(raw)
+    : BackendSkillPaginatedResponseSchema.parse(raw).results;
   return mapSkills(parsed);
 }
 
@@ -102,6 +106,8 @@ export async function fetchSubSkills(): Promise<SubSkillItem[]> {
   const raw = await browserRequest<unknown>("/api/reference/sub-skills", {
     method: "GET",
   });
-  const parsed = BackendSubSkillListResponseSchema.parse(raw);
+  const parsed = Array.isArray(raw)
+    ? BackendSubSkillListResponseSchema.parse(raw)
+    : BackendSubSkillPaginatedResponseSchema.parse(raw).results;
   return mapSubSkills(parsed);
 }

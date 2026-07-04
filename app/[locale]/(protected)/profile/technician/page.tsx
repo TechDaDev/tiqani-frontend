@@ -25,6 +25,7 @@ import {
   fetchIncompleteFields,
   updateTechnicianSkills,
   uploadTechnicianDocument,
+  uploadTechnicianProfileImage,
   uploadTechnicianImage,
   deleteTechnicianImage,
   type TechnicianProfileData,
@@ -43,6 +44,7 @@ export default function TechnicianProfilePage() {
   const [saving, setSaving] = useState(false);
   const [skillsSaving, setSkillsSaving] = useState(false);
   const [documentUploading, setDocumentUploading] = useState(false);
+  const [profileImageUploading, setProfileImageUploading] = useState(false);
   const [imageUploading, setImageUploading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -197,6 +199,23 @@ export default function TechnicianProfilePage() {
       setError(err instanceof Error ? err.message : t("saveError"));
     } finally {
       setDocumentUploading(false);
+    }
+  };
+
+  const handleProfileImageUpload = async (file: File | null) => {
+    if (!file) return;
+    setError("");
+    setSuccess("");
+    setProfileImageUploading(true);
+    try {
+      const updated = await uploadTechnicianProfileImage(file);
+      setProfile(updated);
+      setIncomplete(await fetchIncompleteFields());
+      setSuccess(t("saved"));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t("saveError"));
+    } finally {
+      setProfileImageUploading(false);
     }
   };
 
@@ -483,6 +502,24 @@ export default function TechnicianProfilePage() {
                   <p className="truncate text-base font-semibold">{profile?.full_name || t("notProvided")}</p>
                   <p className="truncate text-sm text-foreground-muted">{profile?.username || t("notProvided")}</p>
                 </div>
+              </div>
+              <div className="grid gap-2 text-sm">
+                <label htmlFor="profileImage" className="text-foreground-muted">
+                  {t("fields.profile_image")}
+                </label>
+                <input
+                  id="profileImage"
+                  type="file"
+                  accept="image/*"
+                  onChange={(event) => handleProfileImageUpload(event.target.files?.[0] || null)}
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm file:mr-3 file:rounded-md file:border-0 file:bg-primary file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-primary-foreground"
+                />
+                {profileImageUploading && (
+                  <p className="flex items-center gap-2 text-xs text-foreground-muted">
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    {t("uploading")}
+                  </p>
+                )}
               </div>
               <InfoRow label={t("email")} value={profile?.email} />
               <InfoRow label={t("phoneNumber")} value={profile?.phone_number} />
