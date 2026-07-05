@@ -1,7 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useEffect, useCallback, type FormEvent } from "react";
+import {
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  type FormEvent,
+} from "react";
 import { useLocale, useTranslations } from "next-intl";
 import {
   Loader2,
@@ -13,6 +19,8 @@ import {
   ExternalLink,
   FileText,
   ImageIcon,
+  Search,
+  X,
   Wallet,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -34,14 +42,26 @@ import {
   type IncompleteFieldsData,
 } from "@/lib/api/profiles";
 import { fetchCategories } from "@/lib/marketplace/api";
-import type { CategoryItem, SkillItem, SubSkillItem } from "@/lib/marketplace/types";
+import type {
+  CategoryItem,
+  SkillItem,
+  SubSkillItem,
+} from "@/lib/marketplace/types";
+import {
+  buildSkillSelectionChips,
+  countSelectedInCategory,
+  filterSkillCategories,
+  type SkillChip,
+} from "@/lib/technician/skills-selector";
 
 export default function TechnicianProfilePage() {
   const t = useTranslations("profile");
   const locale = useLocale();
 
   const [profile, setProfile] = useState<TechnicianProfileData | null>(null);
-  const [incomplete, setIncomplete] = useState<IncompleteFieldsData | null>(null);
+  const [incomplete, setIncomplete] = useState<IncompleteFieldsData | null>(
+    null,
+  );
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [skillsSaving, setSkillsSaving] = useState(false);
@@ -82,9 +102,23 @@ export default function TechnicianProfilePage() {
       setGithub(profileData.github || profileData.url1 || "");
       setLinkedin(profileData.linkedin || profileData.url2 || "");
       setIsAvailable(profileData.is_available);
-      setSelectedCategoryIds(getSelectedIds(profileData.skill_sets, "categories", "categories_detail"));
-      setSelectedSkillIds(getSelectedIds(profileData.skill_sets, "skills", "skills_detail"));
-      setSelectedSubSkillIds(getSelectedIds(profileData.skill_sets, "sub_skills", "sub_skills_detail"));
+      setSelectedCategoryIds(
+        getSelectedIds(
+          profileData.skill_sets,
+          "categories",
+          "categories_detail",
+        ),
+      );
+      setSelectedSkillIds(
+        getSelectedIds(profileData.skill_sets, "skills", "skills_detail"),
+      );
+      setSelectedSubSkillIds(
+        getSelectedIds(
+          profileData.skill_sets,
+          "sub_skills",
+          "sub_skills_detail",
+        ),
+      );
     } catch (err) {
       setError(err instanceof Error ? err.message : t("loadError"));
     } finally {
@@ -123,10 +157,18 @@ export default function TechnicianProfilePage() {
     if (!about.trim()) nextFieldErrors.about = t("requiredField");
     if (!github.trim()) nextFieldErrors.github = t("requiredField");
     if (!linkedin.trim()) nextFieldErrors.linkedin = t("requiredField");
-    if (github.trim() && !/^https?:\/\/(www\.)?github\.com\/[A-Za-z0-9_-]+\/?$/.test(github.trim())) {
+    if (
+      github.trim() &&
+      !/^https?:\/\/(www\.)?github\.com\/[A-Za-z0-9_-]+\/?$/.test(github.trim())
+    ) {
       nextFieldErrors.github = t("invalidGithub");
     }
-    if (linkedin.trim() && !/^https?:\/\/(www\.)?linkedin\.com\/in\/[A-Za-z0-9_-]+\/?$/.test(linkedin.trim())) {
+    if (
+      linkedin.trim() &&
+      !/^https?:\/\/(www\.)?linkedin\.com\/in\/[A-Za-z0-9_-]+\/?$/.test(
+        linkedin.trim(),
+      )
+    ) {
       nextFieldErrors.linkedin = t("invalidLinkedin");
     }
     if (Object.keys(nextFieldErrors).length) {
@@ -162,18 +204,27 @@ export default function TechnicianProfilePage() {
     e.preventDefault();
     setError("");
     setSuccess("");
-    if (!validateTechnicianSkillsSelection({ skills: selectedSkillIds, sub_skills: selectedSubSkillIds })) {
+    if (
+      !validateTechnicianSkillsSelection({
+        skills: selectedSkillIds,
+        sub_skills: selectedSubSkillIds,
+      })
+    ) {
       setError(t("chooseAtLeastOneSkill"));
       return;
     }
     setSkillsSaving(true);
     try {
-      const updatedSkills = await updateTechnicianSkills(buildTechnicianSkillsPayload({
-        categories: selectedCategoryIds,
-        skills: selectedSkillIds,
-        sub_skills: selectedSubSkillIds,
-      }));
-      setProfile((current) => current ? { ...current, skill_sets: { ...updatedSkills } } : current);
+      const updatedSkills = await updateTechnicianSkills(
+        buildTechnicianSkillsPayload({
+          categories: selectedCategoryIds,
+          skills: selectedSkillIds,
+          sub_skills: selectedSubSkillIds,
+        }),
+      );
+      setProfile((current) =>
+        current ? { ...current, skill_sets: { ...updatedSkills } } : current,
+      );
       setSuccess(t("skillsSaved"));
       setIncomplete(await fetchIncompleteFields());
     } catch (err) {
@@ -246,6 +297,37 @@ export default function TechnicianProfilePage() {
     }
   };
 
+  const skillFallbacks = useMemo(
+    () => getDetailedItems(profile?.skill_sets, "skills_detail", "skills"),
+    [profile?.skill_sets],
+  );
+  const subSkillFallbacks = useMemo(
+    () =>
+      getDetailedItems(profile?.skill_sets, "sub_skills_detail", "sub_skills"),
+    [profile?.skill_sets],
+  );
+  const portfolioImages = getPortfolioImages(profile?.images);
+  const allSkills = uniqueById(
+    categories.flatMap((category) => category.skills ?? []),
+  );
+  const selectedSkillChips = useMemo(
+    () =>
+      buildSkillSelectionChips(
+        categories,
+        selectedSkillIds,
+        selectedSubSkillIds,
+        skillFallbacks,
+        subSkillFallbacks,
+      ),
+    [
+      categories,
+      selectedSkillIds,
+      selectedSubSkillIds,
+      skillFallbacks,
+      subSkillFallbacks,
+    ],
+  );
+
   if (loading) {
     return (
       <div className="flex min-h-[400px] items-center justify-center">
@@ -264,38 +346,39 @@ export default function TechnicianProfilePage() {
     );
   }
 
-  const skillCategories = getNamedItems(profile?.skill_sets, "categories_detail", "categories");
-  const skillItems = getNamedItems(profile?.skill_sets, "skills_detail", "skills");
-  const subSkillItems = getNamedItems(profile?.skill_sets, "sub_skills_detail", "sub_skills");
-  const portfolioImages = getPortfolioImages(profile?.images);
-  const allSkills = uniqueById(categories.flatMap((category) => category.skills ?? []));
-  const allSubSkills = uniqueById(allSkills.flatMap((skill) => skill.subSkills ?? []));
-  const selectedCategoryNames = getNamesForIds(categories, selectedCategoryIds);
-  const selectedSkillNames = getNamesForIds(allSkills, selectedSkillIds);
-  const selectedSubSkillNames = getNamesForIds(allSubSkills, selectedSubSkillIds);
-
-  const toggleCategory = (category: CategoryItem) => {
-    const skillIds = (category.skills ?? []).map((skill) => skill.id);
-    const subSkillIds = (category.skills ?? []).flatMap((skill) => (skill.subSkills ?? []).map((subSkill) => subSkill.id));
-    setSelectedCategoryIds((current) => toggleId(current, category.id));
-    if (selectedCategoryIds.includes(category.id)) {
-      setSelectedSkillIds((current) => current.filter((id) => !skillIds.includes(id)));
-      setSelectedSubSkillIds((current) => current.filter((id) => !subSkillIds.includes(id)));
-    }
-  };
-
   const toggleSkill = (category: CategoryItem, skill: SkillItem) => {
     setSelectedCategoryIds((current) => addUnique(current, category.id));
     setSelectedSkillIds((current) => toggleId(current, skill.id));
     if (selectedSkillIds.includes(skill.id)) {
-      const subSkillIds = (skill.subSkills ?? []).map((subSkill) => subSkill.id);
-      setSelectedSubSkillIds((current) => current.filter((id) => !subSkillIds.includes(id)));
+      const subSkillIds = (skill.subSkills ?? []).map(
+        (subSkill) => subSkill.id,
+      );
+      setSelectedSubSkillIds((current) =>
+        current.filter((id) => !subSkillIds.includes(id)),
+      );
     }
   };
 
   const toggleSubSkill = (category: CategoryItem, subSkill: SubSkillItem) => {
     setSelectedCategoryIds((current) => addUnique(current, category.id));
     setSelectedSubSkillIds((current) => toggleId(current, subSkill.id));
+  };
+
+  const removeSkillChip = (chip: SkillChip) => {
+    if (chip.kind === "skill") {
+      const skill = allSkills.find((item) => item.id === chip.id);
+      const subSkillIds = (skill?.subSkills ?? []).map(
+        (subSkill) => subSkill.id,
+      );
+      setSelectedSkillIds((current) => current.filter((id) => id !== chip.id));
+      if (subSkillIds.length) {
+        setSelectedSubSkillIds((current) =>
+          current.filter((id) => !subSkillIds.includes(id)),
+        );
+      }
+      return;
+    }
+    setSelectedSubSkillIds((current) => current.filter((id) => id !== chip.id));
   };
 
   return (
@@ -395,7 +478,11 @@ export default function TechnicianProfilePage() {
                   className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                   aria-invalid={Boolean(fieldErrors.jobTitle)}
                 />
-                {fieldErrors.jobTitle && <p className="mt-1 text-sm text-red-600">{fieldErrors.jobTitle}</p>}
+                {fieldErrors.jobTitle && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {fieldErrors.jobTitle}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -414,7 +501,11 @@ export default function TechnicianProfilePage() {
                   className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                   aria-invalid={Boolean(fieldErrors.about)}
                 />
-                {fieldErrors.about && <p className="mt-1 text-sm text-red-600">{fieldErrors.about}</p>}
+                {fieldErrors.about && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {fieldErrors.about}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -422,7 +513,8 @@ export default function TechnicianProfilePage() {
                   htmlFor="yearsOfExpertise"
                   className="mb-1 block text-sm font-medium text-foreground-muted"
                 >
-                  {t("yearsOfExpertise")} <span className="text-red-500">*</span>
+                  {t("yearsOfExpertise")}{" "}
+                  <span className="text-red-500">*</span>
                 </label>
                 <input
                   id="yearsOfExpertise"
@@ -453,7 +545,11 @@ export default function TechnicianProfilePage() {
                   required
                   aria-invalid={Boolean(fieldErrors.github)}
                 />
-                {fieldErrors.github && <p className="mt-1 text-sm text-red-600">{fieldErrors.github}</p>}
+                {fieldErrors.github && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {fieldErrors.github}
+                  </p>
+                )}
               </div>
 
               <div>
@@ -474,11 +570,17 @@ export default function TechnicianProfilePage() {
                   required
                   aria-invalid={Boolean(fieldErrors.linkedin)}
                 />
-                {fieldErrors.linkedin && <p className="mt-1 text-sm text-red-600">{fieldErrors.linkedin}</p>}
+                {fieldErrors.linkedin && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {fieldErrors.linkedin}
+                  </p>
+                )}
               </div>
 
               <label className="flex items-center justify-between gap-4 rounded-lg border border-border bg-background px-3 py-3">
-                <span className="text-sm font-medium text-foreground-muted">{t("isAvailable")}</span>
+                <span className="text-sm font-medium text-foreground-muted">
+                  {t("isAvailable")}
+                </span>
                 <input
                   type="checkbox"
                   checked={isAvailable}
@@ -526,8 +628,12 @@ export default function TechnicianProfilePage() {
                   )}
                 </div>
                 <div className="min-w-0">
-                  <p className="truncate text-base font-semibold">{profile?.full_name || t("notProvided")}</p>
-                  <p className="truncate text-sm text-foreground-muted">{profile?.username || t("notProvided")}</p>
+                  <p className="truncate text-base font-semibold">
+                    {profile?.full_name || t("notProvided")}
+                  </p>
+                  <p className="truncate text-sm text-foreground-muted">
+                    {profile?.username || t("notProvided")}
+                  </p>
                 </div>
               </div>
               <div className="grid gap-2 text-sm">
@@ -538,7 +644,9 @@ export default function TechnicianProfilePage() {
                   id="profileImage"
                   type="file"
                   accept="image/*"
-                  onChange={(event) => handleProfileImageUpload(event.target.files?.[0] || null)}
+                  onChange={(event) =>
+                    handleProfileImageUpload(event.target.files?.[0] || null)
+                  }
                   className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm file:mr-3 file:rounded-md file:border-0 file:bg-primary file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-primary-foreground"
                 />
                 {profileImageUploading && (
@@ -552,8 +660,14 @@ export default function TechnicianProfilePage() {
               <InfoRow label={t("phoneNumber")} value={profile?.phone_number} />
               <InfoRow label={t("governorate")} value={profile?.governorate} />
               <InfoRow label={t("address")} value={profile?.address} />
-              <InfoRow label={t("fields.gender")} value={formatGender(profile?.gender, t)} />
-              <InfoRow label={t("fields.date_of_birth")} value={formatDate(profile?.date_of_birth, locale)} />
+              <InfoRow
+                label={t("fields.gender")}
+                value={formatGender(profile?.gender, t)}
+              />
+              <InfoRow
+                label={t("fields.date_of_birth")}
+                value={formatDate(profile?.date_of_birth, locale)}
+              />
             </CardContent>
           </Card>
 
@@ -562,10 +676,23 @@ export default function TechnicianProfilePage() {
               <CardTitle>{t("accountStatus")}</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <InfoRow label={t("isAvailable")} value={profile?.is_available ? t("available") : t("notAvailable")} />
+              <InfoRow
+                label={t("isAvailable")}
+                value={
+                  profile?.is_available ? t("available") : t("notAvailable")
+                }
+              />
               <InfoRow label={t("rating")} value={profile?.rate ?? null} />
-              <InfoRow label={t("lastActive")} value={formatDate(profile?.last_active, locale)} />
-              <InfoRow label={t("completion")} value={incomplete ? `${incomplete.completion_percentage}%` : null} />
+              <InfoRow
+                label={t("lastActive")}
+                value={formatDate(profile?.last_active, locale)}
+              />
+              <InfoRow
+                label={t("completion")}
+                value={
+                  incomplete ? `${incomplete.completion_percentage}%` : null
+                }
+              />
             </CardContent>
           </Card>
 
@@ -577,8 +704,16 @@ export default function TechnicianProfilePage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              <InfoRow label={t("walletId")} value={profile?.wallet_id} dir="ltr" />
-              <InfoRow label={t("balance")} value={profile?.balance ? `${profile.balance} IQD` : null} dir="ltr" />
+              <InfoRow
+                label={t("walletId")}
+                value={profile?.wallet_id}
+                dir="ltr"
+              />
+              <InfoRow
+                label={t("balance")}
+                value={profile?.balance ? `${profile.balance} IQD` : null}
+                dir="ltr"
+              />
             </CardContent>
           </Card>
         </div>
@@ -595,13 +730,18 @@ export default function TechnicianProfilePage() {
                 fallback={t("notProvided")}
               />
               <div className="grid gap-2 text-sm">
-                <label htmlFor="identificationDocuments" className="text-foreground-muted">
+                <label
+                  htmlFor="identificationDocuments"
+                  className="text-foreground-muted"
+                >
                   {t("replaceDocument")}
                 </label>
                 <input
                   id="identificationDocuments"
                   type="file"
-                  onChange={(event) => handleDocumentUpload(event.target.files?.[0] || null)}
+                  onChange={(event) =>
+                    handleDocumentUpload(event.target.files?.[0] || null)
+                  }
                   className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm file:mr-3 file:rounded-md file:border-0 file:bg-primary file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-primary-foreground"
                 />
                 {documentUploading && (
@@ -611,14 +751,36 @@ export default function TechnicianProfilePage() {
                   </p>
                 )}
               </div>
-              <LinkRow label={t("github")} href={profile?.github || profile?.url1} fallback={t("notProvided")} />
-              <LinkRow label={t("linkedin")} href={profile?.linkedin || profile?.url2} fallback={t("notProvided")} />
+              <LinkRow
+                label={t("github")}
+                href={profile?.github || profile?.url1}
+                fallback={t("notProvided")}
+              />
+              <LinkRow
+                label={t("linkedin")}
+                href={profile?.linkedin || profile?.url2}
+                fallback={t("notProvided")}
+              />
             </div>
             <form className="space-y-4" onSubmit={handleSkillsSubmit}>
+              <div>
+                <h3 className="text-base font-semibold">
+                  {t("skillsServices")}
+                </h3>
+                <p className="mt-1 text-sm text-foreground-muted">
+                  {t("selectMultipleSkills")}
+                </p>
+              </div>
               {referenceError && (
                 <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-950/30 dark:text-red-300">
                   <span>{referenceError}</span>
-                  <Button type="button" variant="outline" size="sm" onClick={loadReferences} disabled={referenceLoading}>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={loadReferences}
+                    disabled={referenceLoading}
+                  >
                     {referenceLoading ? (
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                     ) : null}
@@ -632,29 +794,31 @@ export default function TechnicianProfilePage() {
                   {t("loadingSkills")}
                 </p>
               ) : null}
-              {categories.length > 0 ? (
-                <SkillSelectionTree
-                  categories={categories}
-                  selectedCategoryIds={selectedCategoryIds}
-                  selectedSkillIds={selectedSkillIds}
-                  selectedSubSkillIds={selectedSubSkillIds}
-                  onToggleCategory={toggleCategory}
-                  onToggleSkill={toggleSkill}
-                  onToggleSubSkill={toggleSubSkill}
-                  labels={{
-                    category: t("category"),
-                    selectMultipleSkills: t("selectMultipleSkills"),
-                    subSkills: t("subSkills"),
-                  }}
-                />
-              ) : null}
-              <div className="grid gap-3">
-                <ChipGroup label={t("selectedSkills")} items={selectedSkillNames} emptyLabel={t("noSkillsSelected")} />
-                <ChipGroup label={t("selectedSubSkills")} items={selectedSubSkillNames} emptyLabel={t("noSkillsSelected")} />
-                <ChipGroup label={t("categories")} items={selectedCategoryNames} emptyLabel={t("notProvided")} />
-                <ChipGroup label={t("currentSelection")} items={[...skillCategories, ...skillItems, ...subSkillItems]} emptyLabel={t("notProvided")} />
-              </div>
-              <Button type="submit" disabled={skillsSaving}>
+              <TechnicianSkillsEditor
+                categories={categories}
+                selectedChips={selectedSkillChips}
+                selectedSkillIds={selectedSkillIds}
+                selectedSubSkillIds={selectedSubSkillIds}
+                onToggleSkill={toggleSkill}
+                onToggleSubSkill={toggleSubSkill}
+                onRemoveChip={removeSkillChip}
+                labels={{
+                  all: t("allCategories"),
+                  availableSkills: t("availableSkills"),
+                  noMatches: t("noMatchingSkills"),
+                  noSelected: t("noSkillsSelectedYet"),
+                  remove: t("removeSkill"),
+                  search: t("searchSkills"),
+                  selected: t("selected"),
+                  selectedCount: t("selectedCount"),
+                  subSkills: t("subSkills"),
+                }}
+              />
+              <Button
+                type="submit"
+                disabled={skillsSaving}
+                className="w-full sm:w-auto"
+              >
                 {skillsSaving ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -678,26 +842,36 @@ export default function TechnicianProfilePage() {
           <CardContent className="space-y-5">
             <div className="grid gap-3 rounded-lg border border-border p-4 md:grid-cols-[1fr_1fr_auto]">
               <div className="grid gap-2">
-                <label htmlFor="portfolioDescription" className="text-sm text-foreground-muted">
+                <label
+                  htmlFor="portfolioDescription"
+                  className="text-sm text-foreground-muted"
+                >
                   {t("imageDescription")}
                 </label>
                 <input
                   id="portfolioDescription"
                   type="text"
                   value={portfolioDescription}
-                  onChange={(event) => setPortfolioDescription(event.target.value)}
+                  onChange={(event) =>
+                    setPortfolioDescription(event.target.value)
+                  }
                   className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
                 />
               </div>
               <div className="grid gap-2">
-                <label htmlFor="portfolioImage" className="text-sm text-foreground-muted">
+                <label
+                  htmlFor="portfolioImage"
+                  className="text-sm text-foreground-muted"
+                >
                   {t("addPortfolioImage")}
                 </label>
                 <input
                   id="portfolioImage"
                   type="file"
                   accept="image/*"
-                  onChange={(event) => handleImageUpload(event.target.files?.[0] || null)}
+                  onChange={(event) =>
+                    handleImageUpload(event.target.files?.[0] || null)
+                  }
                   className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm file:mr-3 file:rounded-md file:border-0 file:bg-primary file:px-3 file:py-1.5 file:text-sm file:font-medium file:text-primary-foreground"
                 />
               </div>
@@ -718,7 +892,12 @@ export default function TechnicianProfilePage() {
                     key={image.id || image.image}
                     className="overflow-hidden rounded-lg border border-border bg-background"
                   >
-                    <a href={image.image} target="_blank" rel="noreferrer" className="block">
+                    <a
+                      href={image.image}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="block"
+                    >
                       <div className="relative aspect-video bg-muted">
                         <Image
                           src={image.image}
@@ -731,8 +910,12 @@ export default function TechnicianProfilePage() {
                       </div>
                     </a>
                     <div className="space-y-1 p-3">
-                      <p className="line-clamp-2 text-sm">{image.description || t("portfolioImage")}</p>
-                      <p className="text-xs text-foreground-muted">{formatDate(image.uploaded_at, locale)}</p>
+                      <p className="line-clamp-2 text-sm">
+                        {image.description || t("portfolioImage")}
+                      </p>
+                      <p className="text-xs text-foreground-muted">
+                        {formatDate(image.uploaded_at, locale)}
+                      </p>
                       {image.id && (
                         <Button
                           type="button"
@@ -749,12 +932,272 @@ export default function TechnicianProfilePage() {
                 ))}
               </div>
             ) : (
-              <p className="text-sm text-foreground-muted">{t("notProvided")}</p>
+              <p className="text-sm text-foreground-muted">
+                {t("notProvided")}
+              </p>
             )}
           </CardContent>
         </Card>
       </div>
     </div>
+  );
+}
+
+function TechnicianSkillsEditor({
+  categories,
+  selectedChips,
+  selectedSkillIds,
+  selectedSubSkillIds,
+  onToggleSkill,
+  onToggleSubSkill,
+  onRemoveChip,
+  labels,
+}: {
+  categories: CategoryItem[];
+  selectedChips: SkillChip[];
+  selectedSkillIds: string[];
+  selectedSubSkillIds: string[];
+  onToggleSkill: (category: CategoryItem, skill: SkillItem) => void;
+  onToggleSubSkill: (category: CategoryItem, subSkill: SubSkillItem) => void;
+  onRemoveChip: (chip: SkillChip) => void;
+  labels: {
+    all: string;
+    availableSkills: string;
+    noMatches: string;
+    noSelected: string;
+    remove: string;
+    search: string;
+    selected: string;
+    selectedCount: string;
+    subSkills: string;
+  };
+}) {
+  const [activeCategoryId, setActiveCategoryId] = useState("all");
+  const [query, setQuery] = useState("");
+  const visibleCategories = useMemo(
+    () => filterSkillCategories(categories, query, activeCategoryId),
+    [activeCategoryId, categories, query],
+  );
+
+  return (
+    <div className="rounded-lg border border-teal-500/25 bg-teal-950/20 p-4 shadow-sm">
+      <div className="space-y-3">
+        <div className="space-y-2">
+          <p className="text-sm font-semibold text-foreground">
+            {labels.selected}
+          </p>
+          {selectedChips.length ? (
+            <div
+              className="flex max-h-24 flex-wrap gap-2 overflow-y-auto pr-1"
+              aria-live="polite"
+            >
+              {selectedChips.map((chip) => (
+                <span
+                  key={`${chip.kind}-${chip.id}`}
+                  className="inline-flex max-w-full items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-400/10 px-3 py-1.5 text-xs text-cyan-50"
+                >
+                  <span className="min-w-0">
+                    <span className="block truncate font-medium">
+                      {chip.name}
+                    </span>
+                    {chip.context ? (
+                      <span className="block truncate text-[11px] text-cyan-100/70">
+                        {chip.context}
+                      </span>
+                    ) : null}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => onRemoveChip(chip)}
+                    className="rounded-full p-0.5 text-cyan-100 hover:bg-cyan-300/20 focus:outline-none focus:ring-2 focus:ring-cyan-300"
+                    aria-label={`${labels.remove}: ${chip.name}`}
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                </span>
+              ))}
+            </div>
+          ) : (
+            <p className="rounded-md border border-dashed border-teal-500/30 bg-background/40 px-3 py-2 text-sm text-foreground-muted">
+              {labels.noSelected}
+            </p>
+          )}
+        </div>
+
+        <label className="relative block">
+          <span className="sr-only">{labels.search}</span>
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-foreground-muted" />
+          <input
+            type="search"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder={labels.search}
+            className="w-full rounded-lg border border-teal-500/30 bg-background px-9 py-2 text-sm text-foreground outline-none focus:border-cyan-300 focus:ring-2 focus:ring-cyan-300/40"
+          />
+        </label>
+
+        <div
+          className="flex gap-2 overflow-x-auto pb-1"
+          aria-label="Category filters"
+        >
+          <button
+            type="button"
+            onClick={() => setActiveCategoryId("all")}
+            className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-cyan-300 ${
+              activeCategoryId === "all"
+                ? "border-cyan-300 bg-cyan-400/15 text-cyan-50"
+                : "border-border bg-background text-foreground-muted hover:border-cyan-400/50 hover:text-foreground"
+            }`}
+          >
+            {labels.all}
+          </button>
+          {categories.map((category) => (
+            <button
+              type="button"
+              key={category.id}
+              onClick={() => setActiveCategoryId(category.id)}
+              className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-cyan-300 ${
+                activeCategoryId === category.id
+                  ? "border-cyan-300 bg-cyan-400/15 text-cyan-50"
+                  : "border-border bg-background text-foreground-muted hover:border-cyan-400/50 hover:text-foreground"
+              }`}
+            >
+              {category.name}
+            </button>
+          ))}
+        </div>
+
+        <div>
+          <div className="mb-2 flex items-center justify-between gap-3">
+            <p className="text-sm font-semibold">{labels.availableSkills}</p>
+            <p className="text-xs text-foreground-muted">
+              {visibleCategories.length} / {categories.length}
+            </p>
+          </div>
+          <div className="max-h-[420px] space-y-3 overflow-y-auto rounded-lg border border-teal-500/25 bg-background/60 p-3">
+            {visibleCategories.length ? (
+              visibleCategories.map((category) => (
+                <SkillCategoryGroup
+                  key={category.id}
+                  category={category}
+                  selectedCount={countSelectedInCategory(
+                    category,
+                    selectedSkillIds,
+                    selectedSubSkillIds,
+                  )}
+                  selectedSkillIds={selectedSkillIds}
+                  selectedSubSkillIds={selectedSubSkillIds}
+                  onToggleSkill={onToggleSkill}
+                  onToggleSubSkill={onToggleSubSkill}
+                  labels={labels}
+                />
+              ))
+            ) : (
+              <p className="rounded-md border border-dashed border-border px-3 py-6 text-center text-sm text-foreground-muted">
+                {labels.noMatches}
+              </p>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SkillCategoryGroup({
+  category,
+  selectedCount,
+  selectedSkillIds,
+  selectedSubSkillIds,
+  onToggleSkill,
+  onToggleSubSkill,
+  labels,
+}: {
+  category: CategoryItem;
+  selectedCount: number;
+  selectedSkillIds: string[];
+  selectedSubSkillIds: string[];
+  onToggleSkill: (category: CategoryItem, skill: SkillItem) => void;
+  onToggleSubSkill: (category: CategoryItem, subSkill: SubSkillItem) => void;
+  labels: { selectedCount: string; subSkills: string };
+}) {
+  return (
+    <section className="rounded-lg border border-border bg-muted/20 p-3">
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <h4 className="text-sm font-semibold">{category.name}</h4>
+        {selectedCount > 0 ? (
+          <span className="rounded-full border border-cyan-300/30 bg-cyan-400/10 px-2 py-0.5 text-[11px] text-cyan-100">
+            {labels.selectedCount.replace("{count}", String(selectedCount))}
+          </span>
+        ) : null}
+      </div>
+      <div className="space-y-2">
+        {(category.skills ?? []).map((skill) => (
+          <div
+            key={skill.id}
+            className="rounded-md border border-border bg-background/70 p-2"
+          >
+            <SkillCheckboxRow
+              checked={selectedSkillIds.includes(skill.id)}
+              id={`skill-${skill.id}`}
+              label={skill.name}
+              onChange={() => onToggleSkill(category, skill)}
+            />
+            {(skill.subSkills ?? []).length > 0 ? (
+              <div className="mt-2 border-l border-teal-500/25 pl-4">
+                <p className="mb-1 text-[11px] font-medium uppercase text-foreground-muted">
+                  {labels.subSkills}
+                </p>
+                <div className="space-y-1.5">
+                  {(skill.subSkills ?? []).map((subSkill) => (
+                    <SkillCheckboxRow
+                      key={subSkill.id}
+                      checked={selectedSubSkillIds.includes(subSkill.id)}
+                      id={`sub-skill-${subSkill.id}`}
+                      label={subSkill.name}
+                      onChange={() => onToggleSubSkill(category, subSkill)}
+                      small
+                    />
+                  ))}
+                </div>
+              </div>
+            ) : null}
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function SkillCheckboxRow({
+  checked,
+  id,
+  label,
+  onChange,
+  small = false,
+}: {
+  checked: boolean;
+  id: string;
+  label: string;
+  onChange: () => void;
+  small?: boolean;
+}) {
+  return (
+    <label
+      htmlFor={id}
+      className={`flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-sm transition hover:bg-cyan-400/10 ${
+        checked ? "text-cyan-50" : "text-foreground"
+      } ${small ? "text-xs" : ""}`}
+    >
+      <input
+        id={id}
+        type="checkbox"
+        checked={checked}
+        onChange={onChange}
+        className="h-4 w-4 rounded border-border accent-cyan-400 focus:ring-2 focus:ring-cyan-300"
+      />
+      <span className="min-w-0 flex-1 truncate">{label}</span>
+    </label>
   );
 }
 
@@ -808,107 +1251,6 @@ function LinkRow({
   );
 }
 
-function ChipGroup({
-  label,
-  items,
-  emptyLabel,
-}: {
-  label: string;
-  items: string[];
-  emptyLabel: string;
-}) {
-  return (
-    <div className="grid gap-2 text-sm">
-      <span className="text-foreground-muted">{label}</span>
-      {items.length ? (
-        <div className="flex flex-wrap gap-2">
-          {items.map((item) => (
-            <Badge key={item}>
-              {item}
-            </Badge>
-          ))}
-        </div>
-      ) : (
-        <span className="font-medium">{emptyLabel}</span>
-      )}
-    </div>
-  );
-}
-
-function SkillSelectionTree({
-  categories,
-  selectedCategoryIds,
-  selectedSkillIds,
-  selectedSubSkillIds,
-  onToggleCategory,
-  onToggleSkill,
-  onToggleSubSkill,
-  labels,
-}: {
-  categories: CategoryItem[];
-  selectedCategoryIds: string[];
-  selectedSkillIds: string[];
-  selectedSubSkillIds: string[];
-  onToggleCategory: (category: CategoryItem) => void;
-  onToggleSkill: (category: CategoryItem, skill: SkillItem) => void;
-  onToggleSubSkill: (category: CategoryItem, subSkill: SubSkillItem) => void;
-  labels: { category: string; selectMultipleSkills: string; subSkills: string };
-}) {
-  return (
-    <div className="grid gap-3 text-sm" aria-label={labels.selectMultipleSkills}>
-      {categories.map((category) => (
-        <details key={category.id} open className="rounded-lg border border-border bg-background p-3">
-          <summary className="cursor-pointer list-none">
-            <label className="flex cursor-pointer items-center gap-2 font-medium">
-              <input
-                type="checkbox"
-                checked={selectedCategoryIds.includes(category.id)}
-                onClick={(event) => event.stopPropagation()}
-                onChange={() => onToggleCategory(category)}
-                className="h-4 w-4 rounded border-border"
-              />
-              <span>{labels.category}: {category.name}</span>
-            </label>
-          </summary>
-          <div className="mt-3 grid gap-3 border-t border-border pt-3">
-            {(category.skills ?? []).map((skill) => (
-              <div key={skill.id} className="grid gap-2 rounded-md bg-muted/30 p-3">
-                <label className="flex cursor-pointer items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={selectedSkillIds.includes(skill.id)}
-                    onClick={(event) => event.stopPropagation()}
-                    onChange={() => onToggleSkill(category, skill)}
-                    className="h-4 w-4 rounded border-border"
-                  />
-                  <span>{skill.name}</span>
-                </label>
-                {(skill.subSkills ?? []).length > 0 && (
-                  <div className="ml-6 grid gap-2">
-                    <span className="text-xs font-medium text-foreground-muted">{labels.subSkills}</span>
-                    {(skill.subSkills ?? []).map((subSkill) => (
-                      <label key={subSkill.id} className="flex cursor-pointer items-center gap-2 text-xs">
-                        <input
-                          type="checkbox"
-                          checked={selectedSubSkillIds.includes(subSkill.id)}
-                          onClick={(event) => event.stopPropagation()}
-                          onChange={() => onToggleSubSkill(category, subSkill)}
-                          className="h-3.5 w-3.5 rounded border-border"
-                        />
-                        <span>{subSkill.name}</span>
-                      </label>
-                    ))}
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </details>
-      ))}
-    </div>
-  );
-}
-
 function uniqueById<T extends { id: string }>(items: T[]) {
   const seen = new Set<string>();
   return items.filter((item) => {
@@ -923,12 +1265,9 @@ function addUnique(items: string[], id: string) {
 }
 
 function toggleId(items: string[], id: string) {
-  return items.includes(id) ? items.filter((item) => item !== id) : [...items, id];
-}
-
-function getNamesForIds(items: Array<{ id: string; name: string }>, ids: string[]) {
-  const byId = new Map(items.map((item) => [item.id, item.name]));
-  return ids.map((id) => byId.get(id)).filter((name): name is string => Boolean(name));
+  return items.includes(id)
+    ? items.filter((item) => item !== id)
+    : [...items, id];
 }
 
 function formatDate(value: string | null | undefined, locale: string) {
@@ -938,38 +1277,49 @@ function formatDate(value: string | null | undefined, locale: string) {
   return new Intl.DateTimeFormat(locale, { dateStyle: "medium" }).format(date);
 }
 
-function formatGender(value: string | null | undefined, t: ReturnType<typeof useTranslations<"profile">>) {
+function formatGender(
+  value: string | null | undefined,
+  t: ReturnType<typeof useTranslations<"profile">>,
+) {
   if (value === "male" || value === "female") return t(`genders.${value}`);
   return value || null;
 }
 
-function getNamedItems(
+function getDetailedItems(
   source: Record<string, unknown> | null | undefined,
   detailKey: string,
-  fallbackKey: string
+  fallbackKey: string,
 ) {
   if (!source) return [];
   const detail = source[detailKey];
   if (Array.isArray(detail)) {
     return detail
       .map((item) => {
-        if (typeof item === "string") return item;
-        if (item && typeof item === "object" && "name" in item) {
-          return String((item as { name?: unknown }).name || "");
+        if (typeof item === "string") return { id: item, name: item };
+        if (item && typeof item === "object") {
+          const detailItem = item as { id?: unknown; name?: unknown };
+          const id = String(detailItem.id || detailItem.name || "");
+          const name = String(detailItem.name || detailItem.id || "");
+          if (id || name) return { id: id || name, name: name || id };
         }
-        return "";
+        return null;
       })
-      .filter(Boolean);
+      .filter((item): item is { id: string; name: string } => Boolean(item));
   }
   const fallback = source[fallbackKey];
-  if (Array.isArray(fallback)) return fallback.map(String).filter(Boolean);
+  if (Array.isArray(fallback)) {
+    return fallback
+      .map(String)
+      .filter(Boolean)
+      .map((id) => ({ id, name: id }));
+  }
   return [];
 }
 
 function getSelectedIds(
   source: Record<string, unknown> | null | undefined,
   idKey: string,
-  detailKey: string
+  detailKey: string,
 ) {
   if (!source) return [];
   const ids = source[idKey];
@@ -989,14 +1339,18 @@ function getSelectedIds(
   return [];
 }
 
-function getPortfolioImages(images: Array<Record<string, unknown>> | undefined) {
+function getPortfolioImages(
+  images: Array<Record<string, unknown>> | undefined,
+) {
   if (!Array.isArray(images)) return [];
   return images
     .map((image) => ({
       id: typeof image.id === "string" ? image.id : "",
       image: typeof image.image === "string" ? image.image : "",
-      description: typeof image.description === "string" ? image.description : "",
-      uploaded_at: typeof image.uploaded_at === "string" ? image.uploaded_at : "",
+      description:
+        typeof image.description === "string" ? image.description : "",
+      uploaded_at:
+        typeof image.uploaded_at === "string" ? image.uploaded_at : "",
     }))
     .filter((image) => image.image);
 }
@@ -1004,7 +1358,9 @@ function getPortfolioImages(images: Array<Record<string, unknown>> | undefined) 
 function getFileName(value: string) {
   try {
     const url = new URL(value);
-    return decodeURIComponent(url.pathname.split("/").filter(Boolean).pop() || value);
+    return decodeURIComponent(
+      url.pathname.split("/").filter(Boolean).pop() || value,
+    );
   } catch {
     return value.split("/").filter(Boolean).pop() || value;
   }
