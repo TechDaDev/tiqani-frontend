@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { WalletBalanceCard } from "@/components/wallet/wallet-balance-card";
 import { AvailableBalanceCard } from "@/components/wallet/available-balance-card";
+import { WalletRechargePanel } from "@/components/wallet/recharge-panel";
 import type { WalletInfo, AvailableBalance } from "@/lib/wallet/types";
 import { mapAvailableBalance } from "@/lib/wallet/mappers";
 
@@ -75,6 +76,7 @@ export default function WalletPage() {
           {t("withdrawals")}
         </Link>
       </nav>
+      <WalletRechargePanel onChanged={fetchData} />
     </div>
   );
 }

@@ -8,6 +8,16 @@ const partySchema = z
   .nullable()
   .catch(null);
 
+const richPartySchema = z
+  .object({
+    id: z.string().default(""),
+    name: z.string().default(""),
+    email: z.string().optional().default(""),
+    username: z.string().optional().default(""),
+  })
+  .nullable()
+  .catch(null);
+
 const chartItemSchema = z.object({
   label: z.string().default(""),
   value: z.union([z.string(), z.number()]).default(0),
@@ -35,6 +45,7 @@ export const financialOverviewSchema = z.object({
     netPlatformFees: z.string().default("0.00"),
     pendingWithdrawals: z.string().default("0.00"),
     completedWithdrawals: z.string().default("0.00"),
+    approvedWalletRecharges: z.string().default("0.00"),
     refundsIssued: z.string().default("0.00"),
     escrowHeld: z.string().default("0.00"),
     openLiabilities: z.string().default("0.00"),
@@ -45,17 +56,40 @@ export const financialOverviewSchema = z.object({
     refunds: z.number().default(0),
     withdrawalsPending: z.number().default(0),
     withdrawalsCompleted: z.number().default(0),
+    walletRechargeRequestsPending: z.number().default(0),
+    walletRechargeRequestsApproved: z.number().default(0),
+    walletRechargeRequestsRejected: z.number().default(0),
     ledgerEntries: z.number().default(0),
     escrowContracts: z.number().default(0),
   }),
   charts: z.object({
     paymentsByStatus: z.array(chartItemSchema).default([]),
     withdrawalsByStatus: z.array(chartItemSchema).default([]),
+    walletRechargesByStatus: z.array(chartItemSchema).default([]),
     refundsByReason: z.array(chartItemSchema).default([]),
     ledgerByType: z.array(chartItemSchema).default([]),
     monthlyFlow: z.array(chartItemSchema).default([]),
   }),
   recentActivity: z.array(financialAuditEventSchema).default([]),
+});
+
+export const financialRechargeRequestSchema = z.object({
+  id: z.string().default(""),
+  user: richPartySchema,
+  amount: z.string().default("0.00"),
+  currency: z.string().default("IQD"),
+  note: z.string().default(""),
+  status: z.string().default(""),
+  receipt_download_url: z.string().default(""),
+  original_filename: z.string().default(""),
+  file_size: z.number().nullable().default(null),
+  mime_type: z.string().default(""),
+  reviewed_by: richPartySchema,
+  reviewed_at: z.string().nullable().default(""),
+  review_note: z.string().default(""),
+  approved_transaction_id: z.string().nullable().default(""),
+  created_at: z.string().default(""),
+  updated_at: z.string().default(""),
 });
 
 export const financialPaymentSchema = z.object({

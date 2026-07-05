@@ -5,6 +5,8 @@ import {
   mapFinancialLedger,
   mapFinancialOverview,
   mapFinancialPayments,
+  mapFinancialRechargeRequest,
+  mapFinancialRechargeRequests,
   mapFinancialRefunds,
   mapFinancialWithdrawals,
 } from "@/lib/admin/financial/mappers";
@@ -27,6 +29,26 @@ export async function fetchFinancialRefunds(query = "") {
 
 export async function fetchFinancialWithdrawals(query = "") {
   return mapFinancialWithdrawals(await browserClient.get(`/api/admin/financial/withdrawals/${suffix(query)}`));
+}
+
+export async function fetchFinancialRechargeRequests(query = "") {
+  return mapFinancialRechargeRequests(await browserClient.get(`/api/admin/financial/recharge-requests/${suffix(query)}`));
+}
+
+export async function approveFinancialRechargeRequest(id: string, reviewNote = "") {
+  return mapFinancialRechargeRequest(
+    await browserClient.post(`/api/admin/financial/recharge-requests/${id}/approve/`, {
+      review_note: reviewNote,
+    })
+  );
+}
+
+export async function rejectFinancialRechargeRequest(id: string, reviewNote: string) {
+  return mapFinancialRechargeRequest(
+    await browserClient.post(`/api/admin/financial/recharge-requests/${id}/reject/`, {
+      review_note: reviewNote,
+    })
+  );
 }
 
 export async function fetchFinancialLedger(query = "") {

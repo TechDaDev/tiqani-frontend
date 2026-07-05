@@ -37,3 +37,26 @@ export interface AvailableBalance {
   available_balance: string;
   currency: string;
 }
+
+export type WalletRechargeStatus =
+  | "pending_review"
+  | "approved"
+  | "rejected"
+  | "cancelled";
+
+export interface WalletRechargeRequest {
+  id: string;
+  amount: string;
+  currency: string;
+  note: string;
+  status: WalletRechargeStatus;
+  receiptDownloadUrl: string | null;
+  originalFilename: string;
+  fileSize: number | null;
+  mimeType: string;
+  reviewedAt: string;
+  reviewNote: string;
+  approvedTransactionId: string | null;
+  createdAt: string;
+  updatedAt: string;
+}

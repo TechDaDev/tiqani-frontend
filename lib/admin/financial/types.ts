@@ -17,6 +17,7 @@ export type AdminFinancialOverview = {
     netPlatformFees: MoneyString;
     pendingWithdrawals: MoneyString;
     completedWithdrawals: MoneyString;
+    approvedWalletRecharges: MoneyString;
     refundsIssued: MoneyString;
     escrowHeld: MoneyString;
     openLiabilities: MoneyString;
@@ -27,17 +28,40 @@ export type AdminFinancialOverview = {
     refunds: number;
     withdrawalsPending: number;
     withdrawalsCompleted: number;
+    walletRechargeRequestsPending: number;
+    walletRechargeRequestsApproved: number;
+    walletRechargeRequestsRejected: number;
     ledgerEntries: number;
     escrowContracts: number;
   };
   charts: {
     paymentsByStatus: FinancialChartItem[];
     withdrawalsByStatus: FinancialChartItem[];
+    walletRechargesByStatus: FinancialChartItem[];
     refundsByReason: FinancialChartItem[];
     ledgerByType: FinancialChartItem[];
     monthlyFlow: FinancialChartItem[];
   };
   recentActivity: AdminFinancialAuditEvent[];
+};
+
+export type AdminFinancialRechargeRequest = {
+  id: string;
+  user: (FinancialParty & { email?: string; username?: string }) | null;
+  amount: MoneyString;
+  currency: string;
+  note: string;
+  status: string;
+  receiptDownloadUrl: string;
+  originalFilename: string;
+  fileSize: number | null;
+  mimeType: string;
+  reviewedBy: (FinancialParty & { email?: string; username?: string }) | null;
+  reviewedAt: string;
+  reviewNote: string;
+  approvedTransactionId: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type AdminFinancialPayment = {

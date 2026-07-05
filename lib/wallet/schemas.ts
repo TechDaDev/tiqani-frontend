@@ -30,3 +30,20 @@ export const WalletInfoSchema = z.object({
   updated_at: z.string(),
   recent_transactions: z.array(WalletTransactionSchema).optional(),
 });
+
+export const WalletRechargeRequestSchema = z.object({
+  id: z.string().uuid(),
+  amount: z.string(),
+  currency: z.string().default("IQD"),
+  note: z.string().default(""),
+  status: z.enum(["pending_review", "approved", "rejected", "cancelled"]),
+  receipt_download_url: z.string().nullable().default(null),
+  original_filename: z.string().default(""),
+  file_size: z.number().nullable().default(null),
+  mime_type: z.string().default(""),
+  reviewed_at: z.string().nullable().default(""),
+  review_note: z.string().default(""),
+  approved_transaction_id: z.string().uuid().nullable().default(null),
+  created_at: z.string().default(""),
+  updated_at: z.string().default(""),
+});

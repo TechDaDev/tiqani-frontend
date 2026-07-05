@@ -5,6 +5,7 @@ import type {
   AdminFinancialLedgerEntry,
   AdminFinancialOverview,
   AdminFinancialPayment,
+  AdminFinancialRechargeRequest,
   AdminFinancialRefund,
   AdminFinancialWithdrawal,
 } from "./types";
@@ -14,6 +15,7 @@ import {
   financialLedgerEntrySchema,
   financialOverviewSchema,
   financialPaymentSchema,
+  financialRechargeRequestSchema,
   financialRefundSchema,
   financialWithdrawalSchema,
 } from "./schemas";
@@ -104,6 +106,28 @@ export function mapFinancialWithdrawal(data: unknown): AdminFinancialWithdrawal 
   };
 }
 
+export function mapFinancialRechargeRequest(data: unknown): AdminFinancialRechargeRequest {
+  const item = financialRechargeRequestSchema.parse(data ?? {});
+  return {
+    id: item.id,
+    user: item.user,
+    amount: item.amount,
+    currency: item.currency,
+    note: item.note,
+    status: item.status,
+    receiptDownloadUrl: item.receipt_download_url,
+    originalFilename: item.original_filename,
+    fileSize: item.file_size,
+    mimeType: item.mime_type,
+    reviewedBy: item.reviewed_by,
+    reviewedAt: item.reviewed_at || "",
+    reviewNote: item.review_note,
+    approvedTransactionId: item.approved_transaction_id || "",
+    createdAt: item.created_at,
+    updatedAt: item.updated_at,
+  };
+}
+
 export function mapFinancialLedgerEntry(data: unknown): AdminFinancialLedgerEntry {
   const item = financialLedgerEntrySchema.parse(data ?? {});
   return {
@@ -148,6 +172,7 @@ export function mapFinancialEscrow(data: unknown): AdminFinancialEscrow {
 export const mapFinancialPayments = (data: unknown) => mapPaginated(data, mapFinancialPayment);
 export const mapFinancialRefunds = (data: unknown) => mapPaginated(data, mapFinancialRefund);
 export const mapFinancialWithdrawals = (data: unknown) => mapPaginated(data, mapFinancialWithdrawal);
+export const mapFinancialRechargeRequests = (data: unknown) => mapPaginated(data, mapFinancialRechargeRequest);
 export const mapFinancialLedger = (data: unknown) => mapPaginated(data, mapFinancialLedgerEntry);
 export const mapFinancialEscrowList = (data: unknown) => mapPaginated(data, mapFinancialEscrow);
 export const mapFinancialAudit = (data: unknown) => mapPaginated(data, mapFinancialAuditEvent);

@@ -21,7 +21,7 @@ export default function AdminFinancialOverviewPage() {
     fetchFinancialOverview().then(setData).catch(() => setError(t("unavailable")));
   }, [t]);
 
-  const links = ["payments", "refunds", "withdrawals", "ledger", "escrow", "audit"];
+  const links = ["payments", "refunds", "withdrawals", "recharges", "ledger", "escrow", "audit"];
 
   return (
     <FinancialPageShell title={t("overview")} description={t("readOnly")} testId="admin-financial-overview">
@@ -41,6 +41,7 @@ export default function AdminFinancialOverviewPage() {
               { label: t("grossPayments"), amount: data.summary.grossPayments },
               { label: t("netPlatformFees"), amount: data.summary.netPlatformFees },
               { label: t("pendingWithdrawals"), amount: data.summary.pendingWithdrawals },
+              { label: t("approvedWalletRecharges"), amount: data.summary.approvedWalletRecharges },
               { label: t("refundsIssued"), amount: data.summary.refundsIssued },
               { label: t("escrowHeld"), amount: data.summary.escrowHeld },
               { label: t("openLiabilities"), amount: data.summary.openLiabilities },
@@ -51,6 +52,7 @@ export default function AdminFinancialOverviewPage() {
           <div className="grid gap-4 lg:grid-cols-2">
             <FinancialChartCard title={t("paymentsByStatus")} items={data.charts.paymentsByStatus} />
             <FinancialChartCard title={t("withdrawalsByStatus")} items={data.charts.withdrawalsByStatus} />
+            <FinancialChartCard title={t("walletRechargesByStatus")} items={data.charts.walletRechargesByStatus} />
             <FinancialChartCard title={t("refundsByReason")} items={data.charts.refundsByReason} />
             <FinancialChartCard title={t("ledgerByType")} items={data.charts.ledgerByType} />
           </div>

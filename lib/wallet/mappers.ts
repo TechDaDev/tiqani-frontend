@@ -1,7 +1,8 @@
 /**
  * Wallet response mappers.
  */
-import type { WalletInfo, WalletTransaction, AvailableBalance } from "./types";
+import { WalletRechargeRequestSchema } from "./schemas";
+import type { WalletInfo, WalletTransaction, AvailableBalance, WalletRechargeRequest } from "./types";
 
 export function mapWalletInfo(data: Record<string, unknown>): WalletInfo {
   const recentTxns = (data.recent_transactions as Record<string, unknown>[]) ?? [];
@@ -35,4 +36,28 @@ export function mapAvailableBalance(data: Record<string, unknown>): AvailableBal
     available_balance: String(data.available_balance ?? "0.00"),
     currency: String(data.currency ?? "IQD"),
   };
+}
+
+export function mapWalletRechargeRequest(data: unknown): WalletRechargeRequest {
+  const item = WalletRechargeRequestSchema.parse(data ?? {});
+  return {
+    id: item.id,
+    amount: item.amount,
+    currency: item.currency,
+    note: item.note,
+    status: item.status,
+    receiptDownloadUrl: item.receipt_download_url,
+    originalFilename: item.original_filename,
+    fileSize: item.file_size,
+    mimeType: item.mime_type,
+    reviewedAt: item.reviewed_at || "",
+    reviewNote: item.review_note,
+    approvedTransactionId: item.approved_transaction_id,
+    createdAt: item.created_at,
+    updatedAt: item.updated_at,
+  };
+}
+
+export function mapWalletRechargeRequests(data: unknown): WalletRechargeRequest[] {
+  return Array.isArray(data) ? data.map(mapWalletRechargeRequest) : [];
 }
