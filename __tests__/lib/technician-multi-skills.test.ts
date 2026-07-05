@@ -9,6 +9,7 @@ import {
   buildSkillSelectionChips,
   countSelectedInCategory,
   filterSkillCategories,
+  getActiveSkillCategory,
 } from "@/lib/technician/skills-selector";
 
 describe("technician multi-skill taxonomy mapping", () => {
@@ -230,6 +231,27 @@ describe("technician skills selector helpers", () => {
         "all",
       )[0].skills?.[0].subSkills?.map((subSkill) => subSkill.id),
     ).toEqual(["sub-wireframes"]);
+  });
+
+  it("resolves the active category and falls back to the first category", () => {
+    expect(getActiveSkillCategory(categories, "cat-code")?.skills?.[0].id).toBe(
+      "skill-react",
+    );
+    expect(getActiveSkillCategory(categories, "missing")?.id).toBe(
+      "cat-design",
+    );
+    expect(getActiveSkillCategory([], "cat-code")).toBeNull();
+  });
+
+  it("active category selection shows only that category's skills", () => {
+    const activeCategory = getActiveSkillCategory(categories, "cat-design");
+
+    expect(activeCategory?.skills?.map((skill) => skill.id)).toEqual([
+      "skill-ui",
+    ]);
+    expect(activeCategory?.skills?.map((skill) => skill.id)).not.toContain(
+      "skill-react",
+    );
   });
 
   it("keeps selected counts independent from the active category filter", () => {

@@ -71,6 +71,17 @@ export function filterSkillCategories(
     .filter((category): category is CategoryItem => Boolean(category));
 }
 
+export function getActiveSkillCategory(
+  categories: CategoryItem[],
+  activeCategoryId: string,
+) {
+  return (
+    categories.find((category) => category.id === activeCategoryId) ??
+    categories[0] ??
+    null
+  );
+}
+
 export function buildSkillSelectionChips(
   categories: CategoryItem[],
   selectedSkillIds: string[],

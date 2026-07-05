@@ -13,6 +13,7 @@ import {
   Loader2,
   Save,
   AlertCircle,
+  ChevronDown,
   CheckCircle2,
   Clock,
   CheckCircle,
@@ -51,6 +52,7 @@ import {
   buildSkillSelectionChips,
   countSelectedInCategory,
   filterSkillCategories,
+  getActiveSkillCategory,
   type SkillChip,
 } from "@/lib/technician/skills-selector";
 
@@ -805,12 +807,20 @@ export default function TechnicianProfilePage() {
                 labels={{
                   all: t("allCategories"),
                   availableSkills: t("availableSkills"),
+                  chooseCategory: t("chooseCategory"),
+                  collapseSkill: t("collapseSkill"),
+                  expandSkill: t("expandSkill"),
                   noMatches: t("noMatchingSkills"),
+                  noCategory: t("noCategorySelected"),
                   noSelected: t("noSkillsSelectedYet"),
                   remove: t("removeSkill"),
                   search: t("searchSkills"),
+                  searchResults: t("searchResults"),
                   selected: t("selected"),
-                  selectedCount: t("selectedCount"),
+                  selectedCount: (count: number) =>
+                    t("selectedCount", { count }),
+                  skillsInCategory: (category: string) =>
+                    t("skillsInCategory", { category }),
                   subSkills: t("subSkills"),
                 }}
               />
@@ -963,66 +973,77 @@ function TechnicianSkillsEditor({
   labels: {
     all: string;
     availableSkills: string;
+    chooseCategory: string;
+    collapseSkill: string;
+    expandSkill: string;
     noMatches: string;
+    noCategory: string;
     noSelected: string;
     remove: string;
     search: string;
+    searchResults: string;
     selected: string;
-    selectedCount: string;
+    selectedCount: (count: number) => string;
+    skillsInCategory: (category: string) => string;
     subSkills: string;
   };
 }) {
-  const [activeCategoryId, setActiveCategoryId] = useState("all");
+  const [activeCategoryId, setActiveCategoryId] = useState("");
+  const [expandedSkillIds, setExpandedSkillIds] = useState<string[]>([]);
   const [query, setQuery] = useState("");
-  const visibleCategories = useMemo(
-    () => filterSkillCategories(categories, query, activeCategoryId),
-    [activeCategoryId, categories, query],
+
+  useEffect(() => {
+    if (!categories.length) return;
+    if (
+      !activeCategoryId ||
+      !categories.some((category) => category.id === activeCategoryId)
+    ) {
+      setActiveCategoryId(categories[0].id);
+    }
+  }, [activeCategoryId, categories]);
+
+  const normalizedQuery = query.trim();
+  const activeCategory = useMemo(
+    () => getActiveSkillCategory(categories, activeCategoryId),
+    [activeCategoryId, categories],
   );
+  const searchCategories = useMemo(
+    () => filterSkillCategories(categories, normalizedQuery, "all"),
+    [categories, normalizedQuery],
+  );
+
+  const toggleExpandedSkill = (skillId: string) => {
+    setExpandedSkillIds((current) =>
+      current.includes(skillId)
+        ? current.filter((id) => id !== skillId)
+        : [...current, skillId],
+    );
+  };
+
+  const handleToggleSkill = (category: CategoryItem, skill: SkillItem) => {
+    onToggleSkill(category, skill);
+    if ((skill.subSkills ?? []).length > 0) {
+      setExpandedSkillIds((current) =>
+        current.includes(skill.id) ? current : [...current, skill.id],
+      );
+    }
+  };
+
+  const handleRemoveChip = (chip: SkillChip) => {
+    onRemoveChip(chip);
+    if (chip.kind === "skill") {
+      setExpandedSkillIds((current) => current.filter((id) => id !== chip.id));
+    }
+  };
 
   return (
     <div className="rounded-lg border border-teal-500/25 bg-teal-950/20 p-4 shadow-sm">
-      <div className="space-y-3">
-        <div className="space-y-2">
-          <p className="text-sm font-semibold text-foreground">
-            {labels.selected}
-          </p>
-          {selectedChips.length ? (
-            <div
-              className="flex max-h-24 flex-wrap gap-2 overflow-y-auto pr-1"
-              aria-live="polite"
-            >
-              {selectedChips.map((chip) => (
-                <span
-                  key={`${chip.kind}-${chip.id}`}
-                  className="inline-flex max-w-full items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-400/10 px-3 py-1.5 text-xs text-cyan-50"
-                >
-                  <span className="min-w-0">
-                    <span className="block truncate font-medium">
-                      {chip.name}
-                    </span>
-                    {chip.context ? (
-                      <span className="block truncate text-[11px] text-cyan-100/70">
-                        {chip.context}
-                      </span>
-                    ) : null}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => onRemoveChip(chip)}
-                    className="rounded-full p-0.5 text-cyan-100 hover:bg-cyan-300/20 focus:outline-none focus:ring-2 focus:ring-cyan-300"
-                    aria-label={`${labels.remove}: ${chip.name}`}
-                  >
-                    <X className="h-3.5 w-3.5" />
-                  </button>
-                </span>
-              ))}
-            </div>
-          ) : (
-            <p className="rounded-md border border-dashed border-teal-500/30 bg-background/40 px-3 py-2 text-sm text-foreground-muted">
-              {labels.noSelected}
-            </p>
-          )}
-        </div>
+      <div className="space-y-5">
+        <SelectedSkillChips
+          chips={selectedChips}
+          labels={labels}
+          onRemoveChip={handleRemoveChip}
+        />
 
         <label className="relative block">
           <span className="sr-only">{labels.search}</span>
@@ -1036,136 +1057,391 @@ function TechnicianSkillsEditor({
           />
         </label>
 
-        <div
-          className="flex gap-2 overflow-x-auto pb-1"
-          aria-label="Category filters"
-        >
-          <button
-            type="button"
-            onClick={() => setActiveCategoryId("all")}
-            className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-cyan-300 ${
-              activeCategoryId === "all"
-                ? "border-cyan-300 bg-cyan-400/15 text-cyan-50"
-                : "border-border bg-background text-foreground-muted hover:border-cyan-400/50 hover:text-foreground"
-            }`}
-          >
-            {labels.all}
-          </button>
-          {categories.map((category) => (
-            <button
-              type="button"
-              key={category.id}
-              onClick={() => setActiveCategoryId(category.id)}
-              className={`shrink-0 rounded-full border px-3 py-1.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-cyan-300 ${
-                activeCategoryId === category.id
-                  ? "border-cyan-300 bg-cyan-400/15 text-cyan-50"
-                  : "border-border bg-background text-foreground-muted hover:border-cyan-400/50 hover:text-foreground"
-              }`}
-            >
-              {category.name}
-            </button>
-          ))}
-        </div>
-
-        <div>
-          <div className="mb-2 flex items-center justify-between gap-3">
-            <p className="text-sm font-semibold">{labels.availableSkills}</p>
-            <p className="text-xs text-foreground-muted">
-              {visibleCategories.length} / {categories.length}
-            </p>
-          </div>
-          <div className="max-h-[420px] space-y-3 overflow-y-auto rounded-lg border border-teal-500/25 bg-background/60 p-3">
-            {visibleCategories.length ? (
-              visibleCategories.map((category) => (
-                <SkillCategoryGroup
-                  key={category.id}
-                  category={category}
-                  selectedCount={countSelectedInCategory(
-                    category,
-                    selectedSkillIds,
-                    selectedSubSkillIds,
-                  )}
-                  selectedSkillIds={selectedSkillIds}
-                  selectedSubSkillIds={selectedSubSkillIds}
-                  onToggleSkill={onToggleSkill}
-                  onToggleSubSkill={onToggleSubSkill}
-                  labels={labels}
-                />
-              ))
-            ) : (
-              <p className="rounded-md border border-dashed border-border px-3 py-6 text-center text-sm text-foreground-muted">
-                {labels.noMatches}
-              </p>
-            )}
-          </div>
-        </div>
+        {normalizedQuery ? (
+          <SkillSearchResults
+            categories={searchCategories}
+            expandedSkillIds={expandedSkillIds}
+            labels={labels}
+            selectedSkillIds={selectedSkillIds}
+            selectedSubSkillIds={selectedSubSkillIds}
+            onToggleExpandedSkill={toggleExpandedSkill}
+            onToggleSkill={handleToggleSkill}
+            onToggleSubSkill={onToggleSubSkill}
+          />
+        ) : (
+          <>
+            <CategoryPickerGrid
+              activeCategoryId={activeCategory?.id ?? ""}
+              categories={categories}
+              labels={labels}
+              selectedSkillIds={selectedSkillIds}
+              selectedSubSkillIds={selectedSubSkillIds}
+              onSelectCategory={setActiveCategoryId}
+            />
+            <SkillsForCategoryPanel
+              category={activeCategory}
+              expandedSkillIds={expandedSkillIds}
+              labels={labels}
+              selectedSkillIds={selectedSkillIds}
+              selectedSubSkillIds={selectedSubSkillIds}
+              onToggleExpandedSkill={toggleExpandedSkill}
+              onToggleSkill={handleToggleSkill}
+              onToggleSubSkill={onToggleSubSkill}
+            />
+          </>
+        )}
       </div>
     </div>
   );
 }
 
-function SkillCategoryGroup({
-  category,
-  selectedCount,
-  selectedSkillIds,
-  selectedSubSkillIds,
-  onToggleSkill,
-  onToggleSubSkill,
+function SelectedSkillChips({
+  chips,
   labels,
+  onRemoveChip,
 }: {
-  category: CategoryItem;
-  selectedCount: number;
-  selectedSkillIds: string[];
-  selectedSubSkillIds: string[];
-  onToggleSkill: (category: CategoryItem, skill: SkillItem) => void;
-  onToggleSubSkill: (category: CategoryItem, subSkill: SubSkillItem) => void;
-  labels: { selectedCount: string; subSkills: string };
+  chips: SkillChip[];
+  labels: { noSelected: string; remove: string; selected: string };
+  onRemoveChip: (chip: SkillChip) => void;
 }) {
   return (
-    <section className="rounded-lg border border-border bg-muted/20 p-3">
-      <div className="mb-3 flex items-center justify-between gap-3">
-        <h4 className="text-sm font-semibold">{category.name}</h4>
-        {selectedCount > 0 ? (
-          <span className="rounded-full border border-cyan-300/30 bg-cyan-400/10 px-2 py-0.5 text-[11px] text-cyan-100">
-            {labels.selectedCount.replace("{count}", String(selectedCount))}
-          </span>
-        ) : null}
+    <div className="space-y-2">
+      <p className="text-sm font-semibold text-foreground">{labels.selected}</p>
+      {chips.length ? (
+        <div
+          className="flex max-h-28 flex-wrap gap-2 overflow-y-auto pr-1"
+          aria-live="polite"
+        >
+          {chips.map((chip) => (
+            <span
+              key={`${chip.kind}-${chip.id}`}
+              className="inline-flex max-w-full items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-400/10 px-3 py-1.5 text-xs text-cyan-50"
+            >
+              <span className="min-w-0">
+                <span className="block truncate font-medium">{chip.name}</span>
+                {chip.context ? (
+                  <span className="block truncate text-[11px] text-cyan-100/70">
+                    {chip.context}
+                  </span>
+                ) : null}
+              </span>
+              <button
+                type="button"
+                onClick={() => onRemoveChip(chip)}
+                className="rounded-full p-0.5 text-cyan-100 hover:bg-cyan-300/20 focus:outline-none focus:ring-2 focus:ring-cyan-300"
+                aria-label={`${labels.remove}: ${chip.name}`}
+              >
+                <X className="h-3.5 w-3.5" />
+              </button>
+            </span>
+          ))}
+        </div>
+      ) : (
+        <p className="rounded-md border border-dashed border-teal-500/30 bg-background/40 px-3 py-2 text-sm text-foreground-muted">
+          {labels.noSelected}
+        </p>
+      )}
+    </div>
+  );
+}
+
+function CategoryPickerGrid({
+  activeCategoryId,
+  categories,
+  labels,
+  selectedSkillIds,
+  selectedSubSkillIds,
+  onSelectCategory,
+}: {
+  activeCategoryId: string;
+  categories: CategoryItem[];
+  labels: { chooseCategory: string; selectedCount: (count: number) => string };
+  selectedSkillIds: string[];
+  selectedSubSkillIds: string[];
+  onSelectCategory: (categoryId: string) => void;
+}) {
+  return (
+    <section className="space-y-2">
+      <h4 className="text-sm font-semibold">{labels.chooseCategory}</h4>
+      <div
+        className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3"
+        aria-label={labels.chooseCategory}
+      >
+        {categories.map((category) => {
+          const selectedCount = countSelectedInCategory(
+            category,
+            selectedSkillIds,
+            selectedSubSkillIds,
+          );
+          const isActive = activeCategoryId === category.id;
+          return (
+            <button
+              key={category.id}
+              type="button"
+              aria-current={isActive ? "true" : undefined}
+              aria-pressed={isActive}
+              onClick={() => onSelectCategory(category.id)}
+              className={`min-h-16 rounded-lg border px-3 py-2 text-left text-sm transition focus:outline-none focus:ring-2 focus:ring-cyan-300 ${
+                isActive
+                  ? "border-cyan-300 bg-cyan-400/15 text-cyan-50 shadow-sm shadow-cyan-500/10"
+                  : "border-teal-500/25 bg-background/70 text-foreground hover:border-cyan-400/60 hover:bg-cyan-400/10"
+              }`}
+            >
+              <span className="block font-medium leading-snug">
+                {category.name}
+              </span>
+              {selectedCount > 0 ? (
+                <span className="mt-1 inline-flex rounded-full border border-cyan-300/30 bg-cyan-400/10 px-2 py-0.5 text-[11px] text-cyan-100">
+                  {labels.selectedCount(selectedCount)}
+                </span>
+              ) : null}
+            </button>
+          );
+        })}
       </div>
-      <div className="space-y-2">
+    </section>
+  );
+}
+
+function SkillsForCategoryPanel({
+  category,
+  expandedSkillIds,
+  labels,
+  selectedSkillIds,
+  selectedSubSkillIds,
+  onToggleExpandedSkill,
+  onToggleSkill,
+  onToggleSubSkill,
+}: {
+  category: CategoryItem | null;
+  expandedSkillIds: string[];
+  labels: {
+    collapseSkill: string;
+    expandSkill: string;
+    noCategory: string;
+    skillsInCategory: (category: string) => string;
+    subSkills: string;
+  };
+  selectedSkillIds: string[];
+  selectedSubSkillIds: string[];
+  onToggleExpandedSkill: (skillId: string) => void;
+  onToggleSkill: (category: CategoryItem, skill: SkillItem) => void;
+  onToggleSubSkill: (category: CategoryItem, subSkill: SubSkillItem) => void;
+}) {
+  if (!category) {
+    return (
+      <p className="rounded-md border border-dashed border-border px-3 py-6 text-center text-sm text-foreground-muted">
+        {labels.noCategory}
+      </p>
+    );
+  }
+
+  return (
+    <section>
+      <div className="mb-2 flex items-center justify-between gap-3">
+        <h4 className="text-sm font-semibold">
+          {labels.skillsInCategory(category.name)}
+        </h4>
+        <p className="text-xs text-foreground-muted">
+          {category.skills?.length ?? 0}
+        </p>
+      </div>
+      <div className="max-h-[420px] space-y-2 overflow-y-auto rounded-lg border border-teal-500/25 bg-background/60 p-3">
         {(category.skills ?? []).map((skill) => (
-          <div
+          <SkillSelectionRow
             key={skill.id}
-            className="rounded-md border border-border bg-background/70 p-2"
-          >
-            <SkillCheckboxRow
-              checked={selectedSkillIds.includes(skill.id)}
-              id={`skill-${skill.id}`}
-              label={skill.name}
-              onChange={() => onToggleSkill(category, skill)}
-            />
-            {(skill.subSkills ?? []).length > 0 ? (
-              <div className="mt-2 border-l border-teal-500/25 pl-4">
-                <p className="mb-1 text-[11px] font-medium uppercase text-foreground-muted">
-                  {labels.subSkills}
-                </p>
-                <div className="space-y-1.5">
-                  {(skill.subSkills ?? []).map((subSkill) => (
-                    <SkillCheckboxRow
-                      key={subSkill.id}
-                      checked={selectedSubSkillIds.includes(subSkill.id)}
-                      id={`sub-skill-${subSkill.id}`}
-                      label={subSkill.name}
-                      onChange={() => onToggleSubSkill(category, subSkill)}
-                      small
-                    />
-                  ))}
-                </div>
-              </div>
-            ) : null}
-          </div>
+            category={category}
+            expanded={expandedSkillIds.includes(skill.id)}
+            labels={labels}
+            selectedSkillIds={selectedSkillIds}
+            selectedSubSkillIds={selectedSubSkillIds}
+            skill={skill}
+            onToggleExpandedSkill={onToggleExpandedSkill}
+            onToggleSkill={onToggleSkill}
+            onToggleSubSkill={onToggleSubSkill}
+          />
         ))}
       </div>
     </section>
+  );
+}
+
+function SkillSearchResults({
+  categories,
+  expandedSkillIds,
+  labels,
+  selectedSkillIds,
+  selectedSubSkillIds,
+  onToggleExpandedSkill,
+  onToggleSkill,
+  onToggleSubSkill,
+}: {
+  categories: CategoryItem[];
+  expandedSkillIds: string[];
+  labels: {
+    collapseSkill: string;
+    expandSkill: string;
+    noMatches: string;
+    searchResults: string;
+    selectedCount: (count: number) => string;
+    subSkills: string;
+  };
+  selectedSkillIds: string[];
+  selectedSubSkillIds: string[];
+  onToggleExpandedSkill: (skillId: string) => void;
+  onToggleSkill: (category: CategoryItem, skill: SkillItem) => void;
+  onToggleSubSkill: (category: CategoryItem, subSkill: SubSkillItem) => void;
+}) {
+  return (
+    <section>
+      <div className="mb-2 flex items-center justify-between gap-3">
+        <h4 className="text-sm font-semibold">{labels.searchResults}</h4>
+        <p className="text-xs text-foreground-muted">{categories.length}</p>
+      </div>
+      <div className="max-h-[420px] space-y-3 overflow-y-auto rounded-lg border border-teal-500/25 bg-background/60 p-3">
+        {categories.length ? (
+          categories.map((category) => {
+            const selectedCount = countSelectedInCategory(
+              category,
+              selectedSkillIds,
+              selectedSubSkillIds,
+            );
+            return (
+              <section
+                key={category.id}
+                className="rounded-lg border border-border bg-muted/20 p-3"
+              >
+                <div className="mb-3 flex items-center justify-between gap-3">
+                  <h5 className="text-sm font-semibold">{category.name}</h5>
+                  {selectedCount > 0 ? (
+                    <span className="rounded-full border border-cyan-300/30 bg-cyan-400/10 px-2 py-0.5 text-[11px] text-cyan-100">
+                      {labels.selectedCount(selectedCount)}
+                    </span>
+                  ) : null}
+                </div>
+                <div className="space-y-2">
+                  {(category.skills ?? []).map((skill) => (
+                    <SkillSelectionRow
+                      key={skill.id}
+                      category={category}
+                      expanded={expandedSkillIds.includes(skill.id)}
+                      labels={labels}
+                      selectedSkillIds={selectedSkillIds}
+                      selectedSubSkillIds={selectedSubSkillIds}
+                      skill={skill}
+                      onToggleExpandedSkill={onToggleExpandedSkill}
+                      onToggleSkill={onToggleSkill}
+                      onToggleSubSkill={onToggleSubSkill}
+                    />
+                  ))}
+                </div>
+              </section>
+            );
+          })
+        ) : (
+          <p className="rounded-md border border-dashed border-border px-3 py-6 text-center text-sm text-foreground-muted">
+            {labels.noMatches}
+          </p>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function SkillSelectionRow({
+  category,
+  expanded,
+  labels,
+  selectedSkillIds,
+  selectedSubSkillIds,
+  skill,
+  onToggleExpandedSkill,
+  onToggleSkill,
+  onToggleSubSkill,
+}: {
+  category: CategoryItem;
+  expanded: boolean;
+  labels: { collapseSkill: string; expandSkill: string; subSkills: string };
+  selectedSkillIds: string[];
+  selectedSubSkillIds: string[];
+  skill: SkillItem;
+  onToggleExpandedSkill: (skillId: string) => void;
+  onToggleSkill: (category: CategoryItem, skill: SkillItem) => void;
+  onToggleSubSkill: (category: CategoryItem, subSkill: SubSkillItem) => void;
+}) {
+  const isSelected = selectedSkillIds.includes(skill.id);
+  const hasSubSkills = (skill.subSkills ?? []).length > 0;
+  const showSubSkills = hasSubSkills && (isSelected || expanded);
+
+  return (
+    <div className="rounded-md border border-border bg-background/70 p-2">
+      <div className="flex items-center gap-2">
+        <SkillCheckboxRow
+          checked={isSelected}
+          id={`skill-${skill.id}`}
+          label={skill.name}
+          onChange={() => onToggleSkill(category, skill)}
+        />
+        {hasSubSkills ? (
+          <button
+            type="button"
+            aria-expanded={showSubSkills}
+            aria-label={`${showSubSkills ? labels.collapseSkill : labels.expandSkill}: ${skill.name}`}
+            onClick={() => onToggleExpandedSkill(skill.id)}
+            className="rounded-md p-1 text-foreground-muted transition hover:bg-cyan-400/10 hover:text-cyan-100 focus:outline-none focus:ring-2 focus:ring-cyan-300"
+          >
+            <ChevronDown
+              className={`h-4 w-4 transition-transform ${
+                showSubSkills ? "rotate-180" : ""
+              }`}
+            />
+          </button>
+        ) : null}
+      </div>
+      {showSubSkills ? (
+        <SubSkillSelectionList
+          category={category}
+          labels={labels}
+          selectedSubSkillIds={selectedSubSkillIds}
+          skill={skill}
+          onToggleSubSkill={onToggleSubSkill}
+        />
+      ) : null}
+    </div>
+  );
+}
+
+function SubSkillSelectionList({
+  category,
+  labels,
+  selectedSubSkillIds,
+  skill,
+  onToggleSubSkill,
+}: {
+  category: CategoryItem;
+  labels: { subSkills: string };
+  selectedSubSkillIds: string[];
+  skill: SkillItem;
+  onToggleSubSkill: (category: CategoryItem, subSkill: SubSkillItem) => void;
+}) {
+  return (
+    <div className="mt-2 border-l border-teal-500/25 pl-4">
+      <p className="mb-1 text-[11px] font-medium uppercase text-foreground-muted">
+        {labels.subSkills}
+      </p>
+      <div className="space-y-1.5">
+        {(skill.subSkills ?? []).map((subSkill) => (
+          <SkillCheckboxRow
+            key={subSkill.id}
+            checked={selectedSubSkillIds.includes(subSkill.id)}
+            id={`sub-skill-${subSkill.id}`}
+            label={subSkill.name}
+            onChange={() => onToggleSubSkill(category, subSkill)}
+            small
+          />
+        ))}
+      </div>
+    </div>
   );
 }
 

@@ -69,12 +69,30 @@ test.describe.serial("technician multi-skill selection", () => {
     await expect(
       page.getByRole("heading", { name: "Skills & Services" }),
     ).toBeVisible();
-    await expect(page.getByText("Available skills")).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Choose a category" }),
+    ).toBeVisible();
+    await expect(
+      page.getByText(`Skills in ${taxonomy.first.name}`),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: taxonomy.first.name }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: taxonomy.second.name }),
+    ).toBeVisible();
     const search = page.getByPlaceholder("Search skills and sub-skills");
     await expect(search).toBeVisible();
     await expect(page.locator("details")).toHaveCount(0);
+    await expect(
+      page.getByLabel(taxonomy.firstSkill.name, { exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByLabel(taxonomy.secondSkill.name, { exact: true }),
+    ).toHaveCount(0);
 
     await search.fill(taxonomy.secondSkill.name);
+    await expect(page.getByText("Search results")).toBeVisible();
     await page.getByLabel(taxonomy.secondSkill.name, { exact: true }).check();
     await expect(
       page.getByRole("button", {
@@ -83,9 +101,13 @@ test.describe.serial("technician multi-skill selection", () => {
     ).toBeVisible();
 
     await search.fill("");
-    await page
-      .getByRole("button", { name: taxonomy.first.name, exact: true })
-      .click();
+    await page.getByRole("button", { name: taxonomy.first.name }).click();
+    await expect(
+      page.getByText(`Skills in ${taxonomy.first.name}`),
+    ).toBeVisible();
+    await expect(
+      page.getByLabel(taxonomy.secondSkill.name, { exact: true }),
+    ).toHaveCount(0);
     await expect(
       page.getByRole("button", {
         name: `Remove skill: ${taxonomy.secondSkill.name}`,
@@ -93,14 +115,18 @@ test.describe.serial("technician multi-skill selection", () => {
     ).toBeVisible();
     await page.getByLabel(taxonomy.firstSkill.name, { exact: true }).check();
     if (taxonomy.firstSubSkill) {
+      await expect(
+        page.getByLabel(taxonomy.firstSubSkill.name, { exact: true }),
+      ).toBeVisible();
       await page
         .getByLabel(taxonomy.firstSubSkill.name, { exact: true })
         .check();
     }
 
-    await page
-      .getByRole("button", { name: taxonomy.second.name, exact: true })
-      .click();
+    await page.getByRole("button", { name: taxonomy.second.name }).click();
+    await expect(
+      page.getByText(`Skills in ${taxonomy.second.name}`),
+    ).toBeVisible();
     await expect(
       page.getByRole("button", {
         name: `Remove skill: ${taxonomy.firstSkill.name}`,
@@ -115,10 +141,11 @@ test.describe.serial("technician multi-skill selection", () => {
     await page.getByRole("button", { name: "Save Skills" }).click();
     await expect(page.getByText("Skills saved successfully.")).toBeVisible();
     await page.reload();
-    await page.getByRole("button", { name: "All", exact: true }).click();
+    await page.getByRole("button", { name: taxonomy.first.name }).click();
     await expect(
       page.getByLabel(taxonomy.firstSkill.name, { exact: true }),
     ).toBeChecked();
+    await page.getByRole("button", { name: taxonomy.second.name }).click();
     await expect(
       page.getByLabel(taxonomy.secondSkill.name, { exact: true }),
     ).toBeChecked();
