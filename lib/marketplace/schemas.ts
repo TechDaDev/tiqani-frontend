@@ -80,32 +80,7 @@ export const BackendTechnicianDetailResponseSchema =
 
 // ── Category schema (raw backend) ──────────────────────────────
 
-const BackendCategorySchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  description: z.string().nullable().optional(),
-  image: z.string().nullable().optional(),
-  skill_count: z.number().int().optional(),
-  technician_count: z.number().int().optional(),
-});
-
-export const BackendCategoryListResponseSchema =
-  BackendPaginatedResponseSchema(BackendCategorySchema);
-
 // ── Skill schema (raw backend) ─────────────────────────────────
-
-const BackendSkillSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  category: z.string().optional(),
-  technician_count: z.number().int().optional(),
-});
-
-export const BackendSkillListResponseSchema = z.array(BackendSkillSchema);
-export const BackendSkillPaginatedResponseSchema =
-  BackendPaginatedResponseSchema(BackendSkillSchema);
-
-// ── Sub-skill schema (raw backend) ─────────────────────────────
 
 const BackendSubSkillSchema = z.object({
   id: z.string(),
@@ -113,9 +88,36 @@ const BackendSubSkillSchema = z.object({
   skill: z.string().optional(),
 });
 
+const BackendSkillSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  category: z.string().optional(),
+  technician_count: z.number().int().optional(),
+  sub_skills: z.array(BackendSubSkillSchema).optional(),
+});
+
 export const BackendSubSkillListResponseSchema = z.array(BackendSubSkillSchema);
 export const BackendSubSkillPaginatedResponseSchema =
   BackendPaginatedResponseSchema(BackendSubSkillSchema);
+
+export const BackendSkillListResponseSchema = z.array(BackendSkillSchema);
+export const BackendSkillPaginatedResponseSchema =
+  BackendPaginatedResponseSchema(BackendSkillSchema);
+
+// ── Category schema (raw backend) ──────────────────────────────
+
+const BackendCategorySchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string().nullable().optional(),
+  image: z.string().nullable().optional(),
+  skill_count: z.number().int().optional(),
+  technician_count: z.number().int().optional(),
+  skills: z.array(BackendSkillSchema).optional(),
+});
+
+export const BackendCategoryListResponseSchema =
+  BackendPaginatedResponseSchema(BackendCategorySchema);
 
 // ── Error response ─────────────────────────────────────────────
 

@@ -203,6 +203,32 @@ export async function updateTechnicianSkills(
   });
 }
 
+export function buildTechnicianSkillsPayload({
+  categories,
+  skills,
+  sub_skills,
+}: {
+  categories: string[];
+  skills: string[];
+  sub_skills: string[];
+}): Pick<TechnicianSkillsData, "categories" | "skills" | "sub_skills"> {
+  return {
+    categories: Array.from(new Set(categories)),
+    skills: Array.from(new Set(skills)),
+    sub_skills: Array.from(new Set(sub_skills)),
+  };
+}
+
+export function validateTechnicianSkillsSelection({
+  skills,
+  sub_skills,
+}: {
+  skills: string[];
+  sub_skills: string[];
+}): boolean {
+  return skills.length > 0 || sub_skills.length > 0;
+}
+
 // ── Availability ───────────────────────────────────────────────
 
 export interface TechnicianAvailabilityData {

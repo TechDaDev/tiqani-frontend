@@ -70,15 +70,19 @@ export interface CategoryItem {
   name: string;
   skillCount?: number;
   technicianCount?: number;
+  skills?: SkillItem[];
 }
 
 export interface SkillItem {
   id: string;
   name: string;
   technicianCount?: number;
+  category?: string;
+  subSkills?: SubSkillItem[];
 }
 
 export interface SubSkillItem {
   id: string;
   name: string;
+  skill?: string;
 }

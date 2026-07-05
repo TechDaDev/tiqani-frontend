@@ -130,6 +130,7 @@ export function mapCategory(raw: RawCategory): CategoryItem {
     name: raw.name,
     skillCount: raw.skill_count,
     technicianCount: raw.technician_count,
+    skills: raw.skills?.map(mapSkill) ?? [],
   };
 }
 
@@ -142,6 +143,8 @@ export function mapSkill(raw: RawSkill): SkillItem {
     id: raw.id,
     name: raw.name,
     technicianCount: raw.technician_count,
+    category: raw.category,
+    subSkills: raw.sub_skills?.map(mapSubSkill) ?? [],
   };
 }
 
@@ -153,6 +156,7 @@ export function mapSubSkill(raw: RawSubSkill): SubSkillItem {
   return {
     id: raw.id,
     name: raw.name,
+    skill: raw.skill,
   };
 }
 
