@@ -51,6 +51,7 @@ export default function TechnicianProfilePage() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [referenceError, setReferenceError] = useState("");
+  const [referenceLoading, setReferenceLoading] = useState(false);
 
   // Editable fields
   const [jobTitle, setJobTitle] = useState("");
@@ -95,23 +96,22 @@ export default function TechnicianProfilePage() {
     loadProfile();
   }, [loadProfile]);
 
-  useEffect(() => {
-    let mounted = true;
-    async function loadReferences() {
-      try {
-        const categoryData = await fetchCategories({ page_size: 100 });
-        if (!mounted) return;
-        setCategories(categoryData.results);
-      } catch (err) {
-        if (!mounted) return;
-        setReferenceError(err instanceof Error ? err.message : t("referenceLoadError"));
-      }
+  const loadReferences = useCallback(async () => {
+    setReferenceLoading(true);
+    setReferenceError("");
+    try {
+      const categoryData = await fetchCategories({ page_size: 100 });
+      setCategories(categoryData.results);
+    } catch {
+      setReferenceError(t("skillReferenceLoadError"));
+    } finally {
+      setReferenceLoading(false);
     }
-    loadReferences();
-    return () => {
-      mounted = false;
-    };
   }, [t]);
+
+  useEffect(() => {
+    loadReferences();
+  }, [loadReferences]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -616,24 +616,38 @@ export default function TechnicianProfilePage() {
             </div>
             <form className="space-y-4" onSubmit={handleSkillsSubmit}>
               {referenceError && (
-                <p className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-950/30 dark:text-red-300">
-                  {referenceError}
-                </p>
+                <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-950/30 dark:text-red-300">
+                  <span>{referenceError}</span>
+                  <Button type="button" variant="outline" size="sm" onClick={loadReferences} disabled={referenceLoading}>
+                    {referenceLoading ? (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    ) : null}
+                    {t("tryAgain")}
+                  </Button>
+                </div>
               )}
-              <SkillSelectionTree
-                categories={categories}
-                selectedCategoryIds={selectedCategoryIds}
-                selectedSkillIds={selectedSkillIds}
-                selectedSubSkillIds={selectedSubSkillIds}
-                onToggleCategory={toggleCategory}
-                onToggleSkill={toggleSkill}
-                onToggleSubSkill={toggleSubSkill}
-                labels={{
-                  category: t("category"),
-                  selectMultipleSkills: t("selectMultipleSkills"),
-                  subSkills: t("subSkills"),
-                }}
-              />
+              {referenceLoading && categories.length === 0 ? (
+                <p className="flex items-center gap-2 rounded-lg border border-border p-3 text-sm text-foreground-muted">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  {t("loadingSkills")}
+                </p>
+              ) : null}
+              {categories.length > 0 ? (
+                <SkillSelectionTree
+                  categories={categories}
+                  selectedCategoryIds={selectedCategoryIds}
+                  selectedSkillIds={selectedSkillIds}
+                  selectedSubSkillIds={selectedSubSkillIds}
+                  onToggleCategory={toggleCategory}
+                  onToggleSkill={toggleSkill}
+                  onToggleSubSkill={toggleSubSkill}
+                  labels={{
+                    category: t("category"),
+                    selectMultipleSkills: t("selectMultipleSkills"),
+                    subSkills: t("subSkills"),
+                  }}
+                />
+              ) : null}
               <div className="grid gap-3">
                 <ChipGroup label={t("selectedSkills")} items={selectedSkillNames} emptyLabel={t("noSkillsSelected")} />
                 <ChipGroup label={t("selectedSubSkills")} items={selectedSubSkillNames} emptyLabel={t("noSkillsSelected")} />
@@ -843,12 +857,13 @@ function SkillSelectionTree({
   return (
     <div className="grid gap-3 text-sm" aria-label={labels.selectMultipleSkills}>
       {categories.map((category) => (
-        <details key={category.id} open={selectedCategoryIds.includes(category.id)} className="rounded-lg border border-border bg-background p-3">
+        <details key={category.id} open className="rounded-lg border border-border bg-background p-3">
           <summary className="cursor-pointer list-none">
             <label className="flex cursor-pointer items-center gap-2 font-medium">
               <input
                 type="checkbox"
                 checked={selectedCategoryIds.includes(category.id)}
+                onClick={(event) => event.stopPropagation()}
                 onChange={() => onToggleCategory(category)}
                 className="h-4 w-4 rounded border-border"
               />
@@ -862,6 +877,7 @@ function SkillSelectionTree({
                   <input
                     type="checkbox"
                     checked={selectedSkillIds.includes(skill.id)}
+                    onClick={(event) => event.stopPropagation()}
                     onChange={() => onToggleSkill(category, skill)}
                     className="h-4 w-4 rounded border-border"
                   />
@@ -875,6 +891,7 @@ function SkillSelectionTree({
                         <input
                           type="checkbox"
                           checked={selectedSubSkillIds.includes(subSkill.id)}
+                          onClick={(event) => event.stopPropagation()}
                           onChange={() => onToggleSubSkill(category, subSkill)}
                           className="h-3.5 w-3.5 rounded border-border"
                         />

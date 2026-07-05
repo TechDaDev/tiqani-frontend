@@ -553,6 +553,8 @@
     "addPortfolioImage": "إضافة صورة عمل",
     "deleteImage": "حذف الصورة",
     "referenceLoadError": "فشل تحميل بيانات الاختيار القابلة للتعديل.",
+    "skillReferenceLoadError": "تعذر تحميل المهارات.",
+    "loadingSkills": "جار تحميل المهارات المتاحة...",
     "notProvided": "غير متوفر",
     "genders": {
       "male": "ذكر",

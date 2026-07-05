@@ -118,6 +118,7 @@ const BackendCategorySchema = z.object({
 
 export const BackendCategoryListResponseSchema =
   BackendPaginatedResponseSchema(BackendCategorySchema);
+export const BackendCategoryArrayResponseSchema = z.array(BackendCategorySchema);
 
 // ── Error response ─────────────────────────────────────────────
 

@@ -15,6 +15,7 @@ import {
   BackendTechnicianListResponseSchema,
   BackendTechnicianDetailResponseSchema,
   BackendCategoryListResponseSchema,
+  BackendCategoryArrayResponseSchema,
   BackendSkillPaginatedResponseSchema,
   BackendSkillListResponseSchema,
   BackendSubSkillPaginatedResponseSchema,
@@ -76,8 +77,20 @@ export async function fetchCategories(
   const path = `/api/reference/categories${qs ? `?${qs}` : ""}`;
 
   const raw = await browserRequest<unknown>(path, { method: "GET" });
-  const parsed = BackendCategoryListResponseSchema.parse(raw);
+  return normalizeCategoryResponse(raw);
+}
 
+export function normalizeCategoryResponse(raw: unknown): PaginatedResponse<CategoryItem> {
+  if (Array.isArray(raw)) {
+    const parsed = BackendCategoryArrayResponseSchema.parse(raw);
+    return {
+      count: parsed.length,
+      next: null,
+      previous: null,
+      results: mapCategories(parsed),
+    };
+  }
+  const parsed = BackendCategoryListResponseSchema.parse(raw);
   return {
     count: parsed.count,
     next: parsed.next,

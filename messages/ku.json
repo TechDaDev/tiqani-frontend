@@ -551,6 +551,8 @@
     "addPortfolioImage": "زیادکردنی وێنەی کار",
     "deleteImage": "سڕینەوەی وێنە",
     "referenceLoadError": "بارکردنی زانیاری هەڵبژاردنی دەستکاریکراو سەرکەوتوو نەبوو.",
+    "skillReferenceLoadError": "نەتوانرا شارەزاییەکان بار بکرێن.",
+    "loadingSkills": "شارەزاییە بەردەستەکان باردەکرێن...",
     "notProvided": "دابین نەکراوە",
     "genders": {
       "male": "نێر",

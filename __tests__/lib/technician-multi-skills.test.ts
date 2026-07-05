@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { buildTechnicianSkillsPayload, validateTechnicianSkillsSelection } from "@/lib/api/profiles";
+import { normalizeCategoryResponse } from "@/lib/marketplace/api";
 import { mapCategories } from "@/lib/marketplace/mappers";
 
 describe("technician multi-skill taxonomy mapping", () => {
@@ -40,6 +41,42 @@ describe("technician multi-skill taxonomy mapping", () => {
       (category.skills ?? []).flatMap((skill) => (skill.subSkills ?? []).map((subSkill) => subSkill.id))
     );
     expect(subSkillIds).toEqual(["sub-1", "sub-2"]);
+  });
+
+  it("normalizes a paginated category response", () => {
+    const response = normalizeCategoryResponse({
+      count: 1,
+      next: null,
+      previous: null,
+      results: [
+        {
+          id: "cat-a",
+          name: "Category A",
+          skills: [
+            { id: "skill-1", name: "Skill 1", category: "cat-a", sub_skills: [] },
+          ],
+        },
+      ],
+    });
+
+    expect(response.count).toBe(1);
+    expect(response.results[0].skills?.[0].id).toBe("skill-1");
+  });
+
+  it("normalizes an array category response", () => {
+    const response = normalizeCategoryResponse([
+      {
+        id: "cat-a",
+        name: "Category A",
+        skills: [
+          { id: "skill-1", name: "Skill 1", category: "cat-a", sub_skills: [] },
+        ],
+      },
+    ]);
+
+    expect(response.count).toBe(1);
+    expect(response.next).toBeNull();
+    expect(response.results[0].name).toBe("Category A");
   });
 });
 

@@ -553,6 +553,8 @@
     "addPortfolioImage": "Add Portfolio Image",
     "deleteImage": "Delete Image",
     "referenceLoadError": "Failed to load editable reference data.",
+    "skillReferenceLoadError": "Could not load skills.",
+    "loadingSkills": "Loading available skills...",
     "notProvided": "Not provided",
     "genders": {
       "male": "Male",
