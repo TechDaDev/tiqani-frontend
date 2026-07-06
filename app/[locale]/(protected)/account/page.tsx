@@ -2,9 +2,17 @@
 
 import { useTranslations } from "next-intl";
 import { useParams } from "next/navigation";
-import Image from "next/image";
-import { LogOut, User, Shield, BadgeCheck, AlertTriangle, Mail, Phone } from "lucide-react";
+import {
+  LogOut,
+  User,
+  Shield,
+  BadgeCheck,
+  AlertTriangle,
+  Mail,
+  Phone,
+} from "lucide-react";
 import { useAuth } from "@/components/auth/auth-provider";
+import { ProfileAvatar } from "@/components/profile/profile-avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -31,22 +39,16 @@ export default function AccountPage() {
       <Card className="mb-6">
         <CardHeader>
           <div className="flex items-center gap-4">
-            <div className="relative flex h-20 w-20 items-center justify-center overflow-hidden rounded-full bg-primary-soft text-3xl font-bold text-primary">
-              {user.profileImage ? (
-                <Image
-                  src={user.profileImage}
-                  alt={user.fullName}
-                  fill
-                  className="object-cover"
-                  sizes="80px"
-                  unoptimized={user.profileImage.startsWith("http") && !user.profileImage.includes("localhost")}
-                />
-              ) : (
-                user.fullName.charAt(0).toUpperCase()
-              )}
-            </div>
+            <ProfileAvatar
+              src={user.profileImage}
+              name={user.fullName}
+              username={user.username}
+              className="text-3xl"
+            />
             <div>
-              <CardTitle className="text-xl">{user.fullName || user.username}</CardTitle>
+              <CardTitle className="text-xl">
+                {user.fullName || user.username}
+              </CardTitle>
               <p className="text-sm text-foreground-muted">@{user.username}</p>
               <div className="mt-1 flex flex-wrap gap-2">
                 <Badge variant="outline" className="capitalize">

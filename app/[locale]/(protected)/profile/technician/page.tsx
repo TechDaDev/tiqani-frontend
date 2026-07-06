@@ -25,6 +25,7 @@ import {
   Wallet,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/components/auth/auth-provider";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ApiClientError } from "@/lib/api/errors";
@@ -43,6 +44,7 @@ import {
   type IncompleteFieldsData,
 } from "@/lib/api/profiles";
 import { fetchCategories } from "@/lib/marketplace/api";
+import { ProfileAvatar } from "@/components/profile/profile-avatar";
 import type {
   CategoryItem,
   SkillItem,
@@ -59,6 +61,7 @@ import {
 export default function TechnicianProfilePage() {
   const t = useTranslations("profile");
   const locale = useLocale();
+  const { refreshSession } = useAuth();
 
   const [profile, setProfile] = useState<TechnicianProfileData | null>(null);
   const [incomplete, setIncomplete] = useState<IncompleteFieldsData | null>(
@@ -262,6 +265,7 @@ export default function TechnicianProfilePage() {
       const updated = await uploadTechnicianProfileImage(file);
       setProfile(updated);
       setIncomplete(await fetchIncompleteFields());
+      await refreshSession();
       setSuccess(t("saved"));
     } catch (err) {
       setError(err instanceof Error ? err.message : t("saveError"));
@@ -615,20 +619,12 @@ export default function TechnicianProfilePage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-center gap-4">
-                <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-full border border-border bg-background">
-                  {profile?.profile_image ? (
-                    <Image
-                      src={profile.profile_image}
-                      alt={profile.full_name || profile.username}
-                      fill
-                      sizes="80px"
-                      className="object-cover"
-                      unoptimized={profile.profile_image.startsWith("http")}
-                    />
-                  ) : (
-                    <ImageIcon className="absolute left-1/2 top-1/2 h-8 w-8 -translate-x-1/2 -translate-y-1/2 text-foreground-muted" />
-                  )}
-                </div>
+                <ProfileAvatar
+                  src={profile?.profile_image}
+                  name={profile?.full_name}
+                  username={profile?.username}
+                  iconFallback
+                />
                 <div className="min-w-0">
                   <p className="truncate text-base font-semibold">
                     {profile?.full_name || t("notProvided")}

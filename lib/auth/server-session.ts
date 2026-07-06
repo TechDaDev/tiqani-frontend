@@ -19,6 +19,7 @@ interface CurrentUserResponse {
   role: UserRole;
   phone_number?: string;
   profile_image?: string;
+  profile_image_url?: string;
   is_active: boolean;
   is_verified?: boolean;
   job_title?: string;
@@ -31,12 +32,12 @@ interface CurrentUserResponse {
  * Fetch the current user from the backend using the access token.
  */
 export async function fetchServerUser(
-  accessToken: string
+  accessToken: string,
 ): Promise<AuthUser | null> {
   try {
     const { data } = await backendGet<CurrentUserResponse>(
       "/api/accounts/me/",
-      { headers: { Authorization: `Bearer ${accessToken}` } }
+      { headers: { Authorization: `Bearer ${accessToken}` } },
     );
 
     if (!data || !data.id) return null;
@@ -50,7 +51,7 @@ export async function fetchServerUser(
       lastName: data.last_name,
       fullName: `${data.first_name} ${data.last_name}`.trim(),
       role: data.role,
-      profileImage: data.profile_image,
+      profileImage: data.profile_image_url || data.profile_image,
       jobTitle: data.job_title,
       isActive: data.is_active,
       isVerified: data.is_verified ?? false,
@@ -73,12 +74,12 @@ interface RefreshResult {
  * Returns the new access token and user data on success.
  */
 export async function attemptRefresh(
-  refreshToken: string
+  refreshToken: string,
 ): Promise<RefreshResult> {
   try {
     const { data } = await backendPost<{ access: string }>(
       "/api/auth/refresh/",
-      { refresh: refreshToken }
+      { refresh: refreshToken },
     );
 
     if (!data?.access) return { user: null, accessToken: null };
@@ -97,7 +98,7 @@ export async function attemptRefresh(
  */
 export async function getServerUser(
   accessToken: string | undefined,
-  refreshToken: string | undefined
+  refreshToken: string | undefined,
 ): Promise<{ user: AuthUser | null; accessToken: string | null }> {
   // No tokens at all
   if (!accessToken) {

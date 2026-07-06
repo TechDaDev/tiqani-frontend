@@ -27,7 +27,8 @@ export interface AuthUser {
   isStaff?: boolean;
 }
 
-export type AuthStatus = "loading" | "authenticated" | "unauthenticated" | "expired" | "blocked";
+export type AuthStatus =
+  "loading" | "authenticated" | "unauthenticated" | "expired" | "blocked";
 
 export interface LoginRequest {
   username: string;
@@ -46,6 +47,7 @@ export interface LoginUserData {
   role: UserRole;
   full_name: string;
   profile_image?: string;
+  profile_image_url?: string;
   job_title?: string;
   is_available?: boolean;
   rating?: number;
@@ -114,6 +116,7 @@ export interface CurrentUserResponse {
   email: string;
   phone_number?: string;
   profile_image?: string;
+  profile_image_url?: string;
   is_active: boolean;
   is_verified?: boolean;
   job_title?: string;
@@ -133,7 +136,7 @@ export function mapCurrentUserData(data: CurrentUserResponse): AuthUser {
     fullName: `${data.first_name || ""} ${data.last_name || ""}`.trim(),
     email: data.email,
     phoneNumber: data.phone_number,
-    profileImage: data.profile_image,
+    profileImage: data.profile_image_url || data.profile_image,
     isActive: data.is_active !== false,
     isVerified: true,
     jobTitle: data.job_title,
@@ -155,7 +158,8 @@ export function mapLoginUserData(data: Record<string, unknown>): AuthUser {
     fullName: (data.full_name as string) || "",
     email: data.email as string | undefined,
     phoneNumber: data.phone_number as string | undefined,
-    profileImage: data.profile_image as string | undefined,
+    profileImage: (data.profile_image_url || data.profile_image) as
+      string | undefined,
     jobTitle: data.job_title as string | undefined,
     isActive: true,
     isVerified: true,
