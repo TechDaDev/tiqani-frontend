@@ -1,3 +1,5 @@
+import { getProfileImageSource } from "@/lib/profile/profile-image";
+
 export type UserRole =
   | "client"
   | "technician"
@@ -42,12 +44,16 @@ export interface LoginResponse {
 }
 
 export interface LoginUserData {
+  avatar?: string;
+  avatar_url?: string;
   id: string;
   username: string;
   role: UserRole;
   full_name: string;
   profile_image?: string;
   profile_image_url?: string;
+  profileImage?: string;
+  image?: string;
   job_title?: string;
   is_available?: boolean;
   rating?: number;
@@ -108,6 +114,8 @@ export interface ResetPasswordRequest {
 }
 
 export interface CurrentUserResponse {
+  avatar?: string;
+  avatar_url?: string;
   id: string;
   username: string;
   role: UserRole;
@@ -117,6 +125,8 @@ export interface CurrentUserResponse {
   phone_number?: string;
   profile_image?: string;
   profile_image_url?: string;
+  profileImage?: string;
+  image?: string;
   is_active: boolean;
   is_verified?: boolean;
   job_title?: string;
@@ -136,7 +146,7 @@ export function mapCurrentUserData(data: CurrentUserResponse): AuthUser {
     fullName: `${data.first_name || ""} ${data.last_name || ""}`.trim(),
     email: data.email,
     phoneNumber: data.phone_number,
-    profileImage: data.profile_image_url || data.profile_image,
+    profileImage: getProfileImageSource(data) || undefined,
     isActive: data.is_active !== false,
     isVerified: true,
     jobTitle: data.job_title,
@@ -158,8 +168,7 @@ export function mapLoginUserData(data: Record<string, unknown>): AuthUser {
     fullName: (data.full_name as string) || "",
     email: data.email as string | undefined,
     phoneNumber: data.phone_number as string | undefined,
-    profileImage: (data.profile_image_url || data.profile_image) as
-      string | undefined,
+    profileImage: getProfileImageSource(data) || undefined,
     jobTitle: data.job_title as string | undefined,
     isActive: true,
     isVerified: true,

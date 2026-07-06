@@ -28,6 +28,22 @@ describe("ProfileAvatar", () => {
     );
   });
 
+  it("normalizes raw avatar storage paths against the backend media origin", () => {
+    vi.stubEnv("NEXT_PUBLIC_API_BASE_URL", "https://api.example.test/api");
+
+    render(
+      <ProfileAvatar
+        src="users/avatars/cba950718d49_ZEkVmgt.png"
+        name="Profile User"
+      />,
+    );
+
+    expect(screen.getByRole("img", { name: "Profile User" })).toHaveAttribute(
+      "src",
+      "https://api.example.test/media/users/avatars/cba950718d49_ZEkVmgt.png",
+    );
+  });
+
   it("falls back after an image load error", () => {
     render(
       <ProfileAvatar

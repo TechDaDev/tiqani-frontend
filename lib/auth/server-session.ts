@@ -9,8 +9,11 @@
 import { backendGet, backendPost } from "@/lib/api/backend-client";
 import { COOKIE_NAMES, COOKIE_OPTIONS } from "@/lib/auth/cookies";
 import type { AuthUser, UserRole } from "@/lib/auth/types";
+import { getProfileImageSource } from "@/lib/profile/profile-image";
 
 interface CurrentUserResponse {
+  avatar?: string;
+  avatar_url?: string;
   id: string;
   username: string;
   email?: string;
@@ -20,6 +23,8 @@ interface CurrentUserResponse {
   phone_number?: string;
   profile_image?: string;
   profile_image_url?: string;
+  profileImage?: string;
+  image?: string;
   is_active: boolean;
   is_verified?: boolean;
   job_title?: string;
@@ -51,7 +56,7 @@ export async function fetchServerUser(
       lastName: data.last_name,
       fullName: `${data.first_name} ${data.last_name}`.trim(),
       role: data.role,
-      profileImage: data.profile_image_url || data.profile_image,
+      profileImage: getProfileImageSource(data) || undefined,
       jobTitle: data.job_title,
       isActive: data.is_active,
       isVerified: data.is_verified ?? false,

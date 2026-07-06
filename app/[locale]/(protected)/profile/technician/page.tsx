@@ -45,6 +45,7 @@ import {
 } from "@/lib/api/profiles";
 import { fetchCategories } from "@/lib/marketplace/api";
 import { ProfileAvatar } from "@/components/profile/profile-avatar";
+import { getProfileImageSource } from "@/lib/profile/profile-image";
 import type {
   CategoryItem,
   SkillItem,
@@ -620,7 +621,7 @@ export default function TechnicianProfilePage() {
             <CardContent className="space-y-4">
               <div className="flex items-center gap-4">
                 <ProfileAvatar
-                  src={profile?.profile_image}
+                  src={getProfileImageSource(profile)}
                   name={profile?.full_name}
                   username={profile?.username}
                   iconFallback

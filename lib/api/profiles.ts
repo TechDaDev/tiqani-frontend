@@ -7,6 +7,8 @@ import { browserRequest } from "./browser-client";
 // ── Types ──────────────────────────────────────────────────────
 
 export interface ClientProfileData {
+  avatar?: string | null;
+  avatar_url?: string | null;
   user_id: string;
   username: string;
   full_name: string;
@@ -17,6 +19,9 @@ export interface ClientProfileData {
   gender: string | null;
   date_of_birth: string | null;
   profile_image: string | null;
+  profile_image_url?: string | null;
+  profileImage?: string | null;
+  image?: string | null;
   age: number | null;
   is_complete: boolean;
   wallet_id: string | null;
@@ -25,6 +30,8 @@ export interface ClientProfileData {
 }
 
 export interface TechnicianProfileData {
+  avatar?: string | null;
+  avatar_url?: string | null;
   user_id: string;
   username: string;
   full_name: string;
@@ -35,6 +42,9 @@ export interface TechnicianProfileData {
   gender: string | null;
   date_of_birth: string | null;
   profile_image: string | null;
+  profile_image_url?: string | null;
+  profileImage?: string | null;
+  image?: string | null;
   job_title: string | null;
   about: string | null;
   years_of_expertise: number;
@@ -107,7 +117,7 @@ export async function fetchClientProfile(): Promise<ClientProfileData> {
  * Update client profile (PATCH /api/client/me/)
  */
 export async function updateClientProfile(
-  data: ClientProfileUpdate
+  data: ClientProfileUpdate,
 ): Promise<ClientProfileData> {
   return browserRequest<ClientProfileData>("/api/client/me", {
     method: "PATCH",
@@ -128,7 +138,7 @@ export async function fetchTechnicianProfile(): Promise<TechnicianProfileData> {
  * Update technician profile (PATCH /api/technicians/me/)
  */
 export async function updateTechnicianProfile(
-  data: TechnicianProfileUpdate
+  data: TechnicianProfileUpdate,
 ): Promise<TechnicianProfileData> {
   return browserRequest<TechnicianProfileData>("/api/technicians/me", {
     method: "PATCH",
@@ -136,7 +146,9 @@ export async function updateTechnicianProfile(
   });
 }
 
-export async function uploadTechnicianDocument(file: File): Promise<TechnicianProfileData> {
+export async function uploadTechnicianDocument(
+  file: File,
+): Promise<TechnicianProfileData> {
   const formData = new FormData();
   formData.append("identification_documents", file);
 
@@ -147,14 +159,18 @@ export async function uploadTechnicianDocument(file: File): Promise<TechnicianPr
   });
 
   if (!response.ok) {
-    const err = await response.json().catch(() => ({ detail: "Upload failed." }));
+    const err = await response
+      .json()
+      .catch(() => ({ detail: "Upload failed." }));
     throw new Error(err.detail || "Upload failed.");
   }
 
   return response.json();
 }
 
-export async function uploadTechnicianProfileImage(file: File): Promise<TechnicianProfileData> {
+export async function uploadTechnicianProfileImage(
+  file: File,
+): Promise<TechnicianProfileData> {
   const formData = new FormData();
   formData.append("profile_image", file);
 
@@ -165,7 +181,9 @@ export async function uploadTechnicianProfileImage(file: File): Promise<Technici
   });
 
   if (!response.ok) {
-    const err = await response.json().catch(() => ({ detail: "Upload failed." }));
+    const err = await response
+      .json()
+      .catch(() => ({ detail: "Upload failed." }));
     throw new Error(err.detail || "Upload failed.");
   }
 
@@ -178,7 +196,7 @@ export async function uploadTechnicianProfileImage(file: File): Promise<Technici
 export async function fetchIncompleteFields(): Promise<IncompleteFieldsData> {
   return browserRequest<IncompleteFieldsData>(
     "/api/profile/incomplete-fields",
-    { method: "GET" }
+    { method: "GET" },
   );
 }
 
@@ -195,7 +213,7 @@ export async function fetchTechnicianSkills(): Promise<TechnicianSkillsData> {
  * Update technician skills (PATCH /api/technicians/me/skills/)
  */
 export async function updateTechnicianSkills(
-  data: Partial<TechnicianSkillsData>
+  data: Partial<TechnicianSkillsData>,
 ): Promise<TechnicianSkillsData> {
   return browserRequest<TechnicianSkillsData>("/api/technicians/me/skills", {
     method: "PATCH",
@@ -243,7 +261,7 @@ export interface TechnicianAvailabilityData {
 export async function fetchTechnicianAvailability(): Promise<TechnicianAvailabilityData> {
   return browserRequest<TechnicianAvailabilityData>(
     "/api/technicians/me/availability",
-    { method: "GET" }
+    { method: "GET" },
   );
 }
 
@@ -251,11 +269,11 @@ export async function fetchTechnicianAvailability(): Promise<TechnicianAvailabil
  * Update technician availability (PATCH /api/technicians/me/availability/)
  */
 export async function updateTechnicianAvailability(
-  is_available: boolean
+  is_available: boolean,
 ): Promise<TechnicianAvailabilityData> {
   return browserRequest<TechnicianAvailabilityData>(
     "/api/technicians/me/availability",
-    { method: "PATCH", body: { is_available } }
+    { method: "PATCH", body: { is_available } },
   );
 }
 
@@ -272,10 +290,9 @@ export interface TechnicianImageData {
  * Fetch technician portfolio images (GET /api/technicians/me/images/)
  */
 export async function fetchTechnicianImages(): Promise<TechnicianImageData[]> {
-  return browserRequest<TechnicianImageData[]>(
-    "/api/technicians/me/images",
-    { method: "GET" }
-  );
+  return browserRequest<TechnicianImageData[]>("/api/technicians/me/images", {
+    method: "GET",
+  });
 }
 
 /**
@@ -284,7 +301,7 @@ export async function fetchTechnicianImages(): Promise<TechnicianImageData[]> {
  */
 export async function uploadTechnicianImage(
   file: File,
-  description?: string
+  description?: string,
 ): Promise<TechnicianImageData> {
   const formData = new FormData();
   formData.append("image", file);
@@ -299,7 +316,9 @@ export async function uploadTechnicianImage(
   });
 
   if (!response.ok) {
-    const err = await response.json().catch(() => ({ detail: "Upload failed." }));
+    const err = await response
+      .json()
+      .catch(() => ({ detail: "Upload failed." }));
     throw new Error(err.detail || "Upload failed.");
   }
 
@@ -308,12 +327,15 @@ export async function uploadTechnicianImage(
 
 export async function updateTechnicianImageDescription(
   imageId: string,
-  description: string
+  description: string,
 ): Promise<TechnicianImageData> {
-  return browserRequest<TechnicianImageData>(`/api/technicians/me/images/${imageId}`, {
-    method: "PATCH",
-    body: { description },
-  });
+  return browserRequest<TechnicianImageData>(
+    `/api/technicians/me/images/${imageId}`,
+    {
+      method: "PATCH",
+      body: { description },
+    },
+  );
 }
 
 export async function deleteTechnicianImage(imageId: string): Promise<void> {
@@ -323,7 +345,9 @@ export async function deleteTechnicianImage(imageId: string): Promise<void> {
   });
 
   if (!response.ok) {
-    const err = await response.json().catch(() => ({ detail: "Delete failed." }));
+    const err = await response
+      .json()
+      .catch(() => ({ detail: "Delete failed." }));
     throw new Error(err.detail || "Delete failed.");
   }
 }
@@ -341,8 +365,7 @@ export interface TechnicianRatingsData {
  * Fetch technician ratings (GET /api/technicians/me/ratings/)
  */
 export async function fetchTechnicianRatings(): Promise<TechnicianRatingsData> {
-  return browserRequest<TechnicianRatingsData>(
-    "/api/technicians/me/ratings",
-    { method: "GET" }
-  );
+  return browserRequest<TechnicianRatingsData>("/api/technicians/me/ratings", {
+    method: "GET",
+  });
 }
